@@ -14,6 +14,8 @@ cc_library(
     srcs = ["tracer.cc"],
     hdrs = ["tracer.h"],
     deps = [
+        ":parser",
+        ":scene",
         "//third_party/cimg",
     ],
 )
@@ -24,5 +26,31 @@ cc_library(
     hdrs = ["film.h"],
     deps = [
         "//third_party/cimg",
+    ],
+)
+
+cc_library(
+    name = "parser",
+    srcs = ["parser.cc"],
+    hdrs = ["parser.h"],
+    deps = [
+        ":scene",
+        ":strings",
+        "//third_party/glm",
+        "@com_github_google_glog//:glog",
+    ],
+)
+
+cc_library(
+    name = "strings",
+    hdrs = ["strings.h"],
+)
+
+cc_library(
+    name = "scene",
+    srcs = ["scene.cc"],
+    hdrs = ["scene.h"],
+    deps = [
+        "//third_party/glm",
     ],
 )
