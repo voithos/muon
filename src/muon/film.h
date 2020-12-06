@@ -4,6 +4,7 @@
 #include <string>
 
 #include "third_party/cimg/CImg.h"
+#include "third_party/glm/glm.hpp"
 
 namespace muon {
 
@@ -17,12 +18,12 @@ public:
   // output file, which should be a png.
   Film(int width, int height, std::string output_file)
       : width_(width), height_(height), output_file_(output_file),
-        output_(width, height, kImageLayers, kNumColors, /* default */ 0){};
+        output_(width, height, kImageLayers, kNumColors, /* default */ 0) {}
   Film(Film &&other) = default;
   Film &operator=(Film &&other) = default;
 
   // Sets a specific pixel coordinate to a given color.
-  void SetPixel(int x, int y, float r, float g, float b);
+  void SetPixel(int x, int y, glm::vec3 color);
 
   // Writes the sampled output to disk.
   void WriteOutput();

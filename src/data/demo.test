@@ -1,0 +1,20 @@
+# Demo test
+
+size 150 100
+
+#camera 0 0 4 0 0 0 0 1 0 30
+#camera 0 -3 3 0 0 0 0 1 0 30
+#camera -4 0 1 0 0 1 0 0 1 45
+camera -4 -4 4 1 0 0 0 1 0 30
+
+# lighting/material definitions
+
+ambient .1 .1 .1
+directional 0 0 1 .5 .5 .5 
+point 4 0 4 .5 .5 .5
+diffuse 1 0 0 
+specular 0 0 0
+
+# Now specify the geometry 
+
+sphere 1 0 0 1

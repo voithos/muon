@@ -1,0 +1,192 @@
+#Cornell Box
+size 640 480
+camera 0 0 1 0 0 -1 0 1 0 45
+output scene6.png
+
+maxdepth 5
+
+
+
+maxverts 12
+#planar face
+vertex -1 +1 0
+vertex -1 -1 0
+vertex +1 -1 0
+vertex +1 +1 0
+
+#cube
+vertex -1 +1 +1
+vertex +1 +1 +1
+vertex -1 -1 +1
+vertex +1 -1 +1
+
+vertex -1 +1 -1
+vertex +1 +1 -1
+vertex -1 -1 -1
+vertex +1 -1 -1
+
+
+ambient 0 0 0
+specular 0 0 0
+shininess 1
+emission 0 0 0
+diffuse 0 0 0
+
+attenuation 1 0.1 0.05
+
+point 0 0.44 -1.5 0.8 0.8 0.8
+directional 0 1 -1 0.2 0.2 0.2
+
+diffuse 0 0 1
+#sphere 0 0.8 -1.5 0.1
+
+
+pushTransform
+
+#red
+pushTransform
+translate 0 0 -3
+rotate 0 1 0 60
+scale 10 10 1
+diffuse 1 0 0
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+#green
+pushTransform
+translate 0 0 -3
+rotate 0 1 0 -60
+scale 10 10 1
+diffuse 0 1 0
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+#back
+pushTransform
+scale 10 10 1
+translate 0 0 -2
+diffuse 1 1 1
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+#top
+pushTransform
+translate 0 0.5 0
+rotate 1 0 0 60
+translate 0 0 -1
+scale 10 10 1
+diffuse 1 1 1
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+#bottom
+pushTransform
+translate 0 -0.5 0
+rotate 1 0 0 -60
+translate 0 0 -1
+scale 10 10 1
+diffuse 1 1 1
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+#sphere
+diffuse 0.7 0.5 0.2
+specular 0.2 0.2 0.2
+pushTransform
+translate 0 -0.7 -1.5
+scale 0.1 0.1 0.1
+sphere 0 0 0 1
+popTransform
+
+#sphere2
+diffuse 0.7 0.5 0.2
+specular 0.2 0.2 0.2
+pushTransform
+translate 0.4 -0.9 -1
+scale 0.1 0.1 0.1
+sphere 0 0 0 1
+popTransform
+
+#sphere3
+diffuse 0.7 0.5 0.2
+specular 0.2 0.2 0.2
+pushTransform
+translate -0.5 -0.7 -1.5
+scale 0.1 0.1 0.1
+sphere 0 0 0 1
+popTransform
+
+#sphere4
+diffuse 0.7 0.5 0.2
+specular 0.2 0.2 0.2
+pushTransform
+translate 0.5 -0.5 -2
+scale 0.3 0.6 0.3
+sphere 0 0 0 1
+popTransform
+
+#cube
+diffuse 0.5 0.7 0.2
+specular 0.2 0.2 0.2
+pushTransform
+translate -0.25 -0.4 -1.8
+rotate 0 1 0 15
+scale 0.25 0.4 0.2
+diffuse 1 1 1
+
+tri 4 6 5
+tri 6 7 5
+tri 4 5 8
+tri 5 9 8
+tri 7 9 5
+tri 7 11 9
+tri 4 8 10
+tri 4 10 6
+tri 6 10 11
+tri 6 11 7
+tri 10 8 9
+tri 10 9 11
+popTransform
+
+#cube2
+diffuse 0.2 0.5 0.7
+specular 0.2 0.2 0.2
+pushTransform
+translate 0.4 -0.7 -1.5
+rotate 0 1 0 -15
+scale 0.2 0.2 0.2
+diffuse 1 1 1
+
+tri 4 6 5
+tri 6 7 5
+tri 4 5 8
+tri 5 9 8
+tri 7 9 5
+tri 7 11 9
+tri 4 8 10
+tri 4 10 6
+tri 6 10 11
+tri 6 11 7
+tri 10 8 9
+tri 10 9 11
+
+#trinormal 0 2 1
+#trinormal 2 3 1
+#trinormal 0 1 4
+#trinormal 1 5 4
+#trinormal 3 5 1
+#trinormal 3 7 5
+#trinormal 0 4 6
+#trinormal 0 6 2
+#trinormal 2 6 7
+#trinormal 2 7 3
+#trinormal 6 4 5
+#trinormal 6 5 7
+popTransform
+
+popTransform

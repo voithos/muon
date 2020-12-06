@@ -1,0 +1,4021 @@
+#Thousand Spheres
+size 640 480
+camera 0 0 0 0 0 -1 0 1 0 45
+output scene5.png
+
+maxdepth 5
+
+point 0 20 -40 1 1 1
+directional 0.5 0.5 -0.5 0 0.3 0
+ambient 0.01 0.01 0.01
+specular 0.4 0.4 0.4
+diffuse 0.4 0.4 0.4
+shininess 40
+emission 0 0 0
+
+pushTransform
+translate 0 -2 -5
+
+pushTransform
+translate -10 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -10 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -9 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -8 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -7 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -6 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -5 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -4 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -3 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -2 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate -1 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 0 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 1 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 2 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 3 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 4 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 5 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 6 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 7 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 8 0 -49
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 0
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -1
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -2
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -3
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -4
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -5
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -6
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -7
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -8
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -9
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -10
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -11
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -12
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -13
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -14
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -15
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -16
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -17
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -18
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -19
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -20
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -21
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -22
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -23
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -24
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -25
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -26
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -27
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -28
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -29
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -30
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -31
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -32
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -33
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -34
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -35
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -36
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -37
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -38
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -39
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -40
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -41
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -42
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -43
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -44
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -45
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -46
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -47
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -48
+sphere 0 0 0 0.4
+popTransform
+pushTransform
+translate 9 0 -49
+sphere 0 0 0 0.4
+popTransform
+
+
+popTransform

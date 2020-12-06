@@ -12,8 +12,6 @@ class Parser {
 public:
   // Initializes a new Parser with the given scene file.
   explicit Parser(std::string scene_file) : scene_file_(scene_file) {}
-  Parser(Parser &&other) = default;
-  Parser &operator=(Parser &&other) = default;
 
   // Parses the scene file and returns corresponding Scene.
   Scene Parse();

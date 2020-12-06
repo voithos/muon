@@ -14,7 +14,10 @@ cc_library(
     srcs = ["tracer.cc"],
     hdrs = ["tracer.h"],
     deps = [
+        ":eval",
+        ":film",
         ":parser",
+        ":sampler",
         ":scene",
         "//third_party/cimg",
     ],
@@ -26,6 +29,8 @@ cc_library(
     hdrs = ["film.h"],
     deps = [
         "//third_party/cimg",
+        "//third_party/glm",
+        "@com_github_google_glog//:glog",
     ],
 )
 
@@ -38,6 +43,7 @@ cc_library(
         ":strings",
         "//third_party/glm",
         "@com_github_google_glog//:glog",
+        "@com_google_absl//absl/memory:memory",
     ],
 )
 
@@ -51,6 +57,36 @@ cc_library(
     srcs = ["scene.cc"],
     hdrs = ["scene.h"],
     deps = [
+        ":camera",
+        "//third_party/glm",
+        "@com_google_absl//absl/types:optional",
+    ],
+)
+
+cc_library(
+    name = "camera",
+    srcs = ["camera.cc"],
+    hdrs = ["camera.h"],
+    deps = [
+        "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "sampler",
+    srcs = ["sampler.cc"],
+    hdrs = ["sampler.h"],
+    deps = [
+    ],
+)
+
+cc_library(
+    name = "eval",
+    srcs = ["eval.cc"],
+    hdrs = ["eval.h"],
+    deps = [
+        ":camera",
+        ":scene",
         "//third_party/glm",
     ],
 )
