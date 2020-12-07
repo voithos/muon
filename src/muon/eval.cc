@@ -8,7 +8,7 @@ glm::vec3 Evaluator::Eval(const Ray &ray) {
   float min_dist = std::numeric_limits<float>::infinity();
   absl::optional<Intersection> hit;
 
-  for (const auto &obj : scene_.meeps()) {
+  for (const auto &obj : scene_.objects()) {
     absl::optional<Intersection> intersection = obj->Intersect(ray);
     if (!intersection) {
       continue;

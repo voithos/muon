@@ -32,32 +32,30 @@ public:
 
 class Tri : public SceneObject {
 public:
-  int v1 = 0;
-  int v2 = 0;
-  int v3 = 0;
-
+  Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2);
   absl::optional<Intersection> Intersect(const Ray &ray) override;
+
+private:
+  const std::vector<Vertex> &vertices_;
+  // Vertices specified in counter-clockwise order.
+  int v0_;
+  int v1_;
+  int v2_;
+  // Face normal.
+  glm::vec3 normal_;
+  // Squared length of the face normal. Used in computing barycentric
+  // coordinates.
+  float normal_length2_;
 };
 
 class Sphere : public SceneObject {
 public:
-  float radius = 0.0f;
-  glm::vec3 pos;
-
+  Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}
   absl::optional<Intersection> Intersect(const Ray &ray) override;
-};
-
-// Wrapper around an iterable container to allow a single class to return
-// multiple iterable ranges.
-template <typename C> class ConstIteratorProxy {
-public:
-  explicit ConstIteratorProxy(const C &container) : container_(container) {}
-
-  inline typename C::const_iterator begin() const { return container_.begin(); }
-  inline typename C::const_iterator end() const { return container_.end(); }
 
 private:
-  const C &container_;
+  glm::vec3 pos_;
+  float radius_;
 };
 
 // A representation of the scene and its constituents.
@@ -85,22 +83,18 @@ public:
 
   void AddVertex(Vertex vert);
 
-  using SceneObjectList = std::vector<std::unique_ptr<SceneObject>>;
+  using SceneObjects = std::vector<std::unique_ptr<SceneObject>>;
 
   // Adds a SceneObject to the scene, applying the current lighting defaults.
   void AddObject(std::unique_ptr<SceneObject> obj);
 
   inline const std::vector<Vertex> &vertices() const { return vertices_; }
 
-  inline const SceneObjectList &meeps() const { return objects_; }
-
-  inline ConstIteratorProxy<SceneObjectList> objects() const {
-    return ConstIteratorProxy<SceneObjectList>(objects_);
-  }
+  inline const SceneObjects &objects() const { return objects_; }
 
 private:
   std::vector<Vertex> vertices_;
-  SceneObjectList objects_;
+  SceneObjects objects_;
 };
 
 } // namespace muon

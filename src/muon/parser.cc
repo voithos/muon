@@ -164,9 +164,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto sphere = absl::make_unique<Sphere>();
-      sphere->pos = glm::vec3(x, y, z);
-      sphere->radius = radius;
+      auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
       scene.AddObject(std::move(sphere));
       break;
     }
@@ -187,16 +185,13 @@ Scene Parser::Parse() {
       break;
     }
     case ParseCmd::kTri: {
-      int v1, v2, v3;
-      iss >> v1 >> v2 >> v3;
+      int v0, v1, v2;
+      iss >> v0 >> v1 >> v2;
       if (iss.fail()) {
         logBadLine(line);
         break;
       }
-      auto tri = absl::make_unique<Tri>();
-      tri->v1 = v1;
-      tri->v2 = v2;
-      tri->v3 = v3;
+      auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
       scene.AddObject(std::move(tri));
       break;
     }
