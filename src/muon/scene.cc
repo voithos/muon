@@ -229,7 +229,7 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
 
 void Scene::AddVertex(Vertex vert) { vertices_.push_back(vert); }
 
-void Scene::AddObject(std::unique_ptr<SceneObject> obj) {
+void Scene::AddObject(std::shared_ptr<SceneObject> obj) {
   // Apply current cached lighting.
   obj->ambient = ambient;
   obj->diffuse = diffuse;
@@ -241,8 +241,10 @@ void Scene::AddObject(std::unique_ptr<SceneObject> obj) {
   obj->inv_transform = glm::inverse(obj->transform);
   obj->inv_transpose_transform = glm::transpose(obj->inv_transform);
 
-  objects_.push_back(std::move(obj));
+  objects_.push_back(obj);
 }
+
+void Scene::AddLight(std::shared_ptr<Light> light) { lights_.push_back(light); }
 
 void Scene::MultiplyTransform(const glm::mat4 &m) {
   transforms_.back() = transforms_.back() * m;

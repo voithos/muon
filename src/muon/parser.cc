@@ -166,8 +166,8 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
-      scene.AddObject(std::move(sphere));
+      auto sphere = std::make_shared<Sphere>(glm::vec3(x, y, z), radius);
+      scene.AddObject(sphere);
       break;
     }
     case ParseCmd::kVertex: {
@@ -193,8 +193,8 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
-      scene.AddObject(std::move(tri));
+      auto tri = std::make_shared<Tri>(scene.vertices(), v0, v1, v2);
+      scene.AddObject(tri);
       break;
     }
     case ParseCmd::kTriNormal: {
@@ -242,15 +242,37 @@ Scene Parser::Parse() {
     }
       // Light commands.
     case ParseCmd::kDirectional: {
-      // TODO
+      float x, y, z, r, g, b;
+      iss >> x >> y >> z >> r >> g >> b;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      auto light = std::make_shared<DirectionalLight>(glm::vec3(r, g, b),
+                                                      glm::vec3(x, y, z));
+      scene.AddLight(light);
       break;
     }
     case ParseCmd::kPoint: {
-      // TODO
+      float x, y, z, r, g, b;
+      iss >> x >> y >> z >> r >> g >> b;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      auto light = std::make_shared<PointLight>(
+          glm::vec3(r, g, b), glm::vec3(x, y, z), scene.attenuation);
+      scene.AddLight(light);
       break;
     }
     case ParseCmd::kAttenuation: {
-      // TODO
+      float constant, linear, quadratic;
+      iss >> constant >> linear >> quadratic;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      scene.attenuation = glm::vec3(constant, linear, quadratic);
       break;
     }
     case ParseCmd::kAmbient: {

@@ -7,6 +7,7 @@
 
 #include "absl/types/optional.h"
 #include "muon/camera.h"
+#include "muon/lighting.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -83,14 +84,19 @@ public:
 
   void AddVertex(Vertex vert);
 
-  using SceneObjects = std::vector<std::unique_ptr<SceneObject>>;
+  using SceneObjects = std::vector<std::shared_ptr<SceneObject>>;
+  using Lights = std::vector<std::shared_ptr<Light>>;
 
-  // Adds a SceneObject to the scene, applying the current lighting defaults.
-  void AddObject(std::unique_ptr<SceneObject> obj);
+  // Adds a SceneObject to the scene, applying the current material defaults.
+  void AddObject(std::shared_ptr<SceneObject> obj);
+
+  // Adds a Light to the scene, applying the current lighting defaults.
+  void AddLight(std::shared_ptr<Light> light);
 
   inline const std::vector<Vertex> &vertices() const { return vertices_; }
 
   inline const SceneObjects &objects() const { return objects_; }
+  inline const Lights &lights() const { return lights_; }
 
   // Multiplies the top of the stack with the given transform matrix.
   void MultiplyTransform(const glm::mat4 &m);
@@ -102,6 +108,7 @@ public:
 private:
   std::vector<Vertex> vertices_;
   SceneObjects objects_;
+  Lights lights_;
 
   // Transform stack.
   std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};

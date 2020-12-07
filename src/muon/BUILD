@@ -58,6 +58,7 @@ cc_library(
     hdrs = ["scene.h"],
     deps = [
         ":camera",
+        ":lighting",
         ":strings",
         "//third_party/glm",
         "@com_github_google_glog//:glog",
@@ -89,6 +90,15 @@ cc_library(
     deps = [
         ":camera",
         ":scene",
+        "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "lighting",
+    srcs = ["lighting.cc"],
+    hdrs = ["lighting.h"],
+    deps = [
         "//third_party/glm",
     ],
 )
