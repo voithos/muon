@@ -2,7 +2,10 @@
 #define MUON_STRINGS_H_
 
 #include <algorithm>
+#include <sstream>
 #include <string>
+
+#include "third_party/glm/glm.hpp"
 
 namespace muon {
 
@@ -43,6 +46,20 @@ static inline std::string rtrim_copy(std::string s) {
 static inline std::string trim_copy(std::string s) {
   trim(s);
   return s;
+}
+
+// Returns a pretty string representation of a mat4.
+static inline std::string pprint(const glm::mat4 &mat) {
+  std::stringstream ss;
+  for (int col = 0; col < 4; ++col) {
+    ss << "| ";
+    for (int row = 0; row < 4; ++row) {
+      // GLM is column-major.
+      ss << mat[row][col] << '\t';
+    }
+    ss << '\n';
+  }
+  return ss.str();
 }
 
 } // namespace muon

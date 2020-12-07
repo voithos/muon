@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
+#include "third_party/glm/gtx/transform.hpp"
 
 namespace muon {
 
@@ -153,7 +154,8 @@ Scene Parser::Parse() {
       scene.camera = absl::make_unique<Camera>(
           glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
           glm::vec3(upx, upy, upz), fov, scene.width, scene.height);
-      // TODO: Push transform
+      // Preserve the identity matrix.
+      scene.PushTransform();
       break;
     }
       // Geometry commands.
@@ -201,23 +203,41 @@ Scene Parser::Parse() {
     }
       // Transformation commands.
     case ParseCmd::kTranslate: {
-      // TODO
+      float x, y, z;
+      iss >> x >> y >> z;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      scene.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kRotate: {
-      // TODO
+      float x, y, z, angle;
+      iss >> x >> y >> z >> angle;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      scene.MultiplyTransform(glm::rotate(angle, glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kScale: {
-      // TODO
+      float x, y, z;
+      iss >> x >> y >> z;
+      if (iss.fail()) {
+        logBadLine(line);
+        break;
+      }
+      scene.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kPushTransform: {
-      // TODO
+      scene.PushTransform();
       break;
     }
     case ParseCmd::kPopTransform: {
-      // TODO
+      scene.PopTransform();
       break;
     }
       // Light commands.

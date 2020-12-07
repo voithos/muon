@@ -1,5 +1,8 @@
 #include "muon/scene.h"
 
+#include "glog/logging.h"
+#include "muon/strings.h"
+
 namespace muon {
 
 constexpr float kEpsilon = 0.0000001;
@@ -12,7 +15,6 @@ Tri::Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2)
   const glm::vec3 &edge_ca = vertices_[v2_].pos - vertices_[v0_].pos;
   normal_ = glm::cross(edge_ba, edge_ca);
   normal_length2_ = glm::dot(normal_, normal_);
-  // TODO: Normalize?
 }
 
 absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
@@ -60,8 +62,11 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   // edge, based on the right-hand-rule). Incidentally, we can reuse this
   // computation to then find u and v.
 
+  // Inverse transform the ray to make the intersection test simpler.
+  Ray t_ray = ray.Transform(inv_transform);
+
   // First, we find an intersection with the triangle's plane.
-  float dir_along_normal = glm::dot(normal_, ray.direction());
+  float dir_along_normal = glm::dot(normal_, t_ray.direction());
   if (dir_along_normal > -kEpsilon && dir_along_normal < kEpsilon) {
     // The ray is parallel, so they don't intersect.
     return absl::nullopt;
@@ -71,14 +76,14 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   const glm::vec3 &b = vertices_[v1_].pos;
   const glm::vec3 &c = vertices_[v2_].pos;
 
-  float t = (glm::dot(a, normal_) - glm::dot(ray.origin(), normal_)) /
+  float t = (glm::dot(a, normal_) - glm::dot(t_ray.origin(), normal_)) /
             dir_along_normal;
   if (t < 0) {
     // The tri is behind the ray.
     return absl::nullopt;
   }
 
-  glm::vec3 p = ray.origin() + ray.direction() * t;
+  glm::vec3 p = t_ray.At(t);
 
   // Next, for each edge formed by the triangle A B C, we check that the point
   // lies "inside" the triangle. Simultaneously, we compute u, v, and w.
@@ -122,10 +127,17 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   v /= normal_length2_;
   w /= normal_length2_;
 
+  // Bring the intersection point and normal back to a transformed state.
+  glm::vec3 world_p = transform * glm::vec4(p, 1.0f);
+  glm::vec3 world_n = glm::normalize(inv_transpose_transform *
+                                     glm::vec4(glm::normalize(normal_), 0.0f));
+  // Compute the world distance now that we have the world intersection point.
+  float world_t = glm::length(world_p - ray.origin());
+
   return Intersection{
-      .distance = t,
-      .pos = p,
-      .normal = normal_,
+      .distance = world_t,
+      .pos = world_p,
+      .normal = world_n,
   };
 }
 
@@ -165,8 +177,11 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
   //   t = -(P_1 • (P_0 - C)) +- sqrt((P_1 • (P_0 - C))^2 - ((P_0 - C) • (P_0 -
   //   C) - r^2))
 
-  glm::vec3 dir_to_center = ray.origin() - pos_;
-  float b_prime = glm::dot(ray.direction(), dir_to_center);
+  // Inverse transform the ray to make the intersection test simpler.
+  Ray t_ray = ray.Transform(inv_transform);
+
+  glm::vec3 dir_to_center = t_ray.origin() - pos_;
+  float b_prime = glm::dot(t_ray.direction(), dir_to_center);
   float c = glm::dot(dir_to_center, dir_to_center) - radius_ * radius_;
 
   // First check the discriminant.
@@ -195,14 +210,20 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
     t = glm::max(root_0, root_1);
   }
 
-  glm::vec3 p = ray.origin() + ray.direction() * t;
+  glm::vec3 p = t_ray.At(t);
   glm::vec3 n = glm::normalize(p - pos_);
 
-  // TODO: Handle transforms
+  // Bring the intersection point and normal back to a transformed state.
+  glm::vec3 world_p = transform * glm::vec4(p, 1.0f);
+  glm::vec3 world_n =
+      glm::normalize(inv_transpose_transform * glm::vec4(n, 0.0f));
+  // Compute the world distance now that we have the world intersection point.
+  float world_t = glm::length(world_p - ray.origin());
+
   return Intersection{
-      .distance = t,
-      .pos = p,
-      .normal = n,
+      .distance = world_t,
+      .pos = world_p,
+      .normal = world_n,
   };
 }
 
@@ -215,10 +236,28 @@ void Scene::AddObject(std::unique_ptr<SceneObject> obj) {
   obj->specular = specular;
   obj->emission = emission;
   obj->shininess = shininess;
-  // obj.transform = ...
-  // TODO
+
+  obj->transform = transforms_.back();
+  obj->inv_transform = glm::inverse(obj->transform);
+  obj->inv_transpose_transform = glm::transpose(obj->inv_transform);
 
   objects_.push_back(std::move(obj));
+}
+
+void Scene::MultiplyTransform(const glm::mat4 &m) {
+  transforms_.back() = transforms_.back() * m;
+  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+}
+
+void Scene::PushTransform() {
+  transforms_.push_back(transforms_.back());
+  VLOG(3) << "  Transform stack size: " << transforms_.size();
+  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+}
+
+void Scene::PopTransform() {
+  transforms_.pop_back();
+  VLOG(3) << "  Transform stack size: " << transforms_.size();
 }
 
 } // namespace muon

@@ -23,6 +23,7 @@ void trace(std::string scene_file) {
   while (sampler.NextSample(x, y)) {
     VLOG_EVERY_N(2, 1000) << "Generated " << google::COUNTER
                           << "th sample: x=" << x << ", y=" << y;
+
     Ray r = s.camera->CastRay(x, y);
     glm::vec3 c = e.Eval(r);
 

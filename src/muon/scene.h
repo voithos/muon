@@ -18,6 +18,8 @@ struct Vertex {
 class SceneObject {
 public:
   glm::mat4 transform;
+  glm::mat4 inv_transform;
+  glm::mat4 inv_transpose_transform;
 
   glm::vec3 ambient;
   glm::vec3 diffuse;
@@ -77,8 +79,6 @@ public:
   glm::vec3 emission;
   float shininess = 1.0f;
 
-  // TODO: Keep track of transforms
-
   std::unique_ptr<Camera> camera;
 
   void AddVertex(Vertex vert);
@@ -92,9 +92,19 @@ public:
 
   inline const SceneObjects &objects() const { return objects_; }
 
+  // Multiplies the top of the stack with the given transform matrix.
+  void MultiplyTransform(const glm::mat4 &m);
+  // Pushes the current transform on to the stack.
+  void PushTransform();
+  // Pops the current transform from the stack.
+  void PopTransform();
+
 private:
   std::vector<Vertex> vertices_;
   SceneObjects objects_;
+
+  // Transform stack.
+  std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
 };
 
 } // namespace muon
