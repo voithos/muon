@@ -24,15 +24,6 @@ private:
   glm::vec3 direction_;
 };
 
-struct Intersection {
-  // Distance along the ray.
-  float distance;
-  // Intersection point.
-  glm::vec3 pos;
-  // Normal.
-  glm::vec3 normal;
-};
-
 class Camera {
 public:
   Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov, int width,

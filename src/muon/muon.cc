@@ -5,7 +5,7 @@
 #include "absl/flags/parse.h"
 #include "absl/flags/usage.h"
 #include "glog/logging.h"
-#include "muon/tracer.h"
+#include "muon/renderer.h"
 
 ABSL_FLAG(std::string, scene, "", "Path to a scene file");
 
@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
     LOG(ERROR) << "A scene file is required";
     return 1;
   }
-  muon::trace(scene_file);
+  muon::render(scene_file);
 
   return 0;
 }

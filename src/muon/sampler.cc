@@ -15,7 +15,12 @@ bool Sampler::NextSample(float &x, float &y) {
     ++cur_y_;
     cur_x_ = 0;
   }
+  ++samples_;
   return true;
 }
+
+int Sampler::TotalSamples() const { return height_ * width_; }
+
+int Sampler::RequestedSamples() const { return samples_; }
 
 } // namespace muon

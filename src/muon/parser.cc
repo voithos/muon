@@ -7,6 +7,7 @@
 
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
+#include "muon/lighting.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
 #include "third_party/glm/gtx/transform.hpp"
@@ -166,8 +167,8 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto sphere = std::make_shared<Sphere>(glm::vec3(x, y, z), radius);
-      scene.AddObject(sphere);
+      auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
+      scene.AddObject(std::move(sphere));
       break;
     }
     case ParseCmd::kVertex: {
@@ -193,8 +194,8 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto tri = std::make_shared<Tri>(scene.vertices(), v0, v1, v2);
-      scene.AddObject(tri);
+      auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
+      scene.AddObject(std::move(tri));
       break;
     }
     case ParseCmd::kTriNormal: {
@@ -219,7 +220,8 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.MultiplyTransform(glm::rotate(angle, glm::vec3(x, y, z)));
+      scene.MultiplyTransform(
+          glm::rotate(glm::radians(angle), glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kScale: {
@@ -248,9 +250,9 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto light = std::make_shared<DirectionalLight>(glm::vec3(r, g, b),
-                                                      glm::vec3(x, y, z));
-      scene.AddLight(light);
+      auto light = absl::make_unique<DirectionalLight>(glm::vec3(r, g, b),
+                                                       glm::vec3(x, y, z));
+      scene.AddLight(std::move(light));
       break;
     }
     case ParseCmd::kPoint: {
@@ -260,9 +262,9 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      auto light = std::make_shared<PointLight>(
+      auto light = absl::make_unique<PointLight>(
           glm::vec3(r, g, b), glm::vec3(x, y, z), scene.attenuation);
-      scene.AddLight(light);
+      scene.AddLight(std::move(light));
       break;
     }
     case ParseCmd::kAttenuation: {

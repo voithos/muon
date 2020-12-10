@@ -2,7 +2,7 @@ cc_binary(
     name = "muon",
     srcs = ["muon.cc"],
     deps = [
-        ":tracer",
+        ":renderer",
         "@com_google_absl//absl/flags:flag",
         "@com_google_absl//absl/flags:parse",
         "@com_google_absl//absl/flags:usage",
@@ -10,15 +10,15 @@ cc_binary(
 )
 
 cc_library(
-    name = "tracer",
-    srcs = ["tracer.cc"],
-    hdrs = ["tracer.h"],
+    name = "renderer",
+    srcs = ["renderer.cc"],
+    hdrs = ["renderer.h"],
     deps = [
-        ":eval",
         ":film",
         ":parser",
         ":sampler",
         ":scene",
+        ":tracer",
         "//third_party/cimg",
     ],
 )
@@ -39,6 +39,7 @@ cc_library(
     srcs = ["parser.cc"],
     hdrs = ["parser.h"],
     deps = [
+        ":lighting",
         ":scene",
         ":strings",
         "//third_party/glm",
@@ -60,6 +61,7 @@ cc_library(
         ":camera",
         ":lighting",
         ":strings",
+        ":types",
         "//third_party/glm",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/types:optional",
@@ -84,11 +86,12 @@ cc_library(
 )
 
 cc_library(
-    name = "eval",
-    srcs = ["eval.cc"],
-    hdrs = ["eval.h"],
+    name = "tracer",
+    srcs = ["tracer.cc"],
+    hdrs = ["tracer.h"],
     deps = [
         ":camera",
+        ":lighting",
         ":scene",
         "//third_party/glm",
     ],
@@ -99,6 +102,25 @@ cc_library(
     srcs = ["lighting.cc"],
     hdrs = ["lighting.h"],
     deps = [
+        ":camera",
+        ":objects",
+        ":types",
         "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "types",
+    hdrs = ["types.h"],
+)
+
+cc_library(
+    name = "objects",
+    srcs = ["objects.cc"],
+    hdrs = ["objects.h"],
+    deps = [
+        ":camera",
+        ":types",
+        "@com_google_absl//absl/types:optional",
     ],
 )

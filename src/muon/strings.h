@@ -2,6 +2,7 @@
 #define MUON_STRINGS_H_
 
 #include <algorithm>
+#include <iomanip>
 #include <sstream>
 #include <string>
 
@@ -55,7 +56,7 @@ static inline std::string pprint(const glm::mat4 &mat) {
     ss << "| ";
     for (int row = 0; row < 4; ++row) {
       // GLM is column-major.
-      ss << mat[row][col] << '\t';
+      ss << std::setw(11) << mat[row][col];
     }
     ss << '\n';
   }

@@ -12,11 +12,19 @@ public:
   // TODO: Consider returning an optional pair instead.
   bool NextSample(float &x, float &y);
 
+  // Returns the total number of samples configured.
+  int TotalSamples() const;
+
+  // Returns the number of samples requested so far.
+  int RequestedSamples() const;
+
 private:
   int width_;
   int height_;
   int cur_x_ = 0;
   int cur_y_ = 0;
+  // The number of samples generated so far.
+  int samples_ = 0;
 };
 
 } // namespace muon
