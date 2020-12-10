@@ -210,9 +210,9 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
   glm::vec3 n = glm::normalize(p - pos_);
 
   // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = transform * glm::vec4(p, 1.0f);
+  glm::vec3 world_p = glm::vec3(transform * glm::vec4(p, 1.0f));
   glm::vec3 world_n =
-      glm::normalize(inv_transpose_transform * glm::vec4(n, 0.0f));
+      glm::vec3(glm::normalize(inv_transpose_transform * glm::vec4(n, 0.0f)));
   // Compute the world distance now that we have the world intersection point.
   float world_t = glm::length(world_p - ray.origin());
 

@@ -16,7 +16,7 @@ glm::vec3 Light::Sample(const ShadingInfo &info, const Intersection &hit,
       glm::pow(glm::max(glm::dot(hit.normal, half_angle), 0.0f),
                hit.obj->shininess);
 
-  return color_ * (diffuse_cmp + specular_cmp);
+  return info.color * (diffuse_cmp); // + specular_cmp);
 }
 
 ShadingInfo DirectionalLight::ShadingInfoAt(const glm::vec3 &pos) {
@@ -30,7 +30,7 @@ ShadingInfo DirectionalLight::ShadingInfoAt(const glm::vec3 &pos) {
 
 ShadingInfo PointLight::ShadingInfoAt(const glm::vec3 &pos) {
   glm::vec3 pos_to_light = this->pos_ - pos;
-  glm::vec3 light_dir = normalize(pos_to_light);
+  glm::vec3 light_dir = glm::normalize(pos_to_light);
   float r = glm::length(pos_to_light);
 
   // Include the attenuation model (constant, linear, quadratic).

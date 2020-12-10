@@ -5,9 +5,9 @@ namespace muon {
 Ray Ray::Transform(const glm::mat4 &transform) const {
   // Use 0 in the homogeneous coordinate for the direction, since it shouldn't
   // be translated.
-  glm::vec3 t_origin = transform * glm::vec4(origin_, 1.0f);
+  glm::vec3 t_origin = glm::vec3(transform * glm::vec4(origin_, 1.0f));
   glm::vec3 t_direction =
-      glm::normalize(transform * glm::vec4(direction_, 0.0f));
+      glm::vec3(glm::normalize(transform * glm::vec4(direction_, 0.0f)));
   return Ray(t_origin, t_direction);
 }
 
