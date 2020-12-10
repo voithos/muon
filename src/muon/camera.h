@@ -37,8 +37,9 @@ private:
   glm::vec3 look_at_;
   glm::vec3 up_;
   float fov_; // Degrees, in the y axis.
-  float fov_x_rad_;
-  float fov_y_rad_;
+  // Tangents of the FOV, computed ahead of time.
+  float tan_fov_x_;
+  float tan_fov_y_;
   int width_;
   int height_;
 

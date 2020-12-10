@@ -19,8 +19,8 @@ Camera::Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov,
       height_(height) {
   // Field of view is given in the y axis, so calculate it for x based on
   // the aspect ratio.
-  fov_y_rad_ = glm::radians(fov);
-  fov_x_rad_ = fov_y_rad_ * (static_cast<float>(width) / height);
+  tan_fov_y_ = glm::tan(glm::radians(fov) / 2.0f);
+  tan_fov_x_ = tan_fov_y_ * (static_cast<float>(width) / height);
 
   // Create a coordinate frame.
   glm::vec3 a = eye - look_at;
@@ -34,8 +34,6 @@ Camera::Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov,
 Ray Camera::CastRay(float x, float y) {
   float half_width = width_ / 2.0f;
   float half_height = height_ / 2.0f;
-  float tan_fov_x = glm::tan(fov_x_rad_ / 2.0f);
-  float tan_fov_y = glm::tan(fov_y_rad_ / 2.0f);
 
   // Calculate components along the orthogonal directions (that is, u and v in
   // the coordinate frame). In terms of the viewing plane, we calculate alpha
@@ -50,8 +48,8 @@ Ray Camera::CastRay(float x, float y) {
   // direction of the axis.
   float offset_y = (half_height - y) / half_height;
 
-  float alpha = tan_fov_x * offset_x;
-  float beta = tan_fov_y * offset_y;
+  float alpha = tan_fov_x_ * offset_x;
+  float beta = tan_fov_y_ * offset_y;
 
   // We subtract w because the camera is facing in the minus-w direction, by
   // convention.
