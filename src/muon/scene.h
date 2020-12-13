@@ -28,9 +28,9 @@ public:
   // Lighting properties. Are also copied to scene objects during parsing.
   glm::vec3 attenuation = glm::vec3(1.0f, 0.0f, 0.0f);
   glm::vec3 ambient = glm::vec3(0.2f);
-  glm::vec3 diffuse;
-  glm::vec3 specular;
-  glm::vec3 emission;
+  glm::vec3 diffuse = glm::vec3(0.0f);
+  glm::vec3 specular = glm::vec3(0.0f);
+  glm::vec3 emission = glm::vec3(0.0f);
   float shininess = 1.0f;
 
   std::unique_ptr<Camera> camera;
