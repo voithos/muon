@@ -7,7 +7,7 @@ Ray Ray::Transform(const glm::mat4 &transform) const {
   // be translated.
   glm::vec3 t_origin = glm::vec3(transform * glm::vec4(origin_, 1.0f));
   glm::vec3 t_direction =
-      glm::vec3(glm::normalize(transform * glm::vec4(direction_, 0.0f)));
+      glm::normalize(glm::vec3(transform * glm::vec4(direction_, 0.0f)));
   return Ray(t_origin, t_direction);
 }
 
@@ -19,12 +19,12 @@ Camera::Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov,
       height_(height) {
   // Field of view is given in the y axis, so calculate it for x based on
   // the aspect ratio.
-  tan_fov_y_ = glm::tan(glm::radians(fov) / 2.0f);
-  tan_fov_x_ = tan_fov_y_ * (static_cast<float>(width) / height);
+  tan_fov_y_ = glm::tan(glm::radians(fov_) / 2.0f);
+  tan_fov_x_ = tan_fov_y_ * (static_cast<float>(width_) / height_);
 
   // Create a coordinate frame.
-  glm::vec3 a = eye - look_at;
-  glm::vec3 b = up;
+  glm::vec3 a = eye_ - look_at_;
+  glm::vec3 b = up_;
 
   w_ = glm::normalize(a);
   u_ = glm::normalize(glm::cross(b, w_));

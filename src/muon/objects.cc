@@ -123,9 +123,9 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   w /= normal_length2_;
 
   // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = transform * glm::vec4(p, 1.0f);
-  glm::vec3 world_n = glm::normalize(inv_transpose_transform *
-                                     glm::vec4(glm::normalize(normal_), 0.0f));
+  glm::vec3 world_p = glm::vec3(transform * glm::vec4(p, 1.0f));
+  glm::vec3 world_n = glm::normalize(glm::vec3(
+      inv_transpose_transform * glm::vec4(glm::normalize(normal_), 0.0f)));
   // Compute the world distance now that we have the world intersection point.
   float world_t = glm::length(world_p - ray.origin());
 
@@ -212,7 +212,7 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
   // Bring the intersection point and normal back to a transformed state.
   glm::vec3 world_p = glm::vec3(transform * glm::vec4(p, 1.0f));
   glm::vec3 world_n =
-      glm::vec3(glm::normalize(inv_transpose_transform * glm::vec4(n, 0.0f)));
+      glm::normalize(glm::vec3(inv_transpose_transform * glm::vec4(n, 0.0f)));
   // Compute the world distance now that we have the world intersection point.
   float world_t = glm::length(world_p - ray.origin());
 

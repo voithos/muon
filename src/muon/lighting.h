@@ -20,6 +20,7 @@ struct ShadingInfo {
 class Light {
 public:
   explicit Light(glm::vec3 color) : color_(color) {}
+  virtual ~Light() {}
 
   // Calculates information for later shading computation based on an
   // intersection point.

@@ -17,6 +17,8 @@ struct Vertex {
 
 class SceneObject {
 public:
+  virtual ~SceneObject() {}
+
   glm::mat4 transform;
   glm::mat4 inv_transform;
   glm::mat4 inv_transpose_transform;
