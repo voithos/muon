@@ -1,4 +1,5 @@
 # Features
+- [ ] Acceleration structure (BVH?)
 - [ ] Per-vertex normals
 - [ ] Recursive refraction
 - [ ] Area light source / stratified sampling

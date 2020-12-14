@@ -5,8 +5,18 @@
 
 namespace muon {
 
-// Runs the ray tracer based on the given scene file.
-void render(std::string scene_file);
+class Renderer {
+public:
+  Renderer(std::string scene_file, bool show_stats)
+      : scene_file_(scene_file), show_stats_(show_stats) {}
+
+  // Runs the ray tracer based on the renderer's configuration.
+  void Render();
+
+private:
+  std::string scene_file_;
+  bool show_stats_;
+};
 
 } // namespace muon
 

@@ -9,7 +9,6 @@ public:
 
   // Generates the next sample location, in terms of x and y coordinates in
   // screen space. If there are no more samples to generate, returns false.
-  // TODO: Consider returning an optional pair instead.
   bool NextSample(float &x, float &y);
 
   // Returns the total number of samples configured.

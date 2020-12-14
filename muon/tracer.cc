@@ -20,9 +20,12 @@ glm::vec3 Tracer::Trace(const Ray &ray, const int depth) const {
 
   for (const auto &obj : scene_.objects()) {
     absl::optional<Intersection> intersection = obj->Intersect(ray);
+    stats_.IncrementObjectTests();
     if (!intersection) {
       continue;
     }
+    stats_.IncrementObjectHits();
+
     // Check that object is in front of the camera, and closer than anything
     // else we've found.
     if (intersection->distance > 0.0f && intersection->distance < min_dist) {

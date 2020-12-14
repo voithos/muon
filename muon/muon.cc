@@ -8,6 +8,7 @@
 #include "muon/renderer.h"
 
 ABSL_FLAG(std::string, scene, "", "Path to a scene file");
+ABSL_FLAG(bool, stats, true, "Whether to show stats after rendering");
 
 int main(int argc, char **argv) {
   // Initialize Google logging framework. absl doesn't yet have a logging
@@ -26,7 +27,10 @@ int main(int argc, char **argv) {
     LOG(ERROR) << "A scene file is required";
     return 1;
   }
-  muon::render(scene_file);
+  bool stats = absl::GetFlag(FLAGS_stats);
+
+  muon::Renderer r(scene_file, stats);
+  r.Render();
 
   return 0;
 }

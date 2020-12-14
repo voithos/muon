@@ -18,6 +18,7 @@ cc_library(
         ":parser",
         ":sampler",
         ":scene",
+        ":stats",
         ":tracer",
         "//third_party/cimg",
     ],
@@ -93,6 +94,7 @@ cc_library(
         ":camera",
         ":lighting",
         ":scene",
+        ":stats",
         "//third_party/glm",
     ],
 )
@@ -122,5 +124,13 @@ cc_library(
         ":camera",
         ":types",
         "@com_google_absl//absl/types:optional",
+    ],
+)
+
+cc_library(
+    name = "stats",
+    srcs = ["stats.cc"],
+    hdrs = ["stats.h"],
+    deps = [
     ],
 )
