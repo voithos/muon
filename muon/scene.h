@@ -25,7 +25,7 @@ public:
   int max_depth = 5;
   std::string output = "raytrace.png";
 
-  // Lighting properties. Are also copied to scene objects during parsing.
+  // Lighting properties. Are also copied to scene primitives during parsing.
   glm::vec3 attenuation = glm::vec3(1.0f, 0.0f, 0.0f);
   glm::vec3 ambient = glm::vec3(0.2f);
   glm::vec3 diffuse = glm::vec3(0.0f);
@@ -37,18 +37,18 @@ public:
 
   void AddVertex(Vertex vert);
 
-  using SceneObjects = std::vector<std::unique_ptr<SceneObject>>;
+  using Primitives = std::vector<std::unique_ptr<Primitive>>;
   using Lights = std::vector<std::unique_ptr<Light>>;
 
-  // Adds a SceneObject to the scene, applying the current material defaults.
-  void AddObject(std::unique_ptr<SceneObject> obj);
+  // Adds a Primitive to the scene, applying the current material defaults.
+  void AddPrimitive(std::unique_ptr<Primitive> obj);
 
   // Adds a Light to the scene, applying the current lighting defaults.
   void AddLight(std::unique_ptr<Light> light);
 
   inline const std::vector<Vertex> &vertices() const { return vertices_; }
 
-  inline const SceneObjects &objects() const { return objects_; }
+  inline const Primitives &primitives() const { return primitives_; }
   inline const Lights &lights() const { return lights_; }
 
   // Multiplies the top of the stack with the given transform matrix.
@@ -60,7 +60,7 @@ public:
 
 private:
   std::vector<Vertex> vertices_;
-  SceneObjects objects_;
+  Primitives primitives_;
   Lights lights_;
 
   // Transform stack.

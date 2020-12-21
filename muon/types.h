@@ -9,7 +9,7 @@ namespace muon {
 
 constexpr float kEpsilon = 0.0001;
 
-class SceneObject;
+class Primitive;
 
 struct Intersection {
   // Distance along the ray.
@@ -19,7 +19,7 @@ struct Intersection {
   // Normal.
   glm::vec3 normal;
   // Object that we intersected with.
-  SceneObject *obj;
+  Primitive *obj;
 };
 
 } // namespace muon

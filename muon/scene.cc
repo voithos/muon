@@ -7,7 +7,7 @@ namespace muon {
 
 void Scene::AddVertex(Vertex vert) { vertices_.push_back(vert); }
 
-void Scene::AddObject(std::unique_ptr<SceneObject> obj) {
+void Scene::AddPrimitive(std::unique_ptr<Primitive> obj) {
   // Apply current cached lighting.
   obj->ambient = ambient;
   obj->diffuse = diffuse;
@@ -19,7 +19,7 @@ void Scene::AddObject(std::unique_ptr<SceneObject> obj) {
   obj->inv_transform = glm::inverse(obj->transform);
   obj->inv_transpose_transform = glm::transpose(obj->inv_transform);
 
-  objects_.push_back(std::move(obj));
+  primitives_.push_back(std::move(obj));
 }
 
 void Scene::AddLight(std::unique_ptr<Light> light) {

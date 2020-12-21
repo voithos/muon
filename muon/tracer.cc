@@ -18,7 +18,7 @@ glm::vec3 Tracer::Trace(const Ray &ray, const int depth) const {
   float min_dist = std::numeric_limits<float>::infinity();
   absl::optional<Intersection> hit;
 
-  for (const auto &obj : scene_.objects()) {
+  for (const auto &obj : scene_.primitives()) {
     absl::optional<Intersection> intersection = obj->Intersect(ray);
     stats_.IncrementObjectTests();
     if (!intersection) {
@@ -75,7 +75,7 @@ glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
 
 bool Tracer::IsOccluded(const Ray &shadow_ray,
                         const float light_distance) const {
-  for (const auto &obj : scene_.objects()) {
+  for (const auto &obj : scene_.primitives()) {
     absl::optional<Intersection> intersection = obj->Intersect(shadow_ray);
     if (!intersection) {
       continue;

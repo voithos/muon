@@ -168,7 +168,7 @@ Scene Parser::Parse() {
         break;
       }
       auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
-      scene.AddObject(std::move(sphere));
+      scene.AddPrimitive(std::move(sphere));
       break;
     }
     case ParseCmd::kVertex: {
@@ -195,7 +195,7 @@ Scene Parser::Parse() {
         break;
       }
       auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
-      scene.AddObject(std::move(tri));
+      scene.AddPrimitive(std::move(tri));
       break;
     }
     case ParseCmd::kTriNormal: {

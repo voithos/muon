@@ -15,9 +15,9 @@ struct Vertex {
   glm::vec3 pos;
 };
 
-class SceneObject {
+class Primitive {
 public:
-  virtual ~SceneObject() {}
+  virtual ~Primitive() {}
 
   glm::mat4 transform;
   glm::mat4 inv_transform;
@@ -34,7 +34,7 @@ public:
   virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;
 };
 
-class Tri : public SceneObject {
+class Tri : public Primitive {
 public:
   Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2);
   absl::optional<Intersection> Intersect(const Ray &ray) override;
@@ -52,7 +52,7 @@ private:
   float normal_length2_;
 };
 
-class Sphere : public SceneObject {
+class Sphere : public Primitive {
 public:
   Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}
   absl::optional<Intersection> Intersect(const Ray &ray) override;
