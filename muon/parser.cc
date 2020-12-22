@@ -9,6 +9,7 @@
 #include "glog/logging.h"
 #include "muon/defaults.h"
 #include "muon/lighting.h"
+#include "muon/objects.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
 #include "third_party/glm/gtx/transform.hpp"
@@ -78,11 +79,7 @@ std::map<std::string, ParseCmd> command_map = {
 class ParsingWorkspace {
 public:
   // Material properties.
-  glm::vec3 ambient;
-  glm::vec3 diffuse;
-  glm::vec3 specular;
-  glm::vec3 emission;
-  float shininess;
+  Material material;
 
   // Multiplies the top of the stack with the given transform matrix.
   void MultiplyTransform(const glm::mat4 &m);
@@ -116,11 +113,7 @@ void ParsingWorkspace::PopTransform() {
 }
 
 void ParsingWorkspace::UpdatePrimitive(Primitive &obj) {
-  obj.material.ambient = ambient;
-  obj.material.diffuse = diffuse;
-  obj.material.specular = specular;
-  obj.material.emission = emission;
-  obj.material.shininess = shininess;
+  obj.material = material;
 
   obj.transform = transforms_.back();
   obj.inv_transform = glm::inverse(obj.transform);
@@ -138,11 +131,11 @@ void SetDefaults(ParsingWorkspace &workspace, Scene &scene) {
   scene.output = defaults::kOutput;
   scene.attenuation = defaults::kAttenuation;
 
-  workspace.ambient = defaults::kAmbient;
-  workspace.diffuse = defaults::kDiffuse;
-  workspace.specular = defaults::kSpecular;
-  workspace.emission = defaults::kEmission;
-  workspace.shininess = defaults::kShininess;
+  workspace.material.ambient = defaults::kAmbient;
+  workspace.material.diffuse = defaults::kDiffuse;
+  workspace.material.specular = defaults::kSpecular;
+  workspace.material.emission = defaults::kEmission;
+  workspace.material.shininess = defaults::kShininess;
 }
 
 Scene Parser::Parse() {
@@ -357,7 +350,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      workspace.ambient = glm::vec3(r, g, b);
+      workspace.material.ambient = glm::vec3(r, g, b);
       break;
     }
       // Material commands.
@@ -368,7 +361,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      workspace.diffuse = glm::vec3(r, g, b);
+      workspace.material.diffuse = glm::vec3(r, g, b);
       break;
     }
     case ParseCmd::kSpecular: {
@@ -378,7 +371,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      workspace.specular = glm::vec3(r, g, b);
+      workspace.material.specular = glm::vec3(r, g, b);
       break;
     }
     case ParseCmd::kShininess: {
@@ -388,7 +381,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      workspace.shininess = shininess;
+      workspace.material.shininess = shininess;
       break;
     }
     case ParseCmd::kEmission: {
@@ -398,7 +391,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      workspace.emission = glm::vec3(r, g, b);
+      workspace.material.emission = glm::vec3(r, g, b);
       break;
     }
     }
