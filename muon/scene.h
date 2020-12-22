@@ -28,25 +28,23 @@ public:
 
   std::unique_ptr<Camera> camera;
 
+  // The root intersectable object for the scene.
+  // All tracing starts at this object.
+  std::unique_ptr<Intersectable> root;
+
   void AddVertex(Vertex vert);
 
-  using Primitives = std::vector<std::unique_ptr<Primitive>>;
   using Lights = std::vector<std::unique_ptr<Light>>;
 
-  // Adds a Primitive to the scene, applying the current material defaults.
-  void AddPrimitive(std::unique_ptr<Primitive> obj);
-
-  // Adds a Light to the scene, applying the current lighting defaults.
+  // Adds a Light to the scene.
   void AddLight(std::unique_ptr<Light> light);
 
   inline const std::vector<Vertex> &vertices() const { return vertices_; }
 
-  inline const Primitives &primitives() const { return primitives_; }
   inline const Lights &lights() const { return lights_; }
 
 private:
   std::vector<Vertex> vertices_;
-  Primitives primitives_;
   Lights lights_;
 };
 

@@ -26,12 +26,26 @@ public:
   float shininess = 0.0f;
 };
 
+// Represents an object that supports intersection tests.
+class Intersectable {
+public:
+  virtual ~Intersectable() {}
+
+  // Intersects with a ray and returns the intersection point.
+  virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;
+
+  // Returns whether an intersection exists within a distance along the ray.
+  virtual bool HasIntersection(const Ray &ray, const float max_distance) = 0;
+};
+
 // Represents a geometric primitive.
 // All primitive geometric data is represented in object coordinates, and
 // transformed as needed for intersection tests.
-class Primitive {
+class Primitive : public Intersectable {
 public:
   virtual ~Primitive() {}
+
+  virtual bool HasIntersection(const Ray &ray, const float max_distance);
 
   // TODO: Store references to transforms in order to avoid per-primitive
   // duplication.
@@ -39,12 +53,11 @@ public:
   glm::mat4 inv_transform;
   glm::mat4 inv_transpose_transform;
 
+  // TODO: Store reference to material to avoid per-primitive duplication.
   Material material;
-
-  // Intersects with a ray and returns the intersection point.
-  virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;
 };
 
+// Represents a triangle.
 class Tri : public Primitive {
 public:
   Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2);
@@ -63,6 +76,7 @@ private:
   float normal_length2_;
 };
 
+// Represents a sphere.
 class Sphere : public Primitive {
 public:
   Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}

@@ -2,6 +2,16 @@
 
 namespace muon {
 
+bool Primitive::HasIntersection(const Ray &ray, const float max_distance) {
+  absl::optional<Intersection> hit = Intersect(ray);
+  if (!hit) {
+    return false;
+  }
+  // Check that object is in front of the origin, and closer than the target
+  // distance.
+  return hit->distance > 0.0f && hit->distance < max_distance;
+}
+
 Tri::Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2)
     : vertices_(vertices), v0_(v0), v1_(v1), v2_(v2) {
   // Calculate the surface normal by computing the cross product of the

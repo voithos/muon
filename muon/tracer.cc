@@ -14,26 +14,7 @@ glm::vec3 Tracer::Trace(const Ray &ray, const int depth) const {
   if (depth == 0) {
     return glm::vec3(0.0f);
   }
-
-  float min_dist = std::numeric_limits<float>::infinity();
-  absl::optional<Intersection> hit;
-
-  for (const auto &obj : scene_.primitives()) {
-    absl::optional<Intersection> intersection = obj->Intersect(ray);
-    stats_.IncrementObjectTests();
-    if (!intersection) {
-      continue;
-    }
-    stats_.IncrementObjectHits();
-
-    // Check that object is in front of the camera, and closer than anything
-    // else we've found.
-    if (intersection->distance > 0.0f && intersection->distance < min_dist) {
-      min_dist = intersection->distance;
-      hit = intersection;
-    }
-  }
-
+  absl::optional<Intersection> hit = scene_.root->Intersect(ray);
   if (hit) {
     return Shade(hit.value(), ray, depth);
   }
@@ -75,19 +56,7 @@ glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
 
 bool Tracer::IsOccluded(const Ray &shadow_ray,
                         const float light_distance) const {
-  for (const auto &obj : scene_.primitives()) {
-    absl::optional<Intersection> intersection = obj->Intersect(shadow_ray);
-    if (!intersection) {
-      continue;
-    }
-    // Check that object is in front of the origin, and closer than the target
-    // distance (meaning that it is occluding us).
-    if (intersection->distance > 0.0f &&
-        intersection->distance < light_distance) {
-      return true;
-    }
-  }
-  return false;
+  return scene_.root->HasIntersection(shadow_ray, light_distance);
 }
 
 } // namespace muon

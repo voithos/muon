@@ -10,8 +10,9 @@ namespace muon {
 // Records statistics about the tracer.
 class Stats {
 public:
-  // Initializes a Stats instance with the given expected total samples.
-  explicit Stats(uint64_t total_samples) : total_samples_(total_samples) {}
+  // Sets the total number of expected samples.
+  // Must be called before any other method.
+  void SetTotalSamples(uint64_t total_samples);
 
   void Start();
   void Stop();
@@ -23,7 +24,7 @@ public:
   void IncrementObjectHits() { ++object_hits_; }
 
 private:
-  uint64_t total_samples_;
+  uint64_t total_samples_ = 0;
   uint64_t samples_so_far_ = 0;
   uint64_t object_tests_ = 0;
   uint64_t object_hits_ = 0;

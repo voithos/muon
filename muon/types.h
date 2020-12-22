@@ -12,6 +12,7 @@ constexpr float kEpsilon = 0.0001;
 
 class Primitive;
 
+// Represents an intersection of a ray with a primitive.
 struct Intersection {
   // Distance along the ray.
   float distance;
@@ -21,6 +22,12 @@ struct Intersection {
   glm::vec3 normal;
   // Object that we intersected with.
   Primitive *obj;
+};
+
+// The types of acceleration structures available.
+enum class AccelerationType {
+  kLinear = 0,
+  kBVH,
 };
 
 } // namespace muon

@@ -5,6 +5,10 @@
 
 namespace muon {
 
+void Stats::SetTotalSamples(uint64_t total_samples) {
+  total_samples_ = total_samples;
+}
+
 void Stats::Start() { start_time_ = std::chrono::steady_clock::now(); }
 
 void Stats::Stop() { end_time_ = std::chrono::steady_clock::now(); }

@@ -13,14 +13,15 @@
 namespace muon {
 
 void Renderer::Render() {
-  Parser parser(scene_file_);
+  Stats stats;
+  Parser parser(scene_file_, stats);
   Scene scene = parser.Parse();
   Film film(scene.width, scene.height, scene.output);
 
   Sampler sampler(scene.width, scene.height);
+  stats.SetTotalSamples(sampler.TotalSamples());
 
-  Stats stats(sampler.TotalSamples());
-  Tracer t(scene, stats);
+  Tracer t(scene);
 
   // TODO: Refactor progress into separate class.
   int last_percent = 0;

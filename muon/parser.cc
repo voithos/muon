@@ -7,6 +7,7 @@
 
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
+#include "muon/acceleration.h"
 #include "muon/defaults.h"
 #include "muon/lighting.h"
 #include "muon/objects.h"
@@ -75,27 +76,6 @@ std::map<std::string, ParseCmd> command_map = {
     {"emission", ParseCmd::kEmission},
 };
 
-// Represents a working area used while parsing.
-class ParsingWorkspace {
-public:
-  // Material properties.
-  Material material;
-
-  // Multiplies the top of the stack with the given transform matrix.
-  void MultiplyTransform(const glm::mat4 &m);
-  // Pushes the current transform on to the stack.
-  void PushTransform();
-  // Pops the current transform from the stack.
-  void PopTransform();
-
-  // Applies current working properties to the given primitive.
-  void UpdatePrimitive(Primitive &obj);
-
-private:
-  // Transform stack.
-  std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
-};
-
 void ParsingWorkspace::MultiplyTransform(const glm::mat4 &m) {
   transforms_.back() = transforms_.back() * m;
   VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
@@ -124,18 +104,34 @@ void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
-void SetDefaults(ParsingWorkspace &workspace, Scene &scene) {
-  scene.width = defaults::kSceneWidth;
-  scene.height = defaults::kSceneHeight;
-  scene.max_depth = defaults::kMaxDepth;
-  scene.output = defaults::kOutput;
-  scene.attenuation = defaults::kAttenuation;
-
+void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) {
   workspace.material.ambient = defaults::kAmbient;
   workspace.material.diffuse = defaults::kDiffuse;
   workspace.material.specular = defaults::kSpecular;
   workspace.material.emission = defaults::kEmission;
   workspace.material.shininess = defaults::kShininess;
+
+  workspace.accel = CreateAccelerationStructure(defaults::kAcceleration);
+
+  scene.width = defaults::kSceneWidth;
+  scene.height = defaults::kSceneHeight;
+  scene.max_depth = defaults::kMaxDepth;
+  scene.output = defaults::kOutput;
+  scene.attenuation = defaults::kAttenuation;
+}
+
+std::unique_ptr<acceleration::Structure>
+Parser::CreateAccelerationStructure(AccelerationType type) {
+  std::unique_ptr<acceleration::Structure> accel;
+  switch (type) {
+  case AccelerationType::kLinear:
+    accel = absl::make_unique<acceleration::Linear>(stats_);
+    break;
+  case AccelerationType::kBVH:
+    // accel = absl::make_unique<acceleration::BVH>(stats_);
+    break;
+  }
+  return accel;
 }
 
 Scene Parser::Parse() {
@@ -143,7 +139,7 @@ Scene Parser::Parse() {
   // building.
   ParsingWorkspace workspace;
   Scene scene;
-  SetDefaults(workspace, scene);
+  ApplyDefaults(workspace, scene);
 
   VLOG(1) << "Reading from input: " << scene_file_;
 
@@ -233,7 +229,7 @@ Scene Parser::Parse() {
       }
       auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
       workspace.UpdatePrimitive(*sphere);
-      scene.AddPrimitive(std::move(sphere));
+      workspace.accel->AddPrimitive(std::move(sphere));
       break;
     }
     case ParseCmd::kVertex: {
@@ -261,7 +257,7 @@ Scene Parser::Parse() {
       }
       auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
       workspace.UpdatePrimitive(*tri);
-      scene.AddPrimitive(std::move(tri));
+      workspace.accel->AddPrimitive(std::move(tri));
       break;
     }
     case ParseCmd::kTriNormal: {
@@ -397,6 +393,7 @@ Scene Parser::Parse() {
     }
   }
 
+  scene.root = std::move(workspace.accel);
   return scene;
 }
 

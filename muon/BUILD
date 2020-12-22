@@ -40,9 +40,11 @@ cc_library(
     srcs = ["parser.cc"],
     hdrs = ["parser.h"],
     deps = [
+        ":acceleration",
         ":defaults",
         ":lighting",
         ":scene",
+        ":stats",
         ":strings",
         "//third_party/glm",
         "@com_github_google_glog//:glog",
@@ -95,7 +97,6 @@ cc_library(
         ":camera",
         ":lighting",
         ":scene",
-        ":stats",
         "//third_party/glm",
     ],
 )
@@ -140,6 +141,18 @@ cc_library(
     name = "defaults",
     hdrs = ["defaults.h"],
     deps = [
+        ":types",
         "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "acceleration",
+    srcs = ["acceleration.cc"],
+    hdrs = ["acceleration.h"],
+    deps = [
+        ":objects",
+        ":stats",
+        "@com_google_absl//absl/types:optional",
     ],
 )

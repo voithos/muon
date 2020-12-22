@@ -3,21 +3,56 @@
 
 #include <string>
 
+#include "muon/acceleration.h"
 #include "muon/scene.h"
+#include "muon/stats.h"
+#include "muon/types.h"
 
 namespace muon {
+
+namespace {
+// Represents a working area used while parsing.
+class ParsingWorkspace {
+public:
+  // Material properties.
+  Material material;
+
+  // Acceleration structure.
+  std::unique_ptr<acceleration::Structure> accel;
+
+  // Multiplies the top of the stack with the given transform matrix.
+  void MultiplyTransform(const glm::mat4 &m);
+  // Pushes the current transform on to the stack.
+  void PushTransform();
+  // Pops the current transform from the stack.
+  void PopTransform();
+
+  // Applies current working properties to the given primitive.
+  void UpdatePrimitive(Primitive &obj);
+
+private:
+  // Transform stack.
+  std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
+};
+}; // namespace
 
 // Parses a scene file into Scene format.
 class Parser {
 public:
   // Initializes a new Parser with the given scene file.
-  explicit Parser(std::string scene_file) : scene_file_(scene_file) {}
+  Parser(std::string scene_file, Stats &stats)
+      : scene_file_(scene_file), stats_(stats) {}
 
   // Parses the scene file and returns corresponding Scene.
   Scene Parse();
 
 private:
   std::string scene_file_;
+  Stats &stats_;
+
+  void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene);
+  std::unique_ptr<acceleration::Structure>
+  CreateAccelerationStructure(AccelerationType type);
 };
 
 } // namespace muon

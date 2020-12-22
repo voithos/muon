@@ -3,7 +3,6 @@
 
 #include "muon/camera.h"
 #include "muon/scene.h"
-#include "muon/stats.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -11,8 +10,7 @@ namespace muon {
 // Traces a ray against a given scene.
 class Tracer {
 public:
-  explicit Tracer(const Scene &scene, Stats &stats)
-      : scene_(scene), stats_(stats) {}
+  explicit Tracer(const Scene &scene) : scene_(scene) {}
 
   // Traces a ray against the scene and returns a traced color.
   glm::vec3 Trace(const Ray &ray) const;
@@ -29,7 +27,6 @@ private:
   bool IsOccluded(const Ray &shadow_ray, const float light_distance) const;
 
   const Scene &scene_;
-  Stats &stats_;
 };
 
 } // namespace muon
