@@ -73,11 +73,67 @@ std::map<std::string, ParseCmd> command_map = {
     {"emission", ParseCmd::kEmission},
 };
 
+// Represents a working area used while parsing.
+class ParsingWorkspace {
+public:
+  // Material properties.
+  glm::vec3 ambient = glm::vec3(0.2f);
+  glm::vec3 diffuse = glm::vec3(0.0f);
+  glm::vec3 specular = glm::vec3(0.0f);
+  glm::vec3 emission = glm::vec3(0.0f);
+  float shininess = 1.0f;
+
+  // Multiplies the top of the stack with the given transform matrix.
+  void MultiplyTransform(const glm::mat4 &m);
+  // Pushes the current transform on to the stack.
+  void PushTransform();
+  // Pops the current transform from the stack.
+  void PopTransform();
+
+  // Applies current working properties to the given primitive.
+  void UpdatePrimitive(Primitive &obj);
+
+private:
+  // Transform stack.
+  std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
+};
+
+void ParsingWorkspace::MultiplyTransform(const glm::mat4 &m) {
+  transforms_.back() = transforms_.back() * m;
+  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+}
+
+void ParsingWorkspace::PushTransform() {
+  transforms_.push_back(transforms_.back());
+  VLOG(3) << "  Transform stack size: " << transforms_.size();
+  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+}
+
+void ParsingWorkspace::PopTransform() {
+  transforms_.pop_back();
+  VLOG(3) << "  Transform stack size: " << transforms_.size();
+}
+
+void ParsingWorkspace::UpdatePrimitive(Primitive &obj) {
+  obj.material.ambient = ambient;
+  obj.material.diffuse = diffuse;
+  obj.material.specular = specular;
+  obj.material.emission = emission;
+  obj.material.shininess = shininess;
+
+  obj.transform = transforms_.back();
+  obj.inv_transform = glm::inverse(obj.transform);
+  obj.inv_transpose_transform = glm::transpose(obj.inv_transform);
+}
+
 void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
 Scene Parser::Parse() {
+  // Keep track of a temporary workspace in addition to the scene that we're
+  // building.
+  ParsingWorkspace workspace;
   Scene scene;
 
   VLOG(1) << "Reading from input: " << scene_file_;
@@ -156,7 +212,7 @@ Scene Parser::Parse() {
           glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
           glm::vec3(upx, upy, upz), fov, scene.width, scene.height);
       // Preserve the identity matrix.
-      scene.PushTransform();
+      workspace.PushTransform();
       break;
     }
       // Geometry commands.
@@ -168,6 +224,7 @@ Scene Parser::Parse() {
         break;
       }
       auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
+      workspace.UpdatePrimitive(*sphere);
       scene.AddPrimitive(std::move(sphere));
       break;
     }
@@ -195,6 +252,7 @@ Scene Parser::Parse() {
         break;
       }
       auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
+      workspace.UpdatePrimitive(*tri);
       scene.AddPrimitive(std::move(tri));
       break;
     }
@@ -210,7 +268,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
+      workspace.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kRotate: {
@@ -220,7 +278,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.MultiplyTransform(
+      workspace.MultiplyTransform(
           glm::rotate(glm::radians(angle), glm::vec3(x, y, z)));
       break;
     }
@@ -231,15 +289,15 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
+      workspace.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
       break;
     }
     case ParseCmd::kPushTransform: {
-      scene.PushTransform();
+      workspace.PushTransform();
       break;
     }
     case ParseCmd::kPopTransform: {
-      scene.PopTransform();
+      workspace.PopTransform();
       break;
     }
       // Light commands.
@@ -284,7 +342,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.ambient = glm::vec3(r, g, b);
+      workspace.ambient = glm::vec3(r, g, b);
       break;
     }
       // Material commands.
@@ -295,7 +353,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.diffuse = glm::vec3(r, g, b);
+      workspace.diffuse = glm::vec3(r, g, b);
       break;
     }
     case ParseCmd::kSpecular: {
@@ -305,7 +363,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.specular = glm::vec3(r, g, b);
+      workspace.specular = glm::vec3(r, g, b);
       break;
     }
     case ParseCmd::kShininess: {
@@ -315,7 +373,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.shininess = shininess;
+      workspace.shininess = shininess;
       break;
     }
     case ParseCmd::kEmission: {
@@ -325,7 +383,7 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      scene.emission = glm::vec3(r, g, b);
+      workspace.emission = glm::vec3(r, g, b);
       break;
     }
     }
