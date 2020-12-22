@@ -15,20 +15,31 @@ struct Vertex {
   glm::vec3 pos;
 };
 
+// Represents the material properties of an object.
+class Material {
+public:
+  glm::vec3 ambient = {};
+  glm::vec3 diffuse = {};
+  glm::vec3 specular = {};
+  glm::vec3 emission = {};
+
+  float shininess = 0.0f;
+};
+
+// Represents a geometric primitive.
+// All primitive geometric data is represented in object coordinates, and
+// transformed as needed for intersection tests.
 class Primitive {
 public:
   virtual ~Primitive() {}
 
+  // TODO: Store references to transforms in order to avoid per-primitive
+  // duplication.
   glm::mat4 transform;
   glm::mat4 inv_transform;
   glm::mat4 inv_transpose_transform;
 
-  glm::vec3 ambient;
-  glm::vec3 diffuse;
-  glm::vec3 specular;
-  glm::vec3 emission;
-
-  float shininess = 0.0f;
+  Material material;
 
   // Intersects with a ray and returns the intersection point.
   virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;

@@ -7,14 +7,14 @@ namespace muon {
 glm::vec3 Light::Sample(const ShadingInfo &info, const Intersection &hit,
                         const Ray &ray) {
   // Apply a simple Blinn Phong shading model.
-  glm::vec3 diffuse_cmp =
-      hit.obj->diffuse * glm::max(glm::dot(hit.normal, info.direction), 0.0f);
+  glm::vec3 diffuse_cmp = hit.obj->material.diffuse *
+                          glm::max(glm::dot(hit.normal, info.direction), 0.0f);
 
   glm::vec3 half_angle = glm::normalize(info.direction - ray.direction());
   glm::vec3 specular_cmp =
-      hit.obj->specular *
+      hit.obj->material.specular *
       glm::pow(glm::max(glm::dot(hit.normal, half_angle), 0.0f),
-               hit.obj->shininess);
+               hit.obj->material.shininess);
 
   return info.color * (diffuse_cmp + specular_cmp);
 }

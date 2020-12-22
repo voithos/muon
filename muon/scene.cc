@@ -9,11 +9,11 @@ void Scene::AddVertex(Vertex vert) { vertices_.push_back(vert); }
 
 void Scene::AddPrimitive(std::unique_ptr<Primitive> obj) {
   // Apply current cached lighting.
-  obj->ambient = ambient;
-  obj->diffuse = diffuse;
-  obj->specular = specular;
-  obj->emission = emission;
-  obj->shininess = shininess;
+  obj->material.ambient = ambient;
+  obj->material.diffuse = diffuse;
+  obj->material.specular = specular;
+  obj->material.emission = emission;
+  obj->material.shininess = shininess;
 
   obj->transform = transforms_.back();
   obj->inv_transform = glm::inverse(obj->transform);
