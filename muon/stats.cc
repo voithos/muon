@@ -23,8 +23,8 @@ std::ostream &operator<<(std::ostream &os, const Stats &stats) {
   os << "Ray-object tests : " << stats.object_tests_ << std::endl;
   os << "Ray-object hits  : " << stats.object_hits_ << std::endl;
   os << "Hit rate         : " << std::fixed << std::setprecision(2)
-     << (stats.object_hits_ / static_cast<double>(stats.object_tests_)) << "%"
-     << std::endl;
+     << (stats.object_hits_ / static_cast<double>(stats.object_tests_)) * 100.0f
+     << "%" << std::endl;
   os << "----------------------------------->>" << std::endl;
   return os;
 }
