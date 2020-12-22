@@ -40,6 +40,7 @@ cc_library(
     srcs = ["parser.cc"],
     hdrs = ["parser.h"],
     deps = [
+        ":defaults",
         ":lighting",
         ":scene",
         ":strings",
@@ -132,5 +133,13 @@ cc_library(
     srcs = ["stats.cc"],
     hdrs = ["stats.h"],
     deps = [
+    ],
+)
+
+cc_library(
+    name = "defaults",
+    hdrs = ["defaults.h"],
+    deps = [
+        "//third_party/glm",
     ],
 )

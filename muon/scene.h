@@ -18,13 +18,13 @@ namespace muon {
 class Scene {
 public:
   // General properties.
-  int width = 150;
-  int height = 150;
-  int max_depth = 5;
-  std::string output = "raytrace.png";
+  int width;
+  int height;
+  int max_depth;
+  std::string output;
 
-  // Lighting properties. Are also copied to scene primitives during parsing.
-  glm::vec3 attenuation = glm::vec3(1.0f, 0.0f, 0.0f);
+  // Global lighting properties.
+  glm::vec3 attenuation;
 
   std::unique_ptr<Camera> camera;
 

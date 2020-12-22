@@ -1,7 +1,11 @@
 # Features
-- [ ] Acceleration structure (BVH?)
 - [ ] Per-vertex normals
 - [ ] Recursive refraction
 - [ ] Area light source / stratified sampling
 - [ ] Antialiasing
 - [ ] More complex reflectance models, Torrance-Sparrow
+
+## Performance improvements
+- [ ] Acceleration structure (BVH?)
+- [ ] Include an end bound on ray intersections to avoid costly intersection
+      tests that are further away than already-known intersections

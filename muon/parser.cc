@@ -7,6 +7,7 @@
 
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
+#include "muon/defaults.h"
 #include "muon/lighting.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
@@ -77,11 +78,11 @@ std::map<std::string, ParseCmd> command_map = {
 class ParsingWorkspace {
 public:
   // Material properties.
-  glm::vec3 ambient = glm::vec3(0.2f);
-  glm::vec3 diffuse = glm::vec3(0.0f);
-  glm::vec3 specular = glm::vec3(0.0f);
-  glm::vec3 emission = glm::vec3(0.0f);
-  float shininess = 1.0f;
+  glm::vec3 ambient;
+  glm::vec3 diffuse;
+  glm::vec3 specular;
+  glm::vec3 emission;
+  float shininess;
 
   // Multiplies the top of the stack with the given transform matrix.
   void MultiplyTransform(const glm::mat4 &m);
@@ -130,11 +131,26 @@ void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
+void SetDefaults(ParsingWorkspace &workspace, Scene &scene) {
+  scene.width = defaults::kSceneWidth;
+  scene.height = defaults::kSceneHeight;
+  scene.max_depth = defaults::kMaxDepth;
+  scene.output = defaults::kOutput;
+  scene.attenuation = defaults::kAttenuation;
+
+  workspace.ambient = defaults::kAmbient;
+  workspace.diffuse = defaults::kDiffuse;
+  workspace.specular = defaults::kSpecular;
+  workspace.emission = defaults::kEmission;
+  workspace.shininess = defaults::kShininess;
+}
+
 Scene Parser::Parse() {
   // Keep track of a temporary workspace in addition to the scene that we're
   // building.
   ParsingWorkspace workspace;
   Scene scene;
+  SetDefaults(workspace, scene);
 
   VLOG(1) << "Reading from input: " << scene_file_;
 
@@ -207,7 +223,6 @@ Scene Parser::Parse() {
         logBadLine(line);
         break;
       }
-      // TODO: Make sure that scene.width and scene.height have been set.
       scene.camera = absl::make_unique<Camera>(
           glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
           glm::vec3(upx, upy, upz), fov, scene.width, scene.height);

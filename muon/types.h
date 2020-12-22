@@ -7,6 +7,7 @@ namespace muon {
 
 // Common types and constants shared across muon.
 
+// TODO: Look into why this needs to be so large to avoid numerical issues.
 constexpr float kEpsilon = 0.0001;
 
 class Primitive;
