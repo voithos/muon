@@ -4,9 +4,9 @@
 #include <string>
 
 #include "muon/acceleration.h"
+#include "muon/acceleration_type.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
-#include "muon/types.h"
 
 namespace muon {
 
@@ -40,14 +40,15 @@ private:
 class Parser {
 public:
   // Initializes a new Parser with the given scene file.
-  Parser(std::string scene_file, Stats &stats)
-      : scene_file_(scene_file), stats_(stats) {}
+  Parser(std::string scene_file, AccelerationType acceleration, Stats &stats)
+      : scene_file_(scene_file), acceleration_(acceleration), stats_(stats) {}
 
   // Parses the scene file and returns corresponding Scene.
   Scene Parse();
 
 private:
   std::string scene_file_;
+  AccelerationType acceleration_;
   Stats &stats_;
 
   void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene);

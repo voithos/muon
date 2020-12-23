@@ -41,6 +41,7 @@ cc_library(
     hdrs = ["parser.h"],
     deps = [
         ":acceleration",
+        ":acceleration_type",
         ":defaults",
         ":lighting",
         ":scene",
@@ -141,7 +142,6 @@ cc_library(
     name = "defaults",
     hdrs = ["defaults.h"],
     deps = [
-        ":types",
         "//third_party/glm",
     ],
 )
@@ -154,5 +154,14 @@ cc_library(
         ":objects",
         ":stats",
         "@com_google_absl//absl/types:optional",
+    ],
+)
+
+cc_library(
+    name = "acceleration_type",
+    srcs = ["acceleration_type.cc"],
+    hdrs = ["acceleration_type.h"],
+    deps = [
+        "@com_google_absl//absl/flags:flag",
     ],
 )

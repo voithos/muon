@@ -42,6 +42,10 @@ private:
 class BVH : public Structure {
 public:
   explicit BVH(Stats &stats) : Structure(stats) {}
+
+  absl::optional<Intersection> Intersect(const Ray &ray) override;
+  bool HasIntersection(const Ray &ray, const float max_distance) override;
+  void AddPrimitive(std::unique_ptr<Primitive> obj) override;
 };
 
 } // namespace acceleration

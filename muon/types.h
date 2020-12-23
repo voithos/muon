@@ -24,12 +24,6 @@ struct Intersection {
   Primitive *obj;
 };
 
-// The types of acceleration structures available.
-enum class AccelerationType {
-  kLinear = 0,
-  kBVH,
-};
-
 } // namespace muon
 
 #endif

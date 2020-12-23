@@ -3,18 +3,23 @@
 
 #include <string>
 
+#include "muon/acceleration_type.h"
+
 namespace muon {
 
 class Renderer {
 public:
-  Renderer(std::string scene_file, bool show_stats)
-      : scene_file_(scene_file), show_stats_(show_stats) {}
+  Renderer(std::string scene_file, AccelerationType acceleration,
+           bool show_stats)
+      : scene_file_(scene_file), acceleration_(acceleration),
+        show_stats_(show_stats) {}
 
   // Runs the ray tracer based on the renderer's configuration.
   void Render();
 
 private:
   std::string scene_file_;
+  AccelerationType acceleration_;
   bool show_stats_;
 };
 

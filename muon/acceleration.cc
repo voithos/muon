@@ -38,5 +38,13 @@ void Linear::AddPrimitive(std::unique_ptr<Primitive> obj) {
   primitives_.push_back(std::move(obj));
 }
 
+absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
+  return absl::nullopt;
+}
+bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
+  return false;
+}
+void BVH::AddPrimitive(std::unique_ptr<Primitive> obj) { return; }
+
 } // namespace acceleration
 } // namespace muon

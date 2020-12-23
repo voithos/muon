@@ -111,7 +111,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) {
   workspace.material.emission = defaults::kEmission;
   workspace.material.shininess = defaults::kShininess;
 
-  workspace.accel = CreateAccelerationStructure(defaults::kAcceleration);
+  workspace.accel = CreateAccelerationStructure(acceleration_);
 
   scene.width = defaults::kSceneWidth;
   scene.height = defaults::kSceneHeight;
@@ -128,7 +128,7 @@ Parser::CreateAccelerationStructure(AccelerationType type) {
     accel = absl::make_unique<acceleration::Linear>(stats_);
     break;
   case AccelerationType::kBVH:
-    // accel = absl::make_unique<acceleration::BVH>(stats_);
+    accel = absl::make_unique<acceleration::BVH>(stats_);
     break;
   }
   return accel;

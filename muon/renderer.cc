@@ -14,7 +14,7 @@ namespace muon {
 
 void Renderer::Render() {
   Stats stats;
-  Parser parser(scene_file_, stats);
+  Parser parser(scene_file_, acceleration_, stats);
   Scene scene = parser.Parse();
   Film film(scene.width, scene.height, scene.output);
 

@@ -1,7 +1,6 @@
 #ifndef MUON_DEFAULTS_H_
 #define MUON_DEFAULTS_H_
 
-#include "muon/types.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -31,9 +30,6 @@ static const glm::vec3 kSpecular = glm::vec3(0.0f);
 static const glm::vec3 kEmission = glm::vec3(0.0f);
 
 constexpr float kShininess = 1.0f;
-
-// The default acceleration structure to use.
-constexpr AccelerationType kAcceleration = AccelerationType::kLinear;
 
 } // namespace defaults
 } // namespace muon
