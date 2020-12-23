@@ -5,7 +5,8 @@
 namespace muon {
 
 void Film::SetPixel(int x, int y, glm::vec3 color) {
-  // TODO: Verify bounds of x+y and rgb.
+  color = glm::clamp(color, 0.0f, 1.0f);
+  // TODO: Verify bounds of x+y.
   output_(x, y, 0) = color.r * 255;
   output_(x, y, 1) = color.g * 255;
   output_(x, y, 2) = color.b * 255;
