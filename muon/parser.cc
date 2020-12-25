@@ -393,6 +393,7 @@ Scene Parser::Parse() {
     }
   }
 
+  workspace.accel->Init();
   scene.root = std::move(workspace.accel);
   return scene;
 }

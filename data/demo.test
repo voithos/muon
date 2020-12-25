@@ -18,3 +18,4 @@ specular 0 0 0
 # Now specify the geometry 
 
 sphere 1 0 0 1
+sphere 2 0 2 1

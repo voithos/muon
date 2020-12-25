@@ -1,8 +1,10 @@
 #include "muon/objects.h"
 
+#include "muon/transform.h"
+
 namespace muon {
 
-bool Primitive::HasIntersection(const Ray &ray, const float max_distance) {
+bool Intersectable::HasIntersection(const Ray &ray, const float max_distance) {
   absl::optional<Intersection> hit = Intersect(ray);
   if (!hit) {
     return false;
@@ -12,7 +14,17 @@ bool Primitive::HasIntersection(const Ray &ray, const float max_distance) {
   return hit->distance > 0.0f && hit->distance < max_distance;
 }
 
-Tri::Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2)
+Bounds Primitive::WorldBounds() const {
+  Bounds b = ObjectBounds();
+  // By default, transform the bounding box itself. Note that this isn't always
+  // the most efficient way of obtaining world bounds for a given primitive,
+  // nor does it yield the tightest axis-aligned world bounds (e.g. for things
+  // like triangles). Primitive subclasses can override this to compute more
+  // efficient bounding boxes.
+  return b.Transform(transform);
+}
+
+Tri::Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2)
     : vertices_(vertices), v0_(v0), v1_(v1), v2_(v2) {
   // Calculate the surface normal by computing the cross product of the
   // triangle's edges.
@@ -133,9 +145,9 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   w /= normal_length2_;
 
   // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = glm::vec3(transform * glm::vec4(p, 1.0f));
-  glm::vec3 world_n = glm::normalize(glm::vec3(
-      inv_transpose_transform * glm::vec4(glm::normalize(normal_), 0.0f)));
+  glm::vec3 world_p = TransformPosition(transform, p);
+  glm::vec3 world_n =
+      TransformDirection(inv_transpose_transform, glm::normalize(normal_));
   // Compute the world distance now that we have the world intersection point.
   float world_t = glm::length(world_p - ray.origin());
 
@@ -145,6 +157,24 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
       .normal = world_n,
       .obj = this,
   };
+}
+
+Bounds Tri::ObjectBounds() const {
+  const glm::vec3 &a = vertices_[v0_].pos;
+  const glm::vec3 &b = vertices_[v1_].pos;
+  const glm::vec3 &c = vertices_[v2_].pos;
+  Bounds bounds(a, b);
+  return Bounds::Union(bounds, c);
+}
+
+Bounds Tri::WorldBounds() const {
+  // We explicitly pre-transform the vertices of the triangle in order to
+  // obtain a tighter axis-aligned bounding box.
+  const glm::vec3 &a = TransformPosition(transform, vertices_[v0_].pos);
+  const glm::vec3 &b = TransformPosition(transform, vertices_[v1_].pos);
+  const glm::vec3 &c = TransformPosition(transform, vertices_[v2_].pos);
+  Bounds bounds(a, b);
+  return Bounds::Union(bounds, c);
 }
 
 absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
@@ -220,9 +250,8 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
   glm::vec3 n = glm::normalize(p - pos_);
 
   // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = glm::vec3(transform * glm::vec4(p, 1.0f));
-  glm::vec3 world_n =
-      glm::normalize(glm::vec3(inv_transpose_transform * glm::vec4(n, 0.0f)));
+  glm::vec3 world_p = TransformPosition(transform, p);
+  glm::vec3 world_n = TransformDirection(inv_transpose_transform, n);
   // Compute the world distance now that we have the world intersection point.
   float world_t = glm::length(world_p - ray.origin());
 
@@ -232,6 +261,10 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
       .normal = world_n,
       .obj = this,
   };
+}
+
+Bounds Sphere::ObjectBounds() const {
+  return Bounds(pos_ - glm::vec3(radius_), pos_ + glm::vec3(radius_));
 }
 
 } // namespace muon

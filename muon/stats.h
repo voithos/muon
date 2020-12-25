@@ -22,12 +22,16 @@ public:
   void IncrementSamples() { ++samples_so_far_; }
   void IncrementObjectTests() { ++object_tests_; }
   void IncrementObjectHits() { ++object_hits_; }
+  void IncrementBoundsTests() { ++bounds_tests_; }
+  void IncrementBoundsHits() { ++bounds_hits_; }
 
 private:
   uint64_t total_samples_ = 0;
   uint64_t samples_so_far_ = 0;
   uint64_t object_tests_ = 0;
   uint64_t object_hits_ = 0;
+  uint64_t bounds_tests_ = 0;
+  uint64_t bounds_hits_ = 0;
 
   std::chrono::steady_clock::time_point start_time_;
   std::chrono::steady_clock::time_point end_time_;

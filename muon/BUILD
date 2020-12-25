@@ -78,6 +78,8 @@ cc_library(
     srcs = ["camera.cc"],
     hdrs = ["camera.h"],
     deps = [
+        ":ray",
+        ":transform",
         "//third_party/glm",
     ],
 )
@@ -124,7 +126,9 @@ cc_library(
     srcs = ["objects.cc"],
     hdrs = ["objects.h"],
     deps = [
+        ":bounds",
         ":camera",
+        ":transform",
         ":types",
         "@com_google_absl//absl/types:optional",
     ],
@@ -151,6 +155,7 @@ cc_library(
     srcs = ["acceleration.cc"],
     hdrs = ["acceleration.h"],
     deps = [
+        ":bounds",
         ":objects",
         ":stats",
         "@com_google_absl//absl/types:optional",
@@ -163,5 +168,34 @@ cc_library(
     hdrs = ["acceleration_type.h"],
     deps = [
         "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_library(
+    name = "bounds",
+    srcs = ["bounds.cc"],
+    hdrs = ["bounds.h"],
+    deps = [
+        ":ray",
+        ":transform",
+        "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "transform",
+    hdrs = ["transform.h"],
+    deps = [
+        "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "ray",
+    srcs = ["ray.cc"],
+    hdrs = ["ray.h"],
+    deps = [
+        ":transform",
+        "//third_party/glm",
     ],
 )

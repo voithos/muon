@@ -1,11 +1,16 @@
-# Features
+# TODO
+
+## Features
 - [ ] Per-vertex normals
 - [ ] Recursive refraction
 - [ ] Area light source / stratified sampling
 - [ ] Antialiasing
-- [ ] More complex reflectance models, Torrance-Sparrow
+- [ ] More complex reflectance models, Torrance-Sparrow?
 
 ## Performance improvements
-- [ ] Acceleration structure (BVH?)
+- [ ] Add surface area heuristic to BVH
 - [ ] Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
+
+## DONE
+- [x] Acceleration structure (BVH)

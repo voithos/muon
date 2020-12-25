@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "absl/types/optional.h"
+#include "muon/bounds.h"
 #include "muon/camera.h"
 #include "muon/types.h"
 #include "third_party/glm/glm.hpp"
@@ -35,7 +36,7 @@ public:
   virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;
 
   // Returns whether an intersection exists within a distance along the ray.
-  virtual bool HasIntersection(const Ray &ray, const float max_distance) = 0;
+  virtual bool HasIntersection(const Ray &ray, const float max_distance);
 };
 
 // Represents a geometric primitive.
@@ -45,7 +46,12 @@ class Primitive : public Intersectable {
 public:
   virtual ~Primitive() {}
 
-  virtual bool HasIntersection(const Ray &ray, const float max_distance);
+  // Returns the bounding box that encompasses the geometry of the primitive,
+  // in object coordinates.
+  virtual Bounds ObjectBounds() const = 0;
+  // Returns the bounding box that encompasses the geometry of the primitive,
+  // in world coordinates.
+  virtual Bounds WorldBounds() const;
 
   // TODO: Store references to transforms in order to avoid per-primitive
   // duplication.
@@ -60,15 +66,17 @@ public:
 // Represents a triangle.
 class Tri : public Primitive {
 public:
-  Tri(const std::vector<Vertex> &vertices, int v0, int v1, int v2);
+  Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2);
   absl::optional<Intersection> Intersect(const Ray &ray) override;
+  Bounds ObjectBounds() const override;
+  Bounds WorldBounds() const override;
 
 private:
   const std::vector<Vertex> &vertices_;
   // Vertices specified in counter-clockwise order.
-  int v0_;
-  int v1_;
-  int v2_;
+  size_t v0_;
+  size_t v1_;
+  size_t v2_;
   // Face normal.
   glm::vec3 normal_;
   // Squared length of the face normal. Used in computing barycentric
@@ -81,6 +89,7 @@ class Sphere : public Primitive {
 public:
   Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}
   absl::optional<Intersection> Intersect(const Ray &ray) override;
+  Bounds ObjectBounds() const override;
 
 private:
   glm::vec3 pos_;

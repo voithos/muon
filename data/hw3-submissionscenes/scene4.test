@@ -3,7 +3,7 @@
 # I know it's not the most exciting of scenes...
 
 size 640 480 
-output data/hw3-submissionscenes/scene4.png
+output scene4.png
 
 camera 0 -4 4 0 -1 0 0 1 1 45
 

@@ -29,6 +29,11 @@ std::ostream &operator<<(std::ostream &os, const Stats &stats) {
   os << "Hit rate         : " << std::fixed << std::setprecision(2)
      << (stats.object_hits_ / static_cast<double>(stats.object_tests_)) * 100.0f
      << "%" << std::endl;
+  os << "Bounds tests     : " << stats.bounds_tests_ << std::endl;
+  os << "Bounds hits      : " << stats.bounds_hits_ << std::endl;
+  os << "Bounds hit rate  : " << std::fixed << std::setprecision(2)
+     << (stats.bounds_hits_ / static_cast<double>(stats.bounds_tests_)) * 100.0f
+     << "%" << std::endl;
   os << "----------------------------------->>" << std::endl;
   return os;
 }
