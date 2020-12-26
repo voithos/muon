@@ -9,14 +9,14 @@ namespace muon {
 
 // Traces a ray against a given scene.
 class Tracer {
-public:
+ public:
   explicit Tracer(const Scene &scene) : scene_(scene) {}
 
   // Traces a ray against the scene and returns a traced color.
   glm::vec3 Trace(const Ray &ray) const;
   glm::vec3 Trace(const Ray &ray, const int depth) const;
 
-private:
+ private:
   // Shades an intersection based on the current scene lighting, returning the
   // resulting color.
   glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -29,6 +29,6 @@ private:
   const Scene &scene_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

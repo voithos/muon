@@ -267,4 +267,4 @@ Bounds Sphere::ObjectBounds() const {
   return Bounds(pos_ - glm::vec3(radius_), pos_ + glm::vec3(radius_));
 }
 
-} // namespace muon
+}  // namespace muon

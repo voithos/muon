@@ -17,6 +17,6 @@ inline glm::vec3 TransformDirection(const glm::mat4 &transform,
   return glm::normalize(glm::vec3(transform * glm::vec4(direction, 0.0f)));
 }
 
-} // namespace muon
+}  // namespace muon
 
 #endif

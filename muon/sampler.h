@@ -4,7 +4,7 @@
 namespace muon {
 
 class Sampler {
-public:
+ public:
   Sampler(int width, int height) : width_(width), height_(height) {}
 
   // Generates the next sample location, in terms of x and y coordinates in
@@ -17,7 +17,7 @@ public:
   // Returns the number of samples requested so far.
   int RequestedSamples() const;
 
-private:
+ private:
   int width_;
   int height_;
   int cur_x_ = 0;
@@ -26,6 +26,6 @@ private:
   int samples_ = 0;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

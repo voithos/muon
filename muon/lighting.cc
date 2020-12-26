@@ -45,4 +45,4 @@ ShadingInfo PointLight::ShadingInfoAt(const glm::vec3 &pos) {
   };
 }
 
-} // namespace muon
+}  // namespace muon

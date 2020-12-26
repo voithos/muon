@@ -15,7 +15,7 @@ namespace acceleration {
 
 // Abstract base class for acceleration structures.
 class Structure : public Intersectable {
-public:
+ public:
   explicit Structure(Stats &stats) : stats_(stats) {}
   virtual ~Structure() {}
 
@@ -26,7 +26,7 @@ public:
   // have been added.
   virtual void Init() = 0;
 
-protected:
+ protected:
   Stats &stats_;
   std::vector<std::unique_ptr<Primitive>> primitives_;
 };
@@ -34,7 +34,7 @@ protected:
 // A simple, linear container that intersects all child primitives
 // sequentially.
 class Linear : public Structure {
-public:
+ public:
   explicit Linear(Stats &stats) : Structure(stats) {}
 
   absl::optional<Intersection> Intersect(const Ray &ray) override;
@@ -47,18 +47,18 @@ public:
 namespace {
 // Working info on primitives used during BVH creation.
 class PrimitiveInfo {
-public:
+ public:
   PrimitiveInfo(size_t index, const Bounds &bounds);
 
   size_t index;
   Bounds bounds;
   glm::vec3 centroid;
 };
-} // namespace
+}  // namespace
 
 // A single node of a BVH tree.
 class BVHNode {
-public:
+ public:
   // Constructs a leaf node.
   BVHNode(const std::vector<std::unique_ptr<Primitive>> *primitives,
           size_t start, size_t end, const Bounds &bounds, Stats &stats);
@@ -69,7 +69,7 @@ public:
   absl::optional<Intersection> Intersect(const Ray &ray);
   bool HasIntersection(const Ray &ray, const float max_distance);
 
-private:
+ private:
   // Whether or not this node is a leaf node.
   const bool is_leaf_;
   // The primitives collection.
@@ -87,14 +87,14 @@ private:
 // A Bounding Volume Hierarchy that stores primitives based on their proximity.
 // TODO: Describe
 class BVH : public Structure {
-public:
+ public:
   BVH(Stats &stats) : Structure(stats) {}
 
   absl::optional<Intersection> Intersect(const Ray &ray) override;
   bool HasIntersection(const Ray &ray, const float max_distance) override;
   void Init() override;
 
-private:
+ private:
   std::unique_ptr<BVHNode> root_;
 
   // Recursively builds the BVH tree out of a given start and end range in the
@@ -103,7 +103,7 @@ private:
                                  std::vector<PrimitiveInfo> &info) const;
 };
 
-} // namespace acceleration
-} // namespace muon
+}  // namespace acceleration
+}  // namespace muon
 
 #endif

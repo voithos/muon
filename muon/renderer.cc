@@ -52,4 +52,4 @@ void Renderer::Render() {
   }
 }
 
-} // namespace muon
+}  // namespace muon

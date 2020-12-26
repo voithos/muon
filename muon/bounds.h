@@ -8,7 +8,7 @@ namespace muon {
 
 // Represents a 3d bounding box.
 class Bounds {
-public:
+ public:
   Bounds();
   Bounds(const glm::vec3 &pos);
   Bounds(const glm::vec3 &pos1, const glm::vec3 &pos2);
@@ -35,10 +35,10 @@ public:
   glm::vec3 min_pos;
   glm::vec3 max_pos;
 
-private:
+ private:
   bool Intersect(const Ray &ray, float &t_min, float &t_max) const;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

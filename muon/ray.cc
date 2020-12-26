@@ -12,4 +12,4 @@ Ray Ray::Transform(const glm::mat4 &transform) const {
 
 glm::vec3 Ray::At(float t) const { return origin_ + direction_ * t; }
 
-} // namespace muon
+}  // namespace muon

@@ -24,6 +24,6 @@ struct Intersection {
   Primitive *obj;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

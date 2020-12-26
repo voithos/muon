@@ -18,7 +18,7 @@ struct ShadingInfo {
 };
 
 class Light {
-public:
+ public:
   explicit Light(glm::vec3 color) : color_(color) {}
   virtual ~Light() {}
 
@@ -30,33 +30,33 @@ public:
   virtual glm::vec3 Sample(const ShadingInfo &info, const Intersection &hit,
                            const Ray &ray);
 
-protected:
+ protected:
   glm::vec3 color_;
 };
 
 class DirectionalLight : public Light {
-public:
+ public:
   DirectionalLight(glm::vec3 color, glm::vec3 direction)
       : Light(color), direction_(direction) {}
 
   ShadingInfo ShadingInfoAt(const glm::vec3 &pos) override;
 
-private:
+ private:
   glm::vec3 direction_;
 };
 
 class PointLight : public Light {
-public:
+ public:
   PointLight(glm::vec3 color, glm::vec3 pos, glm::vec3 attenuation)
       : Light(color), pos_(pos), attenuation_(attenuation) {}
 
   ShadingInfo ShadingInfoAt(const glm::vec3 &pos) override;
 
-private:
+ private:
   glm::vec3 pos_;
   glm::vec3 attenuation_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

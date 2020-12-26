@@ -6,7 +6,7 @@
 namespace muon {
 
 class Ray {
-public:
+ public:
   Ray(const glm::vec3 &origin, const glm::vec3 &direction)
       : origin_(origin), direction_(direction) {}
   glm::vec3 origin() const { return origin_; }
@@ -19,11 +19,11 @@ public:
   // Returns a point on the ray at a given "distance" t.
   glm::vec3 At(float t) const;
 
-private:
+ private:
   glm::vec3 origin_;
   glm::vec3 direction_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

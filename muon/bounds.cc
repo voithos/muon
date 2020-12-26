@@ -1,8 +1,9 @@
 #include "muon/bounds.h"
 
-#include "muon/transform.h"
 #include <algorithm>
 #include <limits>
+
+#include "muon/transform.h"
 
 namespace muon {
 
@@ -31,11 +32,11 @@ Bounds::Bounds(const glm::vec3 &pos1, const glm::vec3 &pos2) {
 int Bounds::MaxAxis() const {
   glm::vec3 diagonal = max_pos - min_pos;
   if (diagonal.x > diagonal.y && diagonal.x > diagonal.z) {
-    return 0; // x
+    return 0;  // x
   } else if (diagonal.y > diagonal.z) {
-    return 1; // y
+    return 1;  // y
   } else {
-    return 2; // z
+    return 2;  // z
   }
 }
 
@@ -134,4 +135,4 @@ Bounds Bounds::Union(const Bounds &b1, const glm::vec3 &pos) {
   return b;
 }
 
-} // namespace muon
+}  // namespace muon

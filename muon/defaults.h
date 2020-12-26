@@ -31,7 +31,7 @@ static const glm::vec3 kEmission = glm::vec3(0.0f);
 
 constexpr float kShininess = 1.0f;
 
-} // namespace defaults
-} // namespace muon
+}  // namespace defaults
+}  // namespace muon
 
 #endif

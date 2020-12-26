@@ -8,21 +8,22 @@
 namespace muon {
 
 class Renderer {
-public:
+ public:
   Renderer(std::string scene_file, AccelerationType acceleration,
            bool show_stats)
-      : scene_file_(scene_file), acceleration_(acceleration),
+      : scene_file_(scene_file),
+        acceleration_(acceleration),
         show_stats_(show_stats) {}
 
   // Runs the ray tracer based on the renderer's configuration.
   void Render();
 
-private:
+ private:
   std::string scene_file_;
   AccelerationType acceleration_;
   bool show_stats_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

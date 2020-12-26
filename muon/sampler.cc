@@ -23,4 +23,4 @@ int Sampler::TotalSamples() const { return height_ * width_; }
 
 int Sampler::RequestedSamples() const { return samples_; }
 
-} // namespace muon
+}  // namespace muon

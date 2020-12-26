@@ -10,4 +10,4 @@ void Scene::AddLight(std::unique_ptr<Light> light) {
   lights_.push_back(std::move(light));
 }
 
-} // namespace muon
+}  // namespace muon

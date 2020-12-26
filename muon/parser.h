@@ -13,7 +13,7 @@ namespace muon {
 namespace {
 // Represents a working area used while parsing.
 class ParsingWorkspace {
-public:
+ public:
   // Material properties.
   Material material;
 
@@ -30,15 +30,15 @@ public:
   // Applies current working properties to the given primitive.
   void UpdatePrimitive(Primitive &obj);
 
-private:
+ private:
   // Transform stack.
   std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
 };
-}; // namespace
+};  // namespace
 
 // Parses a scene file into Scene format.
 class Parser {
-public:
+ public:
   // Initializes a new Parser with the given scene file.
   Parser(std::string scene_file, AccelerationType acceleration, Stats &stats)
       : scene_file_(scene_file), acceleration_(acceleration), stats_(stats) {}
@@ -46,16 +46,16 @@ public:
   // Parses the scene file and returns corresponding Scene.
   Scene Parse();
 
-private:
+ private:
   std::string scene_file_;
   AccelerationType acceleration_;
   Stats &stats_;
 
   void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene);
-  std::unique_ptr<acceleration::Structure>
-  CreateAccelerationStructure(AccelerationType type);
+  std::unique_ptr<acceleration::Structure> CreateAccelerationStructure(
+      AccelerationType type);
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

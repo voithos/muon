@@ -59,4 +59,4 @@ bool Tracer::IsOccluded(const Ray &shadow_ray,
   return scene_.root->HasIntersection(shadow_ray, light_distance);
 }
 
-} // namespace muon
+}  // namespace muon

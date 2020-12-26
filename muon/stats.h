@@ -9,7 +9,7 @@ namespace muon {
 
 // Records statistics about the tracer.
 class Stats {
-public:
+ public:
   // Sets the total number of expected samples.
   // Must be called before any other method.
   void SetTotalSamples(uint64_t total_samples);
@@ -25,7 +25,7 @@ public:
   void IncrementBoundsTests() { ++bounds_tests_; }
   void IncrementBoundsHits() { ++bounds_hits_; }
 
-private:
+ private:
   uint64_t total_samples_ = 0;
   uint64_t samples_so_far_ = 0;
   uint64_t object_tests_ = 0;
@@ -39,6 +39,6 @@ private:
   friend std::ostream &operator<<(std::ostream &os, const Stats &stats);
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

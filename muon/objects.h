@@ -18,7 +18,7 @@ struct Vertex {
 
 // Represents the material properties of an object.
 class Material {
-public:
+ public:
   glm::vec3 ambient = glm::vec3(0.0f);
   glm::vec3 diffuse = glm::vec3(0.0f);
   glm::vec3 specular = glm::vec3(0.0f);
@@ -29,7 +29,7 @@ public:
 
 // Represents an object that supports intersection tests.
 class Intersectable {
-public:
+ public:
   virtual ~Intersectable() {}
 
   // Intersects with a ray and returns the intersection point.
@@ -43,7 +43,7 @@ public:
 // All primitive geometric data is represented in object coordinates, and
 // transformed as needed for intersection tests.
 class Primitive : public Intersectable {
-public:
+ public:
   virtual ~Primitive() {}
 
   // Returns the bounding box that encompasses the geometry of the primitive,
@@ -65,13 +65,13 @@ public:
 
 // Represents a triangle.
 class Tri : public Primitive {
-public:
+ public:
   Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2);
   absl::optional<Intersection> Intersect(const Ray &ray) override;
   Bounds ObjectBounds() const override;
   Bounds WorldBounds() const override;
 
-private:
+ private:
   const std::vector<Vertex> &vertices_;
   // Vertices specified in counter-clockwise order.
   size_t v0_;
@@ -86,16 +86,16 @@ private:
 
 // Represents a sphere.
 class Sphere : public Primitive {
-public:
+ public:
   Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}
   absl::optional<Intersection> Intersect(const Ray &ray) override;
   Bounds ObjectBounds() const override;
 
-private:
+ private:
   glm::vec3 pos_;
   float radius_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

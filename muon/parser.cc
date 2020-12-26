@@ -18,7 +18,7 @@
 namespace muon {
 
 enum class ParseCmd {
-  kIgnored = 0, // Ignored.
+  kIgnored = 0,  // Ignored.
   // General commands.
   kSize,
   kMaxDepth,
@@ -120,16 +120,16 @@ void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) {
   scene.attenuation = defaults::kAttenuation;
 }
 
-std::unique_ptr<acceleration::Structure>
-Parser::CreateAccelerationStructure(AccelerationType type) {
+std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure(
+    AccelerationType type) {
   std::unique_ptr<acceleration::Structure> accel;
   switch (type) {
-  case AccelerationType::kLinear:
-    accel = absl::make_unique<acceleration::Linear>(stats_);
-    break;
-  case AccelerationType::kBVH:
-    accel = absl::make_unique<acceleration::BVH>(stats_);
-    break;
+    case AccelerationType::kLinear:
+      accel = absl::make_unique<acceleration::Linear>(stats_);
+      break;
+    case AccelerationType::kBVH:
+      accel = absl::make_unique<acceleration::BVH>(stats_);
+      break;
   }
   return accel;
 }
@@ -167,229 +167,229 @@ Scene Parser::Parse() {
     }
 
     switch (it->second) {
-    case ParseCmd::kIgnored: {
-      // Ignored.
-      break;
-    }
-      // General commands.
-    case ParseCmd::kSize: {
-      int width, height;
-      iss >> width >> height;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kIgnored: {
+        // Ignored.
         break;
       }
-      scene.width = width;
-      scene.height = height;
-      break;
-    }
-    case ParseCmd::kMaxDepth: {
-      int max_depth;
-      iss >> max_depth;
-      if (iss.fail()) {
-        logBadLine(line);
+        // General commands.
+      case ParseCmd::kSize: {
+        int width, height;
+        iss >> width >> height;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        scene.width = width;
+        scene.height = height;
         break;
       }
-      scene.max_depth = max_depth;
-      break;
-    }
-    case ParseCmd::kOutput: {
-      std::string output;
-      iss >> output;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kMaxDepth: {
+        int max_depth;
+        iss >> max_depth;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        scene.max_depth = max_depth;
         break;
       }
-      scene.output = output;
-      break;
-    }
-      // Camera commands.
-    case ParseCmd::kCamera: {
-      float eyex, eyey, eyez, lookatx, lookaty, lookatz, upx, upy, upz, fov;
-      iss >> eyex >> eyey >> eyez >> lookatx >> lookaty >> lookatz >> upx >>
-          upy >> upz >> fov;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kOutput: {
+        std::string output;
+        iss >> output;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        scene.output = output;
         break;
       }
-      scene.camera = absl::make_unique<Camera>(
-          glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
-          glm::vec3(upx, upy, upz), fov, scene.width, scene.height);
-      // Preserve the identity matrix.
-      workspace.PushTransform();
-      break;
-    }
-      // Geometry commands.
-    case ParseCmd::kSphere: {
-      float x, y, z, radius;
-      iss >> x >> y >> z >> radius;
-      if (iss.fail()) {
-        logBadLine(line);
+        // Camera commands.
+      case ParseCmd::kCamera: {
+        float eyex, eyey, eyez, lookatx, lookaty, lookatz, upx, upy, upz, fov;
+        iss >> eyex >> eyey >> eyez >> lookatx >> lookaty >> lookatz >> upx >>
+            upy >> upz >> fov;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        scene.camera = absl::make_unique<Camera>(
+            glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
+            glm::vec3(upx, upy, upz), fov, scene.width, scene.height);
+        // Preserve the identity matrix.
+        workspace.PushTransform();
         break;
       }
-      auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
-      workspace.UpdatePrimitive(*sphere);
-      workspace.accel->AddPrimitive(std::move(sphere));
-      break;
-    }
-    case ParseCmd::kVertex: {
-      float x, y, z;
-      iss >> x >> y >> z;
-      if (iss.fail()) {
-        logBadLine(line);
+        // Geometry commands.
+      case ParseCmd::kSphere: {
+        float x, y, z, radius;
+        iss >> x >> y >> z >> radius;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
+        workspace.UpdatePrimitive(*sphere);
+        workspace.accel->AddPrimitive(std::move(sphere));
         break;
       }
-      Vertex vert;
-      vert.pos = glm::vec3(x, y, z);
-      scene.AddVertex(vert);
-      break;
-    }
-    case ParseCmd::kVertexNormal: {
-      // TODO
-      break;
-    }
-    case ParseCmd::kTri: {
-      int v0, v1, v2;
-      iss >> v0 >> v1 >> v2;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kVertex: {
+        float x, y, z;
+        iss >> x >> y >> z;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        Vertex vert;
+        vert.pos = glm::vec3(x, y, z);
+        scene.AddVertex(vert);
         break;
       }
-      auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
-      workspace.UpdatePrimitive(*tri);
-      workspace.accel->AddPrimitive(std::move(tri));
-      break;
-    }
-    case ParseCmd::kTriNormal: {
-      // TODO
-      break;
-    }
-      // Transformation commands.
-    case ParseCmd::kTranslate: {
-      float x, y, z;
-      iss >> x >> y >> z;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kVertexNormal: {
+        // TODO
         break;
       }
-      workspace.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
-      break;
-    }
-    case ParseCmd::kRotate: {
-      float x, y, z, angle;
-      iss >> x >> y >> z >> angle;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kTri: {
+        int v0, v1, v2;
+        iss >> v0 >> v1 >> v2;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
+        workspace.UpdatePrimitive(*tri);
+        workspace.accel->AddPrimitive(std::move(tri));
         break;
       }
-      workspace.MultiplyTransform(
-          glm::rotate(glm::radians(angle), glm::vec3(x, y, z)));
-      break;
-    }
-    case ParseCmd::kScale: {
-      float x, y, z;
-      iss >> x >> y >> z;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kTriNormal: {
+        // TODO
         break;
       }
-      workspace.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
-      break;
-    }
-    case ParseCmd::kPushTransform: {
-      workspace.PushTransform();
-      break;
-    }
-    case ParseCmd::kPopTransform: {
-      workspace.PopTransform();
-      break;
-    }
-      // Light commands.
-    case ParseCmd::kDirectional: {
-      float x, y, z, r, g, b;
-      iss >> x >> y >> z >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+        // Transformation commands.
+      case ParseCmd::kTranslate: {
+        float x, y, z;
+        iss >> x >> y >> z;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
         break;
       }
-      auto light = absl::make_unique<DirectionalLight>(glm::vec3(r, g, b),
-                                                       glm::vec3(x, y, z));
-      scene.AddLight(std::move(light));
-      break;
-    }
-    case ParseCmd::kPoint: {
-      float x, y, z, r, g, b;
-      iss >> x >> y >> z >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kRotate: {
+        float x, y, z, angle;
+        iss >> x >> y >> z >> angle;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.MultiplyTransform(
+            glm::rotate(glm::radians(angle), glm::vec3(x, y, z)));
         break;
       }
-      auto light = absl::make_unique<PointLight>(
-          glm::vec3(r, g, b), glm::vec3(x, y, z), scene.attenuation);
-      scene.AddLight(std::move(light));
-      break;
-    }
-    case ParseCmd::kAttenuation: {
-      float constant, linear, quadratic;
-      iss >> constant >> linear >> quadratic;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kScale: {
+        float x, y, z;
+        iss >> x >> y >> z;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
         break;
       }
-      scene.attenuation = glm::vec3(constant, linear, quadratic);
-      break;
-    }
-    case ParseCmd::kAmbient: {
-      float r, g, b;
-      iss >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kPushTransform: {
+        workspace.PushTransform();
         break;
       }
-      workspace.material.ambient = glm::vec3(r, g, b);
-      break;
-    }
-      // Material commands.
-    case ParseCmd::kDiffuse: {
-      float r, g, b;
-      iss >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kPopTransform: {
+        workspace.PopTransform();
         break;
       }
-      workspace.material.diffuse = glm::vec3(r, g, b);
-      break;
-    }
-    case ParseCmd::kSpecular: {
-      float r, g, b;
-      iss >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+        // Light commands.
+      case ParseCmd::kDirectional: {
+        float x, y, z, r, g, b;
+        iss >> x >> y >> z >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        auto light = absl::make_unique<DirectionalLight>(glm::vec3(r, g, b),
+                                                         glm::vec3(x, y, z));
+        scene.AddLight(std::move(light));
         break;
       }
-      workspace.material.specular = glm::vec3(r, g, b);
-      break;
-    }
-    case ParseCmd::kShininess: {
-      float shininess;
-      iss >> shininess;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kPoint: {
+        float x, y, z, r, g, b;
+        iss >> x >> y >> z >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        auto light = absl::make_unique<PointLight>(
+            glm::vec3(r, g, b), glm::vec3(x, y, z), scene.attenuation);
+        scene.AddLight(std::move(light));
         break;
       }
-      workspace.material.shininess = shininess;
-      break;
-    }
-    case ParseCmd::kEmission: {
-      float r, g, b;
-      iss >> r >> g >> b;
-      if (iss.fail()) {
-        logBadLine(line);
+      case ParseCmd::kAttenuation: {
+        float constant, linear, quadratic;
+        iss >> constant >> linear >> quadratic;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        scene.attenuation = glm::vec3(constant, linear, quadratic);
         break;
       }
-      workspace.material.emission = glm::vec3(r, g, b);
-      break;
-    }
+      case ParseCmd::kAmbient: {
+        float r, g, b;
+        iss >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.material.ambient = glm::vec3(r, g, b);
+        break;
+      }
+        // Material commands.
+      case ParseCmd::kDiffuse: {
+        float r, g, b;
+        iss >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.material.diffuse = glm::vec3(r, g, b);
+        break;
+      }
+      case ParseCmd::kSpecular: {
+        float r, g, b;
+        iss >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.material.specular = glm::vec3(r, g, b);
+        break;
+      }
+      case ParseCmd::kShininess: {
+        float shininess;
+        iss >> shininess;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.material.shininess = shininess;
+        break;
+      }
+      case ParseCmd::kEmission: {
+        float r, g, b;
+        iss >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        workspace.material.emission = glm::vec3(r, g, b);
+        break;
+      }
     }
   }
 
@@ -398,4 +398,4 @@ Scene Parser::Parse() {
   return scene;
 }
 
-} // namespace muon
+}  // namespace muon

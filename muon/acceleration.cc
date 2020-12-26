@@ -49,12 +49,17 @@ PrimitiveInfo::PrimitiveInfo(size_t index, const Bounds &bounds)
 
 BVHNode::BVHNode(const std::vector<std::unique_ptr<Primitive>> *primitives,
                  size_t start, size_t end, const Bounds &bounds, Stats &stats)
-    : is_leaf_(true), primitives_(primitives), start_(start), end_(end),
-      bounds_(bounds), stats_(stats) {}
+    : is_leaf_(true),
+      primitives_(primitives),
+      start_(start),
+      end_(end),
+      bounds_(bounds),
+      stats_(stats) {}
 
 BVHNode::BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right,
                  Stats &stats)
-    : is_leaf_(false), children_{std::move(left), std::move(right)},
+    : is_leaf_(false),
+      children_{std::move(left), std::move(right)},
       bounds_(Bounds::Union(children_[0]->bounds_, children_[1]->bounds_)),
       stats_(stats) {}
 
@@ -138,9 +143,9 @@ void BVH::Init() {
   root_ = Build(0, primitives_.size(), primitive_info);
 }
 
-std::unique_ptr<BVHNode>
-BVH::Build(size_t start, size_t end,
-           std::vector<PrimitiveInfo> &primitive_info) const {
+std::unique_ptr<BVHNode> BVH::Build(
+    size_t start, size_t end,
+    std::vector<PrimitiveInfo> &primitive_info) const {
   size_t size = end - start;
   // Check for base case.
   if (size == 1) {
@@ -186,5 +191,5 @@ BVH::Build(size_t start, size_t end,
                                     Build(split, end, primitive_info), stats_);
 }
 
-} // namespace acceleration
-} // namespace muon
+}  // namespace acceleration
+}  // namespace muon

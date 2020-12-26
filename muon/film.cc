@@ -17,4 +17,4 @@ void Film::WriteOutput() {
   output_.save(output_file_.c_str());
 }
 
-} // namespace muon
+}  // namespace muon

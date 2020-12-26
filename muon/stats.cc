@@ -38,4 +38,4 @@ std::ostream &operator<<(std::ostream &os, const Stats &stats) {
   return os;
 }
 
-} // namespace muon
+}  // namespace muon

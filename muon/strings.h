@@ -63,6 +63,6 @@ static inline std::string pprint(const glm::mat4 &mat) {
   return ss.str();
 }
 
-} // namespace muon
+}  // namespace muon
 
 #endif

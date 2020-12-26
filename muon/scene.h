@@ -16,7 +16,7 @@ namespace muon {
 
 // A representation of the scene and its constituents.
 class Scene {
-public:
+ public:
   // General properties.
   int width;
   int height;
@@ -43,11 +43,11 @@ public:
 
   inline const Lights &lights() const { return lights_; }
 
-private:
+ private:
   std::vector<Vertex> vertices_;
   Lights lights_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif

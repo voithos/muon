@@ -18,6 +18,6 @@ bool AbslParseFlag(absl::string_view text, AccelerationType *type,
 
 std::string AbslUnparseFlag(AccelerationType type);
 
-} // namespace muon
+}  // namespace muon
 
 #endif

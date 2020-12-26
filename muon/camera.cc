@@ -14,7 +14,11 @@ glm::vec3 Ray::At(float t) const { return origin_ + direction_ * t; }
 
 Camera::Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov,
                int width, int height)
-    : eye_(eye), look_at_(look_at), up_(up), fov_(fov), width_(width),
+    : eye_(eye),
+      look_at_(look_at),
+      up_(up),
+      fov_(fov),
+      width_(width),
       height_(height) {
   // Field of view is given in the y axis, so calculate it for x based on
   // the aspect ratio.
@@ -57,4 +61,4 @@ Ray Camera::CastRay(float x, float y) {
   return Ray(eye_, dir);
 }
 
-} // namespace muon
+}  // namespace muon

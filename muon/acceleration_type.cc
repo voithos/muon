@@ -18,13 +18,13 @@ bool AbslParseFlag(absl::string_view text, AccelerationType *type,
 
 std::string AbslUnparseFlag(AccelerationType type) {
   switch (type) {
-  case AccelerationType::kLinear:
-    return "linear";
-  case AccelerationType::kBVH:
-    return "bvh";
-  default:
-    return absl::StrCat(type);
+    case AccelerationType::kLinear:
+      return "linear";
+    case AccelerationType::kBVH:
+      return "bvh";
+    default:
+      return absl::StrCat(type);
   }
 }
 
-} // namespace muon
+}  // namespace muon

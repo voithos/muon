@@ -7,18 +7,18 @@
 namespace muon {
 
 class Camera {
-public:
+ public:
   Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov, int width,
          int height);
 
   // Generates a Ray through the viewport at (x, y) in screen space.
   Ray CastRay(float x, float y);
 
-private:
+ private:
   glm::vec3 eye_;
   glm::vec3 look_at_;
   glm::vec3 up_;
-  float fov_; // Degrees, in the y axis.
+  float fov_;  // Degrees, in the y axis.
   // Tangents of the FOV, computed ahead of time.
   float tan_fov_x_;
   float tan_fov_y_;
@@ -31,6 +31,6 @@ private:
   glm::vec3 w_;
 };
 
-} // namespace muon
+}  // namespace muon
 
 #endif
