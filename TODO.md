@@ -6,6 +6,8 @@
 - [ ] Area light source / stratified sampling
 - [ ] Antialiasing
 - [ ] More complex reflectance models, Torrance-Sparrow?
+- [ ] Other camera types, like orthographic
+- [ ] Support for a common file format (USD?)
 
 ## Performance improvements
 - [ ] Add surface area heuristic to BVH
