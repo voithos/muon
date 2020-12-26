@@ -5,13 +5,41 @@ output scene5.png
 
 maxdepth 5
 
+
+#planar face
+vertex -1 +1 0
+vertex -1 -1 0
+vertex +1 -1 0
+vertex +1 +1 0
+
+pushTransform
+# rotate 1 0 0 60
+translate 0 0 -70
+scale 150 150 1
+diffuse .0 .1 .1
+specular .4 .4 .4
+tri 0 1 2
+tri 0 2 3
+popTransform
+
+pushTransform
+# translate 0 0.5 0
+translate 0 -2.8 -25
+rotate 1 0 0 -90
+scale 250 250 1
+diffuse .5 .5 .5
+tri 0 1 2
+tri 0 2 3
+popTransform
+
 point 0 20 -40 1 1 1
 directional 0.5 0.5 -0.5 0 0.3 0
-ambient 0.01 0.01 0.01
+ambient 0.05 0.05 0.05
 specular 0.4 0.4 0.4
 diffuse 0.4 0.4 0.4
 shininess 40
 emission 0 0 0
+
 
 pushTransform
 translate 0 -2 -5

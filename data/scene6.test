@@ -49,6 +49,7 @@ translate 0 0 -3
 rotate 0 1 0 60
 scale 10 10 1
 diffuse 1 0 0
+specular .08 0 0
 tri 0 1 2
 tri 0 2 3
 popTransform
@@ -59,10 +60,12 @@ translate 0 0 -3
 rotate 0 1 0 -60
 scale 10 10 1
 diffuse 0 1 0
+specular 0 .08 0
 tri 0 1 2
 tri 0 2 3
 popTransform
 
+specular 0 0 0
 #back
 pushTransform
 scale 10 10 1

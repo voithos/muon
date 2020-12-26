@@ -1,12 +1,13 @@
 #Stanford Dragon
 
 size 640 480
-camera 0 0 20 0 0 -1 0 1 0 45
+camera -10 0 20 0 0 -1 0 1 0 45
 output scene7.png
 
 diffuse 0.4 0.1 0.1
 ambient 0.0 0.0 0.0
 point 0 20 20 1 1 1
+point -20 0 -10 0 1 1
 shininess 20
 specular 0.3 0.3 0.3
 

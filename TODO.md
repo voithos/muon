@@ -9,10 +9,22 @@
 - [ ] Other camera types, like orthographic
 - [ ] Support for a common file format (USD?)
 
+## Scenes
+- [ ] Utah teapot
+- [ ] Cornell box
+- [ ] Stanford bunny
+- [ ] Stanford dragon
+- [ ] pbrt scenes?
+
 ## Performance improvements
 - [ ] Add surface area heuristic to BVH
+- [ ] Traverse BVH children in an intelligent way, updating max_distance to
+      avoid intersecting farther bounding boxes. Use the sign of the ray's
+      direction vector for the coordinate axis along which the BVH node was
+      split
 - [ ] Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
+- [ ] Add multithreading support
 
 ## DONE
 - [x] Acceleration structure (BVH)
