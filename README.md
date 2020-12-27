@@ -23,3 +23,9 @@ and run:
 ```
 $ bazel-compdb -s
 ```
+
+To run the linter, first build the compilation database and then run:
+
+```
+$ clang-tidy muon/*.cc
+```

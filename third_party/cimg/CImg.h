@@ -108,10 +108,10 @@
 #error (correct values are '0 = unknown OS', '1 = Unix-like OS', '2 = Microsoft Windows').
 #endif
 #ifndef cimg_date
-#define cimg_date __DATE__
+#define cimg_date "redacted"
 #endif
 #ifndef cimg_time
-#define cimg_time __TIME__
+#define cimg_time "redacted"
 #endif
 
 // Disable silly warnings on some Microsoft VC++ compilers.
