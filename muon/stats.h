@@ -15,6 +15,7 @@ class Stats {
   void SetTotalSamples(uint64_t total_samples);
 
   void Start();
+  void BuildComplete();
   void Stop();
 
   float Progress() const;
@@ -34,6 +35,7 @@ class Stats {
   uint64_t bounds_hits_ = 0;
 
   std::chrono::steady_clock::time_point start_time_;
+  std::chrono::steady_clock::time_point build_complete_time_;
   std::chrono::steady_clock::time_point end_time_;
 
   friend std::ostream &operator<<(std::ostream &os, const Stats &stats);

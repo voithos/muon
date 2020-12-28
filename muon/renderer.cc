@@ -14,10 +14,13 @@ namespace muon {
 
 void Renderer::Render() {
   Stats stats;
+  stats.Start();
+
   Parser parser(scene_file_, acceleration_, stats);
   Scene scene = parser.Parse();
-  Film film(scene.width, scene.height, scene.output);
+  stats.BuildComplete();
 
+  Film film(scene.width, scene.height, scene.output);
   Sampler sampler(scene.width, scene.height);
   stats.SetTotalSamples(sampler.TotalSamples());
 
@@ -26,7 +29,6 @@ void Renderer::Render() {
   // TODO: Refactor progress into separate class.
   int last_percent = 0;
 
-  stats.Start();
   float x, y;
   while (sampler.NextSample(x, y)) {
     stats.IncrementSamples();
