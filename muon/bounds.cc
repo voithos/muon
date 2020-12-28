@@ -86,6 +86,9 @@ bool Bounds::Intersect(const Ray &ray, float &t_min, float &t_max) const {
   glm::vec3 direction = ray.direction();
 
   for (size_t i = 0; i < 3; ++i) {
+    // IDEA: This code is called often during BVH traversal, so it may be
+    // faster to accept precomputed inverse values for the ray's direction to
+    // avoid the relatively costly division.
     float t_axis_min = (min_pos[i] - origin[i]) / direction[i];
     float t_axis_max = (max_pos[i] - origin[i]) / direction[i];
 

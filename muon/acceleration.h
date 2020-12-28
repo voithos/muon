@@ -45,13 +45,16 @@ class Linear : public Structure {
 };
 
 namespace {
-// Working info on primitives used during BVH creation.
+// Working info on primitives used during BVH construction.
 class PrimitiveInfo {
  public:
   PrimitiveInfo(size_t index, const Bounds &bounds);
 
+  // The index into the primitives vector.
   size_t index;
+  // The cached world-space bounds of the primitive.
   Bounds bounds;
+  // The centroid of the primitive bounds.
   glm::vec3 centroid;
 };
 }  // namespace
@@ -61,26 +64,30 @@ class BVHNode {
  public:
   // Constructs a leaf node.
   BVHNode(const std::vector<std::unique_ptr<Primitive>> *primitives,
-          size_t start, size_t end, const Bounds &bounds, Stats &stats);
+          size_t num_primitives, size_t start, const Bounds &bounds,
+          Stats &stats);
   // Constructs an internal node.
   BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right,
-          Stats &stats);
+          int axis, Stats &stats);
 
   absl::optional<Intersection> Intersect(const Ray &ray);
   bool HasIntersection(const Ray &ray, const float max_distance);
 
  private:
-  // Whether or not this node is a leaf node.
-  const bool is_leaf_;
+  // The number of primitives in this node. If this is greater than 0, then it
+  // is a leaf node; otherwise, it is an internal node.
+  const size_t num_primitives_;
+  // The start primitives index, if this is a leaf node.
+  size_t start_;
+  // The axis that the node is split on, if this is an internal node.
+  int axis_;
   // The primitives collection.
   const std::vector<std::unique_ptr<Primitive>> *primitives_;
-  // The start and (exclusive) end primitives indices.
-  size_t start_, end_;
-  // The child nodes.
+  // The child nodes, if this is an internal node.
   std::array<std::unique_ptr<BVHNode>, 2> children_;
   // The bounds of the node.
   const Bounds bounds_;
-  // The statis tracking.
+  // The stats tracking.
   Stats &stats_;
 };
 
