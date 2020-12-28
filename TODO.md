@@ -7,7 +7,7 @@
 - [ ] Antialiasing
 - [ ] More complex reflectance models, Torrance-Sparrow?
 - [ ] Other camera types, like orthographic
-- [ ] Support for a common file format (USD?)
+- [ ] Support for a common file format (obj, glTF, USD?)
 
 ## Scenes
 - [ ] Utah teapot
