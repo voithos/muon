@@ -5,6 +5,7 @@
 
 #include "muon/acceleration.h"
 #include "muon/acceleration_type.h"
+#include "muon/options.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
 
@@ -40,20 +41,19 @@ class ParsingWorkspace {
 class Parser {
  public:
   // Initializes a new Parser with the given scene file.
-  Parser(std::string scene_file, AccelerationType acceleration, Stats &stats)
-      : scene_file_(scene_file), acceleration_(acceleration), stats_(stats) {}
+  Parser(std::string scene_file, const Options &options, Stats &stats)
+      : scene_file_(scene_file), options_(options), stats_(stats) {}
 
   // Parses the scene file and returns corresponding Scene.
   Scene Parse();
 
  private:
   std::string scene_file_;
-  AccelerationType acceleration_;
+  const Options &options_;
   Stats &stats_;
 
-  void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene);
-  std::unique_ptr<acceleration::Structure> CreateAccelerationStructure(
-      AccelerationType type);
+  void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) const;
+  std::unique_ptr<acceleration::Structure> CreateAccelerationStructure() const;
 };
 
 }  // namespace muon

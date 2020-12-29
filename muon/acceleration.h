@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "absl/types/optional.h"
+#include "muon/acceleration_type.h"
 #include "muon/bounds.h"
 #include "muon/objects.h"
 #include "muon/stats.h"
@@ -95,13 +96,15 @@ class BVHNode {
 // TODO: Describe
 class BVH : public Structure {
  public:
-  BVH(Stats &stats) : Structure(stats) {}
+  BVH(PartitionStrategy strategy, Stats &stats)
+      : Structure(stats), partition_strategy_(strategy) {}
 
   absl::optional<Intersection> Intersect(const Ray &ray) override;
   bool HasIntersection(const Ray &ray, const float max_distance) override;
   void Init() override;
 
  private:
+  PartitionStrategy partition_strategy_;
   std::unique_ptr<BVHNode> root_;
 
   // Recursively builds the BVH tree out of a given start and end range in the

@@ -16,6 +16,20 @@ bool AbslParseFlag(absl::string_view text, AccelerationType *type,
   return false;
 }
 
+bool AbslParseFlag(absl::string_view text, PartitionStrategy *strategy,
+                   std::string *error) {
+  if (text == "uniform") {
+    *strategy = PartitionStrategy::kUniform;
+    return true;
+  }
+  if (text == "midpoint") {
+    *strategy = PartitionStrategy::kMidpoint;
+    return true;
+  }
+  *error = "unknown value for partition_strategy";
+  return false;
+}
+
 std::string AbslUnparseFlag(AccelerationType type) {
   switch (type) {
     case AccelerationType::kLinear:
@@ -24,6 +38,17 @@ std::string AbslUnparseFlag(AccelerationType type) {
       return "bvh";
     default:
       return absl::StrCat(type);
+  }
+}
+
+std::string AbslUnparseFlag(PartitionStrategy strategy) {
+  switch (strategy) {
+    case PartitionStrategy::kUniform:
+      return "uniform";
+    case PartitionStrategy::kMidpoint:
+      return "midpoint";
+    default:
+      return absl::StrCat(strategy);
   }
 }
 

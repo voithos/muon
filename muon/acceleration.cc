@@ -174,34 +174,44 @@ std::unique_ptr<BVHNode> BVH::Build(
   }
   int axis = centroid_bounds.MaxAxis();
 
-  // Now partition primitives into two, splitting on the midpoint of the
-  // centroids.
-  float midpoint =
-      (centroid_bounds.min_pos[axis] + centroid_bounds.max_pos[axis]) / 2;
-
+  // Now partition the primitives based on the configured partition strategy.
+  size_t split;
   auto start_iter = std::next(primitive_info.begin(), start);
   auto end_iter = std::next(primitive_info.begin(), end);
-  auto split_iter = std::partition(start_iter, end_iter,
-                                   [axis, midpoint](const PrimitiveInfo &info) {
-                                     return info.centroid[axis] < midpoint;
-                                   });
-  size_t split = std::distance(primitive_info.begin(), split_iter);
 
-  // If we happen to have failed to partition (e.g. because the primitives have
-  // lots of overlapping bounding boxes), then we can simply split uniformly.
-  if (split == start || split == end) {
-    split = (start + end) / 2;
-    std::nth_element(start_iter, std::next(primitive_info.begin(), split),
-                     end_iter,
-                     [axis](const PrimitiveInfo &a, const PrimitiveInfo &b) {
-                       return a.centroid[axis] < b.centroid[axis];
-                     });
+  switch (partition_strategy_) {
+    case PartitionStrategy::kMidpoint: {
+      // Partition primitives into two, splitting on the midpoint of the
+      // centroids.
+      float midpoint =
+          (centroid_bounds.min_pos[axis] + centroid_bounds.max_pos[axis]) / 2;
+
+      auto split_iter = std::partition(
+          start_iter, end_iter, [axis, midpoint](const PrimitiveInfo &info) {
+            return info.centroid[axis] < midpoint;
+          });
+      split = std::distance(primitive_info.begin(), split_iter);
+      // If we happen to have failed to partition (e.g. because the primitives
+      // have lots of overlapping bounding boxes), then we can simply fall
+      // through and have them split uniformly.
+      if (split != start && split != end) {
+        break;
+      }
+    }
+    case PartitionStrategy::kUniform: {
+      split = (start + end) / 2;
+      std::nth_element(start_iter, std::next(primitive_info.begin(), split),
+                       end_iter,
+                       [axis](const PrimitiveInfo &a, const PrimitiveInfo &b) {
+                         return a.centroid[axis] < b.centroid[axis];
+                       });
+    }
   }
 
   return absl::make_unique<BVHNode>(Build(start, split, primitive_info),
                                     Build(split, end, primitive_info), axis,
                                     stats_);
-}
+}  // namespace acceleration
 
 }  // namespace acceleration
 }  // namespace muon

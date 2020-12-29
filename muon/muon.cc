@@ -6,11 +6,15 @@
 #include "absl/flags/usage.h"
 #include "glog/logging.h"
 #include "muon/acceleration_type.h"
+#include "muon/options.h"
 #include "muon/renderer.h"
 
 ABSL_FLAG(std::string, scene, "", "Path to a scene file");
 ABSL_FLAG(muon::AccelerationType, acceleration, muon::AccelerationType::kBVH,
           "The type of acceleration structure to use");
+ABSL_FLAG(muon::PartitionStrategy, partition_strategy,
+          muon::PartitionStrategy::kMidpoint,
+          "The strategy when partitioning primitives in a BVH");
 ABSL_FLAG(bool, stats, true, "Whether to show stats after rendering");
 
 int main(int argc, char **argv) {
@@ -30,10 +34,13 @@ int main(int argc, char **argv) {
     LOG(ERROR) << "A scene file is required";
     return 1;
   }
-  muon::AccelerationType acceleration = absl::GetFlag(FLAGS_acceleration);
-  bool stats = absl::GetFlag(FLAGS_stats);
+  muon::Options options{
+      .acceleration = absl::GetFlag(FLAGS_acceleration),
+      .partition_strategy = absl::GetFlag(FLAGS_partition_strategy),
+      .show_stats = absl::GetFlag(FLAGS_stats),
+  };
 
-  muon::Renderer r(scene_file, acceleration, stats);
+  muon::Renderer r(scene_file, options);
   r.Render();
 
   return 0;

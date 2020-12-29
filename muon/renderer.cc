@@ -16,7 +16,7 @@ void Renderer::Render() {
   Stats stats;
   stats.Start();
 
-  Parser parser(scene_file_, acceleration_, stats);
+  Parser parser(scene_file_, options_, stats);
   Scene scene = parser.Parse();
   stats.BuildComplete();
 
@@ -49,7 +49,7 @@ void Renderer::Render() {
 
   film.WriteOutput();
 
-  if (show_stats_) {
+  if (options_.show_stats) {
     std::cerr << stats;
   }
 }

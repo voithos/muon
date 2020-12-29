@@ -15,6 +15,7 @@ cc_library(
     hdrs = ["renderer.h"],
     deps = [
         ":film",
+        ":options",
         ":parser",
         ":sampler",
         ":scene",
@@ -45,6 +46,7 @@ cc_library(
         ":acceleration_type",
         ":defaults",
         ":lighting",
+        ":options",
         ":scene",
         ":stats",
         ":strings",
@@ -156,6 +158,7 @@ cc_library(
     srcs = ["acceleration.cc"],
     hdrs = ["acceleration.h"],
     deps = [
+        ":acceleration_type",
         ":bounds",
         ":objects",
         ":stats",
@@ -198,5 +201,13 @@ cc_library(
     deps = [
         ":transform",
         "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "options",
+    hdrs = ["options.h"],
+    deps = [
+        ":acceleration_type",
     ],
 )

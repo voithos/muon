@@ -104,14 +104,14 @@ void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
-void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) {
+void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) const {
   workspace.material.ambient = defaults::kAmbient;
   workspace.material.diffuse = defaults::kDiffuse;
   workspace.material.specular = defaults::kSpecular;
   workspace.material.emission = defaults::kEmission;
   workspace.material.shininess = defaults::kShininess;
 
-  workspace.accel = CreateAccelerationStructure(acceleration_);
+  workspace.accel = CreateAccelerationStructure();
 
   scene.width = defaults::kSceneWidth;
   scene.height = defaults::kSceneHeight;
@@ -120,15 +120,16 @@ void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) {
   scene.attenuation = defaults::kAttenuation;
 }
 
-std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure(
-    AccelerationType type) {
+std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure()
+    const {
   std::unique_ptr<acceleration::Structure> accel;
-  switch (type) {
+  switch (options_.acceleration) {
     case AccelerationType::kLinear:
       accel = absl::make_unique<acceleration::Linear>(stats_);
       break;
     case AccelerationType::kBVH:
-      accel = absl::make_unique<acceleration::BVH>(stats_);
+      accel = absl::make_unique<acceleration::BVH>(options_.partition_strategy,
+                                                   stats_);
       break;
   }
   return accel;
