@@ -49,10 +49,12 @@ namespace {
 // Working info on primitives used during BVH construction.
 class PrimitiveInfo {
  public:
-  PrimitiveInfo(size_t index, const Bounds &bounds);
+  PrimitiveInfo(size_t original_index, const Bounds &bounds);
 
-  // The index into the primitives vector.
-  size_t index;
+  // The original index into the primitives vector. After the BVH is built, we
+  // use the original index to sort the primitives vector to match the build
+  // order.
+  size_t original_index;
   // The cached world-space bounds of the primitive.
   Bounds bounds;
   // The centroid of the primitive bounds.

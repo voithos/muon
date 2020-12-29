@@ -34,7 +34,7 @@ int main(int argc, char **argv) {
     LOG(ERROR) << "A scene file is required";
     return 1;
   }
-  muon::Options options{
+  muon::Options options = {
       .acceleration = absl::GetFlag(FLAGS_acceleration),
       .partition_strategy = absl::GetFlag(FLAGS_partition_strategy),
       .show_stats = absl::GetFlag(FLAGS_stats),

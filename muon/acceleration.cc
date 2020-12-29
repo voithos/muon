@@ -41,8 +41,10 @@ bool Linear::HasIntersection(const Ray &ray, const float max_distance) {
   return false;
 }
 
-PrimitiveInfo::PrimitiveInfo(size_t index, const Bounds &bounds)
-    : index(index), bounds(bounds), centroid(glm::vec3(0.0f)) {
+PrimitiveInfo::PrimitiveInfo(size_t original_index, const Bounds &bounds)
+    : original_index(original_index),
+      bounds(bounds),
+      centroid(glm::vec3(0.0f)) {
   glm::vec3 diagonal = bounds.max_pos - bounds.min_pos;
   centroid = bounds.min_pos + 0.5f * diagonal;
 }
@@ -151,7 +153,20 @@ void BVH::Init() {
   for (size_t i = 0; i < primitives_.size(); ++i) {
     primitive_info.push_back(PrimitiveInfo(i, primitives_[i]->WorldBounds()));
   }
+
+  // Recursively build the BVH tree.
   root_ = Build(0, primitives_.size(), primitive_info);
+
+  // Now we must re-order the primitives vector to match the resulting tree's
+  // build order, which we can infer from the re-ordered primitive_info vector.
+  // We need to do this in order to allow BVHNodes to refer to contiguous
+  // blocks of primitives.
+  std::vector<std::unique_ptr<Primitive>> sorted_primitives;
+  sorted_primitives.reserve(primitives_.size());
+  for (const auto &info : primitive_info) {
+    sorted_primitives.push_back(std::move(primitives_[info.original_index]));
+  }
+  primitives_.swap(sorted_primitives);
 }
 
 std::unique_ptr<BVHNode> BVH::Build(
@@ -161,8 +176,13 @@ std::unique_ptr<BVHNode> BVH::Build(
   // Check for base case.
   if (size == 1) {
     const PrimitiveInfo &info = primitive_info[start];
-    return absl::make_unique<BVHNode>(&primitives_, size, info.index,
-                                      info.bounds, stats_);
+    // Note, we're passing `start` instead of `info.original_index` to the
+    // BVHNode because we will later re-build a sorted primitives vector based
+    // on the final sort order of primitive_info. This allows us to place
+    // primitives in any given BVHNode contiguously in the final primitives
+    // vector, which allows us to reference them via a simple index range.
+    return absl::make_unique<BVHNode>(&primitives_, size, start, info.bounds,
+                                      stats_);
   }
 
   // First we figure out the bounds of the centroids in order to choose the
