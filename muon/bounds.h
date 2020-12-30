@@ -10,12 +10,19 @@ namespace muon {
 class Bounds {
  public:
   Bounds();
-  Bounds(const glm::vec3 &pos);
+  explicit Bounds(const glm::vec3 &pos);
   Bounds(const glm::vec3 &pos1, const glm::vec3 &pos2);
+
+  // Returns the dimensions of the bounding box. Only valid if the bounds are
+  // initialized.
+  glm::vec3 Dimensions() const;
 
   // Returns 0, 1, or 2 to represent x, y, or z, respectively, as the longest
   // axis for the box.
   int MaxAxis() const;
+
+  // Returns the surface area of the bounding box.
+  float SurfaceArea() const;
 
   // Transforms the bounding box by the given transform and returns a new
   // axis-aligned bounding box. Note, because it is axis-aligned, the new

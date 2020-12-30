@@ -1,6 +1,7 @@
 #include "muon/acceleration.h"
 
 #include <algorithm>
+#include <cassert>
 #include <limits>
 
 namespace muon {
@@ -173,19 +174,29 @@ void BVH::Init() {
   primitives_.swap(sorted_primitives);
 }
 
+// Working info on bucket boundaries while splitting via the surface area
+// heuristic.
+struct SAHBucketInfo {
+  // The number of primitives that currently fall into the bucket.
+  size_t size = 0;
+  // The composite bounds of all the primitives that are part of this bucket.
+  Bounds bounds;
+};
+constexpr size_t kNumSAHBuckets = 12;
+
 std::unique_ptr<BVHNode> BVH::Build(
     size_t start, size_t end,
     std::vector<PrimitiveInfo> &primitive_info) const {
-  size_t size = end - start;
+  size_t num_primitives = end - start;
   // Check for base case.
-  if (size == 1) {
-    const PrimitiveInfo &info = primitive_info[start];
+  if (num_primitives == 1) {
     // Note, we're passing `start` instead of `info.original_index` to the
     // BVHNode because we will later re-build a sorted primitives vector based
     // on the final sort order of primitive_info. This allows us to place
     // primitives in any given BVHNode contiguously in the final primitives
     // vector, which allows us to reference them via a simple index range.
-    return absl::make_unique<BVHNode>(size, start, info.bounds);
+    return absl::make_unique<BVHNode>(num_primitives, start,
+                                      primitive_info[start].bounds);
   }
 
   // First we figure out the bounds of the centroids in order to choose the
@@ -202,7 +213,13 @@ std::unique_ptr<BVHNode> BVH::Build(
   auto start_iter = std::next(primitive_info.begin(), start);
   auto end_iter = std::next(primitive_info.begin(), end);
 
+  bool split_uniformly = false;
+
   switch (partition_strategy_) {
+    case PartitionStrategy::kUniform: {
+      split_uniformly = true;
+      break;
+    }
     case PartitionStrategy::kMidpoint: {
       // Partition primitives into two, splitting on the midpoint of the
       // centroids.
@@ -215,20 +232,159 @@ std::unique_ptr<BVHNode> BVH::Build(
           });
       split = std::distance(primitive_info.begin(), split_iter);
       // If we happen to have failed to partition (e.g. because the primitives
-      // have lots of overlapping bounding boxes), then we can simply fall
-      // through and have them split uniformly.
-      if (split != start && split != end) {
-        break;
+      // have lots of overlapping bounding boxes), then we rely on a uniform
+      // split.
+      if (split == start || split == end) {
+        split_uniformly = true;
       }
+      break;
     }
-    case PartitionStrategy::kUniform: {
-      split = (start + end) / 2;
-      std::nth_element(start_iter, std::next(primitive_info.begin(), split),
-                       end_iter,
-                       [axis](const PrimitiveInfo &a, const PrimitiveInfo &b) {
-                         return a.centroid[axis] < b.centroid[axis];
-                       });
+    case PartitionStrategy::kSAH: {
+      // Split the primitives by considering several candidate split points and
+      // using a surface area heuristic. We do this greedily at each node split
+      // point.
+      SAHBucketInfo buckets[kNumSAHBuckets];
+      glm::vec3 centroid_space = centroid_bounds.Dimensions();
+
+      // Fill the buckets with the working primitives.
+      for (size_t i = start; i < end; ++i) {
+        // Compute the relative offset of the given primitive's centroid within
+        // the space that we're considering splitting. This should always be a
+        // number between 0.0 and 1.0.
+        // We also need to be careful to avoid division by zero in case
+        // primitives are very close together (e.g. have identical centroids).
+        float offset = centroid_space[axis] == 0.0f
+                           ? 0.0f
+                           : (primitive_info[i].centroid[axis] -
+                              centroid_bounds.min_pos[axis]) /
+                                 centroid_space[axis];
+        int bucket_index = static_cast<size_t>(offset * kNumSAHBuckets);
+        // Handle edge case for primitive that is at the edge of the
+        // centroid_space, in which case we should consider it part of the
+        // final bucket.
+        if (bucket_index == kNumSAHBuckets) {
+          bucket_index = kNumSAHBuckets - 1;
+        }
+        assert(bucket_index >= 0);
+        assert(bucket_index < kNumSAHBuckets);
+
+        SAHBucketInfo &bucket = buckets[bucket_index];
+        bucket.size++;
+        bucket.bounds = Bounds::Union(bucket.bounds, primitive_info[i].bounds);
+      }
+
+      // Also compute the full bucket bounds (i.e. the bounds of all
+      // primitives), as we'll need it later.
+      Bounds primitive_bounds;
+      for (size_t i = 0; i < kNumSAHBuckets; ++i) {
+        primitive_bounds = Bounds::Union(primitive_bounds, buckets[i].bounds);
+      }
+
+      // Compute the heuristic costs for splitting in between each of the
+      // buckets. We don't consider splitting after the last bucket, which
+      // wouldn't actually split anything.
+      // We arbitrarily define primitive-ray intersections as having a cost of
+      // 1, allowing us to simply use the number of primitives in our
+      // calculations directly. Then we compute the cost based on the cost of
+      // intersecting with each branch of a split (i.e. the number of
+      // primitives), times the probability of hitting that branch, which is
+      // equivalent to the ratio of the surface area of the branch's bounds
+      // divided by the surface area of the parent bounds.
+      constexpr int kNumSAHSplitPoints = kNumSAHBuckets - 1;
+      float split_costs[kNumSAHSplitPoints];
+
+      // We compute the costs in three passes - first, we compute the partial
+      // costs for the left and right branches, and then the final cost while
+      // simultaneously determining the min cost.
+      {
+        size_t combined_size = 0;
+        Bounds combined_bounds;
+        for (size_t i = 0; i < kNumSAHSplitPoints; ++i) {
+          combined_size += buckets[i].size;
+          combined_bounds = Bounds::Union(combined_bounds, buckets[i].bounds);
+          split_costs[i] = combined_size * combined_bounds.SurfaceArea();
+        }
+      }
+      {
+        size_t combined_size = 0;
+        Bounds combined_bounds;
+        // Need to use a signed integer index since it goes below zero.
+        for (int i = kNumSAHSplitPoints - 1; i >= 0; --i) {
+          // Use i+1 for the bucket index since we are considering the right
+          // branch.
+          combined_size += buckets[i + 1].size;
+          combined_bounds =
+              Bounds::Union(combined_bounds, buckets[i + 1].bounds);
+          split_costs[i] += combined_size * combined_bounds.SurfaceArea();
+        }
+      }
+
+      float total_surface = primitive_bounds.SurfaceArea();
+      // Now we compute the final costs and keep track of the minimum cost we
+      // have seen.
+      float min_cost = std::numeric_limits<float>::infinity();
+      size_t split_bucket;
+      for (size_t i = 0; i < kNumSAHSplitPoints; ++i) {
+        // The final cost is partial cost normalized by the total surface of
+        // the combined bounds, plus a small factor to represent the bounding
+        // box intersection cost during rendering.
+        constexpr float kBoundingBoxCost = 0.125f;
+        float cost = kBoundingBoxCost + split_costs[i] / total_surface;
+        if (cost < min_cost) {
+          min_cost = cost;
+          split_bucket = i;
+        }
+      }
+
+      // Based on the min cost, we now decide whether to split or to create a
+      // leaf node. Since we've defined the cost of intersection with any
+      // primitive as 1, the leaf cost is just the number of primitives.
+      float leaf_cost = num_primitives;
+      if (leaf_cost < min_cost) {
+        // See earlier instance of leaf node creation for why we can pass
+        // `start` directly here.
+        return absl::make_unique<BVHNode>(num_primitives, start,
+                                          primitive_bounds);
+      }
+
+      auto split_iter = std::partition(
+          start_iter, end_iter,
+          [axis, split_bucket, &centroid_space,
+           &centroid_bounds](const PrimitiveInfo &info) {
+            // See earlier bucket computation for details on this partitioning
+            // scheme.
+            float offset =
+                centroid_space[axis] == 0.0f
+                    ? 0.0f
+                    : (info.centroid[axis] - centroid_bounds.min_pos[axis]) /
+                          centroid_space[axis];
+            size_t bucket_index = static_cast<size_t>(offset * kNumSAHBuckets);
+            if (bucket_index == kNumSAHBuckets) {
+              bucket_index = kNumSAHBuckets - 1;
+            }
+            return bucket_index <= split_bucket;
+          });
+      split = std::distance(primitive_info.begin(), split_iter);
+
+      // If we happen to have failed to partition (e.g. because the primitives
+      // have lots of overlapping bounding boxes), then we rely on a uniform
+      // split.
+      if (split == start || split == end) {
+        split_uniformly = true;
+      }
+      break;
     }
+  }
+
+  // Use uniform split as a fallback.
+  if (split_uniformly) {
+    // Split primitives uniformly into two groups.
+    split = (start + end) / 2;
+    std::nth_element(start_iter, std::next(primitive_info.begin(), split),
+                     end_iter,
+                     [axis](const PrimitiveInfo &a, const PrimitiveInfo &b) {
+                       return a.centroid[axis] < b.centroid[axis];
+                     });
   }
 
   return absl::make_unique<BVHNode>(Build(start, split, primitive_info),

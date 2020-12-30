@@ -23,14 +23,16 @@ enum class PartitionStrategy {
   // Partition based on the midpoint of the centroids of the primitives'
   // bounds.
   kMidpoint,
+  // Partition based on a surface area heuristic.
+  kSAH,
 };
 
 bool AbslParseFlag(absl::string_view text, AccelerationType *type,
                    std::string *error);
+std::string AbslUnparseFlag(AccelerationType type);
+
 bool AbslParseFlag(absl::string_view text, PartitionStrategy *strategy,
                    std::string *error);
-
-std::string AbslUnparseFlag(AccelerationType type);
 std::string AbslUnparseFlag(PartitionStrategy strategy);
 
 }  // namespace muon

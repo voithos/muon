@@ -30,15 +30,23 @@ Bounds::Bounds(const glm::vec3 &pos1, const glm::vec3 &pos2) {
   max_pos.z = glm::max(pos1.z, pos2.z);
 }
 
+glm::vec3 Bounds::Dimensions() const { return max_pos - min_pos; }
+
 int Bounds::MaxAxis() const {
-  glm::vec3 diagonal = max_pos - min_pos;
-  if (diagonal.x > diagonal.y && diagonal.x > diagonal.z) {
+  glm::vec3 dimensions = Dimensions();
+  if (dimensions.x > dimensions.y && dimensions.x > dimensions.z) {
     return 0;  // x
-  } else if (diagonal.y > diagonal.z) {
+  } else if (dimensions.y > dimensions.z) {
     return 1;  // y
   } else {
     return 2;  // z
   }
+}
+
+float Bounds::SurfaceArea() const {
+  glm::vec3 dimensions = Dimensions();
+  return 2.0f * (dimensions.x * dimensions.y + dimensions.x * dimensions.z +
+                 dimensions.y * dimensions.z);
 }
 
 Bounds Bounds::Transform(const glm::mat4 &transform) const {

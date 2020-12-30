@@ -13,7 +13,7 @@ ABSL_FLAG(std::string, scene, "", "Path to a scene file");
 ABSL_FLAG(muon::AccelerationType, acceleration, muon::AccelerationType::kBVH,
           "The type of acceleration structure to use");
 ABSL_FLAG(muon::PartitionStrategy, partition_strategy,
-          muon::PartitionStrategy::kMidpoint,
+          muon::PartitionStrategy::kSAH,
           "The strategy when partitioning primitives in a BVH");
 ABSL_FLAG(bool, stats, true, "Whether to show stats after rendering");
 
