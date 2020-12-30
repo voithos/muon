@@ -17,12 +17,12 @@
 - [ ] pbrt scenes?
 
 ## Performance improvements
-- [ ] Add surface area heuristic to BVH
 - [ ] Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
 - [ ] Add multithreading support
 
 ## DONE
+- [x] Add surface area heuristic to BVH
 - [x] Acceleration structure (BVH)
 - [x] Traverse BVH children in an intelligent way, updating max_distance to
       avoid intersecting farther bounding boxes. Use the sign of the ray's

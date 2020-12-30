@@ -89,7 +89,10 @@ class BVHNode {
 constexpr int kBVHStackSize = 64;
 
 // A Bounding Volume Hierarchy that stores primitives based on their proximity.
-// TODO: Describe
+// This class generates a binary bounding volume hierarchy based on a set of
+// primitives, allowing for quick intersection tests. It provides several
+// partitioning strategies, including a uniform distribution, centroid midpoint
+// split, and splitting based on the surface area heuristic.
 class BVH : public Structure {
  public:
   BVH(PartitionStrategy strategy, Stats &stats)

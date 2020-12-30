@@ -206,6 +206,9 @@ std::unique_ptr<BVHNode> BVH::Build(
     centroid_bounds =
         Bounds::Union(centroid_bounds, primitive_info[i].centroid);
   }
+  // IDEA: Instead of using the widest axis, we could try to consider all axes
+  // (e.g. via the surface area heuristic) and pick the one that minimizes
+  // cost.
   int axis = centroid_bounds.MaxAxis();
 
   // Now partition the primitives based on the configured partition strategy.
