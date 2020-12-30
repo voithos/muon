@@ -66,40 +66,36 @@ class PrimitiveInfo {
 class BVHNode {
  public:
   // Constructs a leaf node.
-  BVHNode(const std::vector<std::unique_ptr<Primitive>> *primitives,
-          size_t num_primitives, size_t start, const Bounds &bounds,
-          Stats &stats);
+  BVHNode(size_t num_primitives, size_t start, const Bounds &bounds);
   // Constructs an internal node.
   BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right,
-          int axis, Stats &stats);
+          int axis);
 
   absl::optional<Intersection> Intersect(const Ray &ray);
-  bool HasIntersection(const Ray &ray, const float max_distance);
 
- private:
   // The number of primitives in this node. If this is greater than 0, then it
   // is a leaf node; otherwise, it is an internal node.
-  const size_t num_primitives_;
+  const size_t num_primitives;
   // The start primitives index, if this is a leaf node.
-  size_t start_;
+  size_t start;
   // The axis that the node is split on, if this is an internal node.
-  int axis_;
-  // The primitives collection.
-  const std::vector<std::unique_ptr<Primitive>> *primitives_;
+  int axis;
   // The child nodes, if this is an internal node.
-  std::array<std::unique_ptr<BVHNode>, 2> children_;
+  std::array<std::unique_ptr<BVHNode>, 2> children;
   // The bounds of the node.
-  const Bounds bounds_;
-  // The stats tracking.
-  Stats &stats_;
+  const Bounds bounds;
 };
+
+constexpr int kBVHStackSize = 64;
 
 // A Bounding Volume Hierarchy that stores primitives based on their proximity.
 // TODO: Describe
 class BVH : public Structure {
  public:
   BVH(PartitionStrategy strategy, Stats &stats)
-      : Structure(stats), partition_strategy_(strategy) {}
+      : Structure(stats), partition_strategy_(strategy) {
+    frontier_.reserve(kBVHStackSize);
+  }
 
   absl::optional<Intersection> Intersect(const Ray &ray) override;
   bool HasIntersection(const Ray &ray, const float max_distance) override;
@@ -108,6 +104,9 @@ class BVH : public Structure {
  private:
   PartitionStrategy partition_strategy_;
   std::unique_ptr<BVHNode> root_;
+  // A stack of nodes to visit while checking intersection. Is empty before and
+  // after intersection.
+  std::vector<BVHNode *> frontier_;
 
   // Recursively builds the BVH tree out of a given start and end range in the
   // primitives vector.

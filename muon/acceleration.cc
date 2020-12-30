@@ -49,82 +49,94 @@ PrimitiveInfo::PrimitiveInfo(size_t original_index, const Bounds &bounds)
   centroid = bounds.min_pos + 0.5f * diagonal;
 }
 
-BVHNode::BVHNode(const std::vector<std::unique_ptr<Primitive>> *primitives,
-                 size_t num_primitives, size_t start, const Bounds &bounds,
-                 Stats &stats)
-    : num_primitives_(num_primitives),
-      start_(start),
-      primitives_(primitives),
-      bounds_(bounds),
-      stats_(stats) {}
+BVHNode::BVHNode(size_t num_primitives, size_t start, const Bounds &bounds)
+    : num_primitives(num_primitives), start(start), bounds(bounds) {}
 
 BVHNode::BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right,
-                 int axis, Stats &stats)
-    : num_primitives_(0),
-      axis_(axis),
-      children_{std::move(left), std::move(right)},
-      bounds_(Bounds::Union(children_[0]->bounds_, children_[1]->bounds_)),
-      stats_(stats) {}
+                 int axis)
+    : num_primitives(0),
+      axis(axis),
+      children{std::move(left), std::move(right)},
+      bounds(Bounds::Union(children[0]->bounds, children[1]->bounds)) {}
 
-absl::optional<Intersection> BVHNode::Intersect(const Ray &ray) {
+absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
+  // Precompute the child order that we will check for each of the potential
+  // split axes based on the sign of the ray in the split axis. If the sign is
+  // negative, then we should check the second child since the primitives that
+  // went there were of the upper part of the partition point. Note, this
+  // doesn't take the ray's origin into account, but for primary rays the
+  // assumption is that they will generally originate from "outside" the
+  // scene's geometry, and so checking the closer child should allow us to not
+  // check too deep into the BVH tree if we've already found a closer match.
+  glm::vec3 ray_dir = ray.direction();
+  size_t child_to_visit_first[3] = {
+      ray_dir.x < 0,
+      ray_dir.y < 0,
+      ray_dir.z < 0,
+  };
+
+  // We perform an iterative depth-first search down the BVH tree, maintaing a
+  // stack of nodes to visit and the closest intersection we've seen so far.
   float min_dist = std::numeric_limits<float>::infinity();
   absl::optional<Intersection> hit;
+  BVHNode *node = root_.get();
 
-  if (num_primitives_ > 0) {
-    // TODO: De-duplicate this kind of iteration logic.
-    for (size_t i = start_; i < start_ + num_primitives_; ++i) {
-      absl::optional<Intersection> intersection =
-          (*primitives_)[i]->Intersect(ray);
-      stats_.IncrementObjectTests();
-      if (!intersection) {
-        continue;
-      }
-      stats_.IncrementObjectHits();
-
-      // Check that object is in front of the ray's origin, and closer than
-      // anything else we've found.
-      if (intersection->distance > 0.0f && intersection->distance < min_dist) {
-        min_dist = intersection->distance;
-        hit = intersection;
-      }
-    }
-    return hit;
-  }
-
-  // Check the closer child first, based on the sign of the ray in the split
-  // axis. If the sign is negative, then we should check the second child since
-  // the primitives that went there were of the upper part of the partition
-  // point. Note, this doesn't take the ray's origin into account, but for
-  // primary rays the assumption is that they will generally originate from
-  // "outside" the scene's geometry, and so checking the closer child should
-  // allow us to not check too deep into the BVH tree if we've already found a
-  // closer match.
-  size_t child_to_check_first = ray.direction()[axis_] < 0;
-  for (size_t i = 0; i < 2; ++i) {
-    const auto &child = children_[(child_to_check_first + i) % 2];
-    if (!child->bounds_.HasIntersection(ray, min_dist)) {
-      continue;
-    }
-    absl::optional<Intersection> intersection = child->Intersect(ray);
+  while (true) {
+    // Skip the current node if we don't intersect with its bounds.
     stats_.IncrementBoundsTests();
-    if (!intersection) {
+    if (!node->bounds.HasIntersection(ray, min_dist)) {
+      if (frontier_.empty()) {
+        break;
+      }
+      node = frontier_.back();
+      frontier_.pop_back();
       continue;
     }
     stats_.IncrementBoundsHits();
 
-    // Check that object is in front of the ray's origin, and closer than
-    // anything else we've found.
-    if (intersection->distance > 0.0f && intersection->distance < min_dist) {
-      min_dist = intersection->distance;
-      hit = intersection;
+    // If this is a leaf node, intersect with the primitives directly.
+    if (node->num_primitives > 0) {
+      // TODO: De-duplicate this kind of iteration logic.
+      for (size_t i = node->start; i < node->start + node->num_primitives;
+           ++i) {
+        absl::optional<Intersection> intersection =
+            primitives_[i]->Intersect(ray);
+        stats_.IncrementObjectTests();
+        if (!intersection) {
+          continue;
+        }
+        stats_.IncrementObjectHits();
+
+        // Check that the object is in front of the ray's origin, and closer
+        // than anything else we've found.
+        // TODO: Do we need to check this here? If we add the min_dist argument
+        // to the primitives' Intersect method, we could just rely on that.
+        if (intersection->distance > 0.0f &&
+            intersection->distance < min_dist) {
+          min_dist = intersection->distance;
+          hit = intersection;
+        }
+      }
+      if (frontier_.empty()) {
+        break;
+      }
+      node = frontier_.back();
+      frontier_.pop_back();
+      continue;
     }
+
+    // If we reach here, then we're dealing with an internal node.
+    size_t c = child_to_visit_first[node->axis];
+    // Save the farther child for later.
+    frontier_.push_back(node->children[1 - c].get());
+    node = node->children[c].get();
   }
 
   return hit;
 }
 
-bool BVHNode::HasIntersection(const Ray &ray, const float max_distance) {
-  // TODO: Make more performant
+bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
+  // TODO: Make more performant.
   absl::optional<Intersection> hit = Intersect(ray);
   if (!hit) {
     return false;
@@ -132,14 +144,6 @@ bool BVHNode::HasIntersection(const Ray &ray, const float max_distance) {
   // Check that object is in front of the origin, and closer than the target
   // distance.
   return hit->distance > 0.0f && hit->distance < max_distance;
-}
-
-absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
-  return root_->Intersect(ray);
-}
-
-bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
-  return root_->HasIntersection(ray, max_distance);
 }
 
 void BVH::Init() {
@@ -181,8 +185,7 @@ std::unique_ptr<BVHNode> BVH::Build(
     // on the final sort order of primitive_info. This allows us to place
     // primitives in any given BVHNode contiguously in the final primitives
     // vector, which allows us to reference them via a simple index range.
-    return absl::make_unique<BVHNode>(&primitives_, size, start, info.bounds,
-                                      stats_);
+    return absl::make_unique<BVHNode>(size, start, info.bounds);
   }
 
   // First we figure out the bounds of the centroids in order to choose the
@@ -229,8 +232,7 @@ std::unique_ptr<BVHNode> BVH::Build(
   }
 
   return absl::make_unique<BVHNode>(Build(start, split, primitive_info),
-                                    Build(split, end, primitive_info), axis,
-                                    stats_);
+                                    Build(split, end, primitive_info), axis);
 }  // namespace acceleration
 
 }  // namespace acceleration
