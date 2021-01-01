@@ -15,12 +15,12 @@ cc_library(
     hdrs = ["renderer.h"],
     deps = [
         ":film",
+        ":integration",
         ":options",
         ":parser",
         ":sampler",
         ":scene",
         ":stats",
-        ":tracer",
         "//third_party/cimg",
     ],
 )
@@ -96,9 +96,9 @@ cc_library(
 )
 
 cc_library(
-    name = "tracer",
-    srcs = ["tracer.cc"],
-    hdrs = ["tracer.h"],
+    name = "integration",
+    srcs = ["integration.cc"],
+    hdrs = ["integration.h"],
     deps = [
         ":camera",
         ":lighting",

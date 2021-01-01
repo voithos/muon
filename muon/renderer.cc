@@ -4,11 +4,11 @@
 
 #include "glog/logging.h"
 #include "muon/film.h"
+#include "muon/integration.h"
 #include "muon/parser.h"
 #include "muon/sampler.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
-#include "muon/tracer.h"
 
 namespace muon {
 
@@ -24,7 +24,7 @@ void Renderer::Render() {
   Sampler sampler(scene.width, scene.height);
   stats.SetTotalSamples(sampler.TotalSamples());
 
-  Tracer t(scene);
+  Raytracer integrator(scene);
 
   // TODO: Refactor progress into separate class.
   int last_percent = 0;
@@ -39,7 +39,7 @@ void Renderer::Render() {
     last_percent = percent;
 
     Ray r = scene.camera->CastRay(x, y);
-    glm::vec3 c = t.Trace(r);
+    glm::vec3 c = integrator.Trace(r);
 
     int px_x = x;
     int px_y = y;

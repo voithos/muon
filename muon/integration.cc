@@ -1,4 +1,4 @@
-#include "muon/tracer.h"
+#include "muon/integration.h"
 
 #include <limits>
 
@@ -6,11 +6,11 @@
 
 namespace muon {
 
-glm::vec3 Tracer::Trace(const Ray &ray) const {
+glm::vec3 Integrator::Trace(const Ray &ray) const {
   return Trace(ray, scene_.max_depth);
 }
 
-glm::vec3 Tracer::Trace(const Ray &ray, const int depth) const {
+glm::vec3 Integrator::Trace(const Ray &ray, const int depth) const {
   if (depth == 0) {
     return glm::vec3(0.0f);
   }
@@ -21,8 +21,8 @@ glm::vec3 Tracer::Trace(const Ray &ray, const int depth) const {
   return glm::vec3(0.0f);
 }
 
-glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
-                        const int depth) const {
+glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
+                           const int depth) const {
   glm::vec3 color = hit.obj->material.ambient + hit.obj->material.emission;
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
@@ -33,7 +33,7 @@ glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
     Ray shadow_ray(shift_pos, info.direction);
-    if (IsOccluded(shadow_ray, info.distance)) {
+    if (scene_.root->HasIntersection(shadow_ray, info.distance)) {
       // Light is occluded.
       continue;
     }
@@ -63,11 +63,6 @@ glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
   }
 
   return color;
-}
-
-bool Tracer::IsOccluded(const Ray &shadow_ray,
-                        const float light_distance) const {
-  return scene_.root->HasIntersection(shadow_ray, light_distance);
 }
 
 }  // namespace muon
