@@ -8,6 +8,14 @@
 
 namespace muon {
 
+// TODO: This should really be in a separate geometry library; possibly need to
+// think of a better way to expose this data besides ShadingInfo.
+struct Quad {
+  glm::vec3 corner;
+  glm::vec3 edge0;
+  glm::vec3 edge1;
+};
+
 struct ShadingInfo {
   // Color of the light, taking into account attenuation.
   glm::vec3 color;
@@ -15,6 +23,8 @@ struct ShadingInfo {
   glm::vec3 direction;
   // Distance to the light from the intersection.
   float distance;
+  // Optional quad that represents the light shape.
+  Quad *area;
 };
 
 class Light {
@@ -51,6 +61,19 @@ class PointLight : public Light {
  private:
   glm::vec3 pos_;
   glm::vec3 attenuation_;
+};
+
+// A parallelogram area light represented by a corner vertex and two edge
+// vectors.
+class QuadLight : public Light {
+ public:
+  QuadLight(glm::vec3 color, glm::vec3 corner, glm::vec3 edge0, glm::vec3 edge1)
+      : Light(color), area_{.corner = corner, .edge0 = edge0, .edge1 = edge1} {}
+
+  ShadingInfo ShadingInfoAt(const glm::vec3 &pos) override;
+
+ private:
+  Quad area_;
 };
 
 }  // namespace muon

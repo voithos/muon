@@ -37,6 +37,18 @@ class Raytracer : public Integrator {
                           const int depth) const override;
 };
 
+// An analytic integrator that uses a simplified Lambertian BRDF with area
+// light sources to calculate direct lighting contributions. This does not take
+// visibility into account, and does not do global illumination.
+class AnalyticDirect : public Integrator {
+ public:
+  explicit AnalyticDirect(const Scene &scene) : Integrator(scene) {}
+
+ protected:
+  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const int depth) const override;
+};
+
 }  // namespace muon
 
 #endif

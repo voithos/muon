@@ -10,6 +10,7 @@ ShadingInfo DirectionalLight::ShadingInfoAt(const glm::vec3 &pos) {
       .color = color_,
       .direction = direction_,
       .distance = std::numeric_limits<float>::infinity(),
+      .area = nullptr,
   };
 }
 
@@ -27,6 +28,15 @@ ShadingInfo PointLight::ShadingInfoAt(const glm::vec3 &pos) {
       .color = light_color,
       .direction = light_dir,
       .distance = r,
+      .area = nullptr,
+  };
+}
+
+ShadingInfo QuadLight::ShadingInfoAt(const glm::vec3 &pos) {
+  // For quad lights, the color and area are all that are needed.
+  return ShadingInfo{
+      .color = color_,
+      .area = &area_,
   };
 }
 

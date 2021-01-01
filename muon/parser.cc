@@ -43,8 +43,9 @@ enum class ParseCmd {
   kDirectional,
   kPoint,
   kAttenuation,
-  kAmbient,
+  kQuadLight,
   // Material commands.
+  kAmbient,
   kDiffuse,
   kSpecular,
   kShininess,
@@ -55,6 +56,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"size", ParseCmd::kSize},
     {"maxdepth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
+    {"integrator", ParseCmd::kIntegrator},
     {"camera", ParseCmd::kCamera},
     {"sphere", ParseCmd::kSphere},
     {"maxverts", ParseCmd::kIgnored},
@@ -71,6 +73,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"directional", ParseCmd::kDirectional},
     {"point", ParseCmd::kPoint},
     {"attenuation", ParseCmd::kAttenuation},
+    {"quadLight", ParseCmd::kQuadLight},
     {"ambient", ParseCmd::kAmbient},
     {"diffuse", ParseCmd::kDiffuse},
     {"specular", ParseCmd::kSpecular},
@@ -220,6 +223,8 @@ SceneConfig Parser::Parse() {
         }
         if (type == "raytracer") {
           ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
+        } else if (type == "analyticdirect") {
+          ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
         } else {
           logBadLine(line);
           break;
@@ -364,6 +369,48 @@ SceneConfig Parser::Parse() {
         ws.scene->attenuation = glm::vec3(constant, linear, quadratic);
         break;
       }
+      case ParseCmd::kQuadLight: {
+        float corner_x, corner_y, corner_z, edge0_x, edge0_y, edge0_z, edge1_x,
+            edge1_y, edge1_z, r, g, b;
+        iss >> corner_x >> corner_y >> corner_z >> edge0_x >> edge0_y >>
+            edge0_z >> edge1_x >> edge1_y >> edge1_z >> r >> g >> b;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        auto corner = glm::vec3(corner_x, corner_y, corner_z);
+        auto edge0 = glm::vec3(edge0_x, edge0_y, edge0_z);
+        auto edge1 = glm::vec3(edge1_x, edge1_y, edge1_z);
+        auto light = absl::make_unique<QuadLight>(glm::vec3(r, g, b), corner,
+                                                  edge0, edge1);
+        ws.scene->AddLight(std::move(light));
+
+        // Also create two tris to represent the area light itself.
+        Vertex va, vb, vc, vd;
+        va.pos = corner;
+        vb.pos = corner + edge0;
+        vc.pos = corner + edge1;
+        vd.pos = corner + edge0 + edge1;
+
+        // TODO: This is pretty gross. Can we improve this?
+        auto tri0 = absl::make_unique<Tri>(va, vb, vc);
+        auto tri1 = absl::make_unique<Tri>(vb, vd, vc);
+        Material material;
+        material.emission = glm::vec3(1.0f);  // Full emission.
+        glm::mat4 identity(1.0f);
+        tri0->material = material;
+        tri0->transform = identity;
+        tri0->inv_transform = identity;
+        tri0->inv_transpose_transform = identity;
+        tri1->material = material;
+        tri1->transform = identity;
+        tri1->inv_transform = identity;
+        tri1->inv_transpose_transform = identity;
+        ws.accel->AddPrimitive(std::move(tri0));
+        ws.accel->AddPrimitive(std::move(tri1));
+        break;
+      }
+        // Material commands.
       case ParseCmd::kAmbient: {
         float r, g, b;
         iss >> r >> g >> b;
@@ -374,7 +421,6 @@ SceneConfig Parser::Parse() {
         ws.material.ambient = glm::vec3(r, g, b);
         break;
       }
-        // Material commands.
       case ParseCmd::kDiffuse: {
         float r, g, b;
         iss >> r >> g >> b;
