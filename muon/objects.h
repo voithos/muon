@@ -53,6 +53,13 @@ class Primitive : public Intersectable {
   // in world coordinates.
   virtual Bounds WorldBounds() const;
 
+  // Transforms the ray to object coordinates and calls IntersectObjectSpace.
+  virtual absl::optional<Intersection> Intersect(const Ray &ray) override;
+
+  // Intersects with a ray in object coordinates and returns the intersection
+  // point.
+  virtual absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) = 0;
+
   // TODO: Store references to transforms in order to avoid per-primitive
   // duplication.
   glm::mat4 transform;
@@ -67,7 +74,7 @@ class Primitive : public Intersectable {
 class Tri : public Primitive {
  public:
   Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2);
-  absl::optional<Intersection> Intersect(const Ray &ray) override;
+  absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) override;
   Bounds ObjectBounds() const override;
   Bounds WorldBounds() const override;
 
@@ -88,7 +95,7 @@ class Tri : public Primitive {
 class Sphere : public Primitive {
  public:
   Sphere(glm::vec3 pos, float radius) : pos_(pos), radius_(radius) {}
-  absl::optional<Intersection> Intersect(const Ray &ray) override;
+  absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) override;
   Bounds ObjectBounds() const override;
 
  private:

@@ -24,6 +24,25 @@ Bounds Primitive::WorldBounds() const {
   return b.Transform(transform);
 }
 
+absl::optional<Intersection> Primitive::Intersect(const Ray &ray) {
+  // Inverse transform the ray to make the intersection test simpler.
+  Ray t_ray = ray.Transform(inv_transform);
+
+  absl::optional<Intersection> intersection = IntersectObjectSpace(t_ray);
+  if (!intersection) {
+    return intersection;
+  }
+
+  // Bring the intersection point and normal back to a transformed state.
+  intersection->pos = TransformPosition(transform, intersection->pos);
+  intersection->normal =
+      TransformDirection(inv_transpose_transform, intersection->normal);
+  // Compute the world distance now that we have the world intersection point.
+  intersection->distance = glm::length(intersection->pos - ray.origin());
+
+  return intersection;
+}
+
 Tri::Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2)
     : vertices_(vertices), v0_(v0), v1_(v1), v2_(v2) {
   // Calculate the surface normal by computing the cross product of the
@@ -34,7 +53,7 @@ Tri::Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2)
   normal_length2_ = glm::dot(normal_, normal_);
 }
 
-absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
+absl::optional<Intersection> Tri::IntersectObjectSpace(const Ray &ray) {
   // A tri can be conceptualized as a bounded plane. A plane can be represented
   // as:
   //   (P - A) • n = 0
@@ -79,11 +98,8 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   // edge, based on the right-hand-rule). Incidentally, we can reuse this
   // computation to then find u and v.
 
-  // Inverse transform the ray to make the intersection test simpler.
-  Ray t_ray = ray.Transform(inv_transform);
-
   // First, we find an intersection with the triangle's plane.
-  float dir_along_normal = glm::dot(normal_, t_ray.direction());
+  float dir_along_normal = glm::dot(normal_, ray.direction());
   if (dir_along_normal > -kEpsilon && dir_along_normal < kEpsilon) {
     // The ray is parallel, so they don't intersect.
     return absl::nullopt;
@@ -93,14 +109,14 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   const glm::vec3 &b = vertices_[v1_].pos;
   const glm::vec3 &c = vertices_[v2_].pos;
 
-  float t = (glm::dot(a, normal_) - glm::dot(t_ray.origin(), normal_)) /
+  float t = (glm::dot(a, normal_) - glm::dot(ray.origin(), normal_)) /
             dir_along_normal;
   if (t < 0) {
     // The tri is behind the ray.
     return absl::nullopt;
   }
 
-  glm::vec3 p = t_ray.At(t);
+  glm::vec3 p = ray.At(t);
 
   // Next, for each edge formed by the triangle A B C, we check that the point
   // lies "inside" the triangle. Simultaneously, we compute u, v, and w.
@@ -144,17 +160,10 @@ absl::optional<Intersection> Tri::Intersect(const Ray &ray) {
   v /= normal_length2_;
   w /= normal_length2_;
 
-  // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = TransformPosition(transform, p);
-  glm::vec3 world_n =
-      TransformDirection(inv_transpose_transform, glm::normalize(normal_));
-  // Compute the world distance now that we have the world intersection point.
-  float world_t = glm::length(world_p - ray.origin());
-
   return Intersection{
-      .distance = world_t,
-      .pos = world_p,
-      .normal = world_n,
+      .distance = t,
+      .pos = p,
+      .normal = glm::normalize(normal_),
       .obj = this,
   };
 }
@@ -177,7 +186,7 @@ Bounds Tri::WorldBounds() const {
   return Bounds::Union(bounds, c);
 }
 
-absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
+absl::optional<Intersection> Sphere::IntersectObjectSpace(const Ray &ray) {
   // A sphere can be conceptualized as:
   //   (P - C) • (P - C) = r^2
   // where P is a point on the sphere, C is the center of the sphere, and r is
@@ -213,11 +222,8 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
   //   t = -(P_1 • (P_0 - C)) +- sqrt((P_1 • (P_0 - C))^2 - ((P_0 - C) • (P_0 -
   //   C) - r^2))
 
-  // Inverse transform the ray to make the intersection test simpler.
-  Ray t_ray = ray.Transform(inv_transform);
-
-  glm::vec3 dir_to_center = t_ray.origin() - pos_;
-  float b_prime = glm::dot(t_ray.direction(), dir_to_center);
+  glm::vec3 dir_to_center = ray.origin() - pos_;
+  float b_prime = glm::dot(ray.direction(), dir_to_center);
   float c = glm::dot(dir_to_center, dir_to_center) - radius_ * radius_;
 
   // First check the discriminant.
@@ -246,19 +252,13 @@ absl::optional<Intersection> Sphere::Intersect(const Ray &ray) {
     t = glm::max(root_0, root_1);
   }
 
-  glm::vec3 p = t_ray.At(t);
+  glm::vec3 p = ray.At(t);
   glm::vec3 n = glm::normalize(p - pos_);
 
-  // Bring the intersection point and normal back to a transformed state.
-  glm::vec3 world_p = TransformPosition(transform, p);
-  glm::vec3 world_n = TransformDirection(inv_transpose_transform, n);
-  // Compute the world distance now that we have the world intersection point.
-  float world_t = glm::length(world_p - ray.origin());
-
   return Intersection{
-      .distance = world_t,
-      .pos = world_p,
-      .normal = world_n,
+      .distance = t,
+      .pos = p,
+      .normal = n,
       .obj = this,
   };
 }
