@@ -73,17 +73,18 @@ class Primitive : public Intersectable {
 // Represents a triangle.
 class Tri : public Primitive {
  public:
-  Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2);
+  Tri(const Vertex &v0, const Vertex &v1, const Vertex &v2);
+  // IDEA: Instead of relying on IntersectObjectSpace, tris can pre-transform
+  // their vertices once at startup for a speed improvement.
   absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) override;
   Bounds ObjectBounds() const override;
   Bounds WorldBounds() const override;
 
  private:
-  const std::vector<Vertex> &vertices_;
   // Vertices specified in counter-clockwise order.
-  size_t v0_;
-  size_t v1_;
-  size_t v2_;
+  Vertex v0_;
+  Vertex v1_;
+  Vertex v2_;
   // Face normal.
   glm::vec3 normal_;
   // Squared length of the face normal. Used in computing barycentric

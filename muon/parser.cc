@@ -278,7 +278,9 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        auto tri = absl::make_unique<Tri>(ws.scene->vertices(), v0, v1, v2);
+        auto &vertices = ws.scene->vertices();
+        auto tri =
+            absl::make_unique<Tri>(vertices[v0], vertices[v1], vertices[v2]);
         ws.UpdatePrimitive(*tri);
         ws.accel->AddPrimitive(std::move(tri));
         break;

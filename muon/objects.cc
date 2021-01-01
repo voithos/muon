@@ -43,12 +43,12 @@ absl::optional<Intersection> Primitive::Intersect(const Ray &ray) {
   return intersection;
 }
 
-Tri::Tri(const std::vector<Vertex> &vertices, size_t v0, size_t v1, size_t v2)
-    : vertices_(vertices), v0_(v0), v1_(v1), v2_(v2) {
+Tri::Tri(const Vertex &v0, const Vertex &v1, const Vertex &v2)
+    : v0_(v0), v1_(v1), v2_(v2) {
   // Calculate the surface normal by computing the cross product of the
   // triangle's edges.
-  const glm::vec3 &edge_ba = vertices_[v1_].pos - vertices_[v0_].pos;
-  const glm::vec3 &edge_ca = vertices_[v2_].pos - vertices_[v0_].pos;
+  const glm::vec3 &edge_ba = v1_.pos - v0_.pos;
+  const glm::vec3 &edge_ca = v2_.pos - v0_.pos;
   normal_ = glm::cross(edge_ba, edge_ca);
   normal_length2_ = glm::dot(normal_, normal_);
 }
@@ -105,9 +105,9 @@ absl::optional<Intersection> Tri::IntersectObjectSpace(const Ray &ray) {
     return absl::nullopt;
   }
 
-  const glm::vec3 &a = vertices_[v0_].pos;
-  const glm::vec3 &b = vertices_[v1_].pos;
-  const glm::vec3 &c = vertices_[v2_].pos;
+  const glm::vec3 &a = v0_.pos;
+  const glm::vec3 &b = v1_.pos;
+  const glm::vec3 &c = v2_.pos;
 
   float t = (glm::dot(a, normal_) - glm::dot(ray.origin(), normal_)) /
             dir_along_normal;
@@ -169,9 +169,9 @@ absl::optional<Intersection> Tri::IntersectObjectSpace(const Ray &ray) {
 }
 
 Bounds Tri::ObjectBounds() const {
-  const glm::vec3 &a = vertices_[v0_].pos;
-  const glm::vec3 &b = vertices_[v1_].pos;
-  const glm::vec3 &c = vertices_[v2_].pos;
+  const glm::vec3 &a = v0_.pos;
+  const glm::vec3 &b = v1_.pos;
+  const glm::vec3 &c = v2_.pos;
   Bounds bounds(a, b);
   return Bounds::Union(bounds, c);
 }
@@ -179,9 +179,9 @@ Bounds Tri::ObjectBounds() const {
 Bounds Tri::WorldBounds() const {
   // We explicitly pre-transform the vertices of the triangle in order to
   // obtain a tighter axis-aligned bounding box.
-  const glm::vec3 &a = TransformPosition(transform, vertices_[v0_].pos);
-  const glm::vec3 &b = TransformPosition(transform, vertices_[v1_].pos);
-  const glm::vec3 &c = TransformPosition(transform, vertices_[v2_].pos);
+  const glm::vec3 &a = TransformPosition(transform, v0_.pos);
+  const glm::vec3 &b = TransformPosition(transform, v1_.pos);
+  const glm::vec3 &c = TransformPosition(transform, v2_.pos);
   Bounds bounds(a, b);
   return Bounds::Union(bounds, c);
 }
