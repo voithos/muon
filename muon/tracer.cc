@@ -37,7 +37,18 @@ glm::vec3 Tracer::Shade(const Intersection &hit, const Ray &ray,
       // Light is occluded.
       continue;
     }
-    color += light->Sample(info, hit, ray);
+    // Apply a simple Blinn Phong shading model.
+    glm::vec3 diffuse_cmp =
+        hit.obj->material.diffuse *
+        glm::max(glm::dot(hit.normal, info.direction), 0.0f);
+
+    glm::vec3 half_angle = glm::normalize(info.direction - ray.direction());
+    glm::vec3 specular_cmp =
+        hit.obj->material.specular *
+        glm::pow(glm::max(glm::dot(hit.normal, half_angle), 0.0f),
+                 hit.obj->material.shininess);
+
+    color += info.color * (diffuse_cmp + specular_cmp);
   }
 
   // Trace reflectance if the object has any specularity.

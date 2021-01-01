@@ -26,10 +26,6 @@ class Light {
   // intersection point.
   virtual ShadingInfo ShadingInfoAt(const glm::vec3 &pos) = 0;
 
-  // Samples the shading from the light based on the given shading info.
-  virtual glm::vec3 Sample(const ShadingInfo &info, const Intersection &hit,
-                           const Ray &ray);
-
  protected:
   glm::vec3 color_;
 };
