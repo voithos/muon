@@ -16,8 +16,8 @@ absl::optional<Intersection> Linear::Intersect(const Ray &ray) {
   absl::optional<Intersection> hit;
 
   for (const auto &obj : primitives_) {
-    absl::optional<Intersection> intersection = obj->Intersect(ray);
     stats_.IncrementObjectTests();
+    absl::optional<Intersection> intersection = obj->Intersect(ray);
     if (!intersection) {
       continue;
     }
@@ -100,9 +100,9 @@ absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
       // TODO: De-duplicate this kind of iteration logic.
       for (size_t i = node->start; i < node->start + node->num_primitives;
            ++i) {
+        stats_.IncrementObjectTests();
         absl::optional<Intersection> intersection =
             primitives_[i]->Intersect(ray);
-        stats_.IncrementObjectTests();
         if (!intersection) {
           continue;
         }
@@ -137,14 +137,60 @@ absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
 }
 
 bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
-  // TODO: Make more performant.
-  absl::optional<Intersection> hit = Intersect(ray);
-  if (!hit) {
-    return false;
+  // See Intersect() for details on how the intersection logic works. The main
+  // difference here is that we use HasIntersection with the primitives, and
+  // return immediately if true.
+  glm::vec3 ray_dir = ray.direction();
+  size_t child_to_visit_first[3] = {
+      ray_dir.x < 0,
+      ray_dir.y < 0,
+      ray_dir.z < 0,
+  };
+
+  BVHNode *node = root_.get();
+
+  while (true) {
+    // Skip the current node if we don't intersect with its bounds.
+    stats_.IncrementBoundsTests();
+    if (!node->bounds.HasIntersection(ray, max_distance)) {
+      if (frontier_.empty()) {
+        break;
+      }
+      node = frontier_.back();
+      frontier_.pop_back();
+      continue;
+    }
+    stats_.IncrementBoundsHits();
+
+    // If this is a leaf node, intersect with the primitives directly.
+    if (node->num_primitives > 0) {
+      for (size_t i = node->start; i < node->start + node->num_primitives;
+           ++i) {
+        stats_.IncrementObjectTests();
+        if (primitives_[i]->HasIntersection(ray, max_distance)) {
+          stats_.IncrementObjectHits();
+          // Clear the frontier since we're exiting before searching it
+          // completely.
+          frontier_.clear();
+          return true;
+        }
+      }
+      if (frontier_.empty()) {
+        break;
+      }
+      node = frontier_.back();
+      frontier_.pop_back();
+      continue;
+    }
+
+    // If we reach here, then we're dealing with an internal node.
+    size_t c = child_to_visit_first[node->axis];
+    // Save the farther child for later.
+    frontier_.push_back(node->children[1 - c].get());
+    node = node->children[c].get();
   }
-  // Check that object is in front of the origin, and closer than the target
-  // distance.
-  return hit->distance > 0.0f && hit->distance < max_distance;
+
+  return false;
 }
 
 void BVH::Init() {
