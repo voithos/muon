@@ -17,14 +17,12 @@ void Renderer::Render() {
   stats.Start();
 
   Parser parser(scene_file_, options_, stats);
-  Scene scene = parser.Parse();
+  SceneConfig sc = parser.Parse();
   stats.BuildComplete();
 
-  Film film(scene.width, scene.height, scene.output);
-  Sampler sampler(scene.width, scene.height);
+  Film film(sc.scene->width, sc.scene->height, sc.scene->output);
+  Sampler sampler(sc.scene->width, sc.scene->height);
   stats.SetTotalSamples(sampler.TotalSamples());
-
-  Raytracer integrator(scene);
 
   // TODO: Refactor progress into separate class.
   int last_percent = 0;
@@ -38,8 +36,8 @@ void Renderer::Render() {
     LOG_IF(INFO, percent > last_percent) << "Completion: " << percent << " %";
     last_percent = percent;
 
-    Ray r = scene.camera->CastRay(x, y);
-    glm::vec3 c = integrator.Trace(r);
+    Ray r = sc.scene->camera->CastRay(x, y);
+    glm::vec3 c = sc.integrator->Trace(r);
 
     int px_x = x;
     int px_y = y;

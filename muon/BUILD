@@ -45,6 +45,7 @@ cc_library(
         ":acceleration",
         ":acceleration_type",
         ":defaults",
+        ":integration",
         ":lighting",
         ":options",
         ":scene",

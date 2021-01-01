@@ -23,6 +23,8 @@ enum class ParseCmd {
   kSize,
   kMaxDepth,
   kOutput,
+  // Integrator commands.
+  kIntegrator,
   // Camera commands.
   kCamera,
   // Geometry commands.
@@ -104,20 +106,22 @@ void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
-void Parser::ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) const {
-  workspace.material.ambient = defaults::kAmbient;
-  workspace.material.diffuse = defaults::kDiffuse;
-  workspace.material.specular = defaults::kSpecular;
-  workspace.material.emission = defaults::kEmission;
-  workspace.material.shininess = defaults::kShininess;
+void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
+  ws.material.ambient = defaults::kAmbient;
+  ws.material.diffuse = defaults::kDiffuse;
+  ws.material.specular = defaults::kSpecular;
+  ws.material.emission = defaults::kEmission;
+  ws.material.shininess = defaults::kShininess;
 
-  workspace.accel = CreateAccelerationStructure();
+  ws.scene = absl::make_unique<Scene>();
+  ws.accel = CreateAccelerationStructure();
+  ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
 
-  scene.width = defaults::kSceneWidth;
-  scene.height = defaults::kSceneHeight;
-  scene.max_depth = defaults::kMaxDepth;
-  scene.output = defaults::kOutput;
-  scene.attenuation = defaults::kAttenuation;
+  ws.scene->width = defaults::kSceneWidth;
+  ws.scene->height = defaults::kSceneHeight;
+  ws.scene->max_depth = defaults::kMaxDepth;
+  ws.scene->output = defaults::kOutput;
+  ws.scene->attenuation = defaults::kAttenuation;
 }
 
 std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure()
@@ -135,12 +139,14 @@ std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure()
   return accel;
 }
 
-Scene Parser::Parse() {
+// TODO: Instead of constructing the scene in-line, we should pull this into an
+// intermediate format and build the scene from that. That way future supported
+// file types don't need duplicate construction logic (only parsing logic).
+SceneConfig Parser::Parse() {
   // Keep track of a temporary workspace in addition to the scene that we're
   // building.
-  ParsingWorkspace workspace;
-  Scene scene;
-  ApplyDefaults(workspace, scene);
+  ParsingWorkspace ws;
+  ApplyDefaults(ws);
 
   VLOG(1) << "Reading from input: " << scene_file_;
 
@@ -180,8 +186,8 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        scene.width = width;
-        scene.height = height;
+        ws.scene->width = width;
+        ws.scene->height = height;
         break;
       }
       case ParseCmd::kMaxDepth: {
@@ -191,7 +197,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        scene.max_depth = max_depth;
+        ws.scene->max_depth = max_depth;
         break;
       }
       case ParseCmd::kOutput: {
@@ -201,7 +207,23 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        scene.output = output;
+        ws.scene->output = output;
+        break;
+      }
+        // Integrator commands.
+      case ParseCmd::kIntegrator: {
+        std::string type;
+        iss >> type;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (type == "raytracer") {
+          ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
+        } else {
+          logBadLine(line);
+          break;
+        }
         break;
       }
         // Camera commands.
@@ -213,11 +235,11 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        scene.camera = absl::make_unique<Camera>(
+        ws.scene->camera = absl::make_unique<Camera>(
             glm::vec3(eyex, eyey, eyez), glm::vec3(lookatx, lookaty, lookatz),
-            glm::vec3(upx, upy, upz), fov, scene.width, scene.height);
+            glm::vec3(upx, upy, upz), fov, ws.scene->width, ws.scene->height);
         // Preserve the identity matrix.
-        workspace.PushTransform();
+        ws.PushTransform();
         break;
       }
         // Geometry commands.
@@ -229,8 +251,8 @@ Scene Parser::Parse() {
           break;
         }
         auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
-        workspace.UpdatePrimitive(*sphere);
-        workspace.accel->AddPrimitive(std::move(sphere));
+        ws.UpdatePrimitive(*sphere);
+        ws.accel->AddPrimitive(std::move(sphere));
         break;
       }
       case ParseCmd::kVertex: {
@@ -242,7 +264,7 @@ Scene Parser::Parse() {
         }
         Vertex vert;
         vert.pos = glm::vec3(x, y, z);
-        scene.AddVertex(vert);
+        ws.scene->AddVertex(vert);
         break;
       }
       case ParseCmd::kVertexNormal: {
@@ -256,9 +278,9 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        auto tri = absl::make_unique<Tri>(scene.vertices(), v0, v1, v2);
-        workspace.UpdatePrimitive(*tri);
-        workspace.accel->AddPrimitive(std::move(tri));
+        auto tri = absl::make_unique<Tri>(ws.scene->vertices(), v0, v1, v2);
+        ws.UpdatePrimitive(*tri);
+        ws.accel->AddPrimitive(std::move(tri));
         break;
       }
       case ParseCmd::kTriNormal: {
@@ -273,7 +295,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
+        ws.MultiplyTransform(glm::translate(glm::vec3(x, y, z)));
         break;
       }
       case ParseCmd::kRotate: {
@@ -283,7 +305,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.MultiplyTransform(
+        ws.MultiplyTransform(
             glm::rotate(glm::radians(angle), glm::vec3(x, y, z)));
         break;
       }
@@ -294,15 +316,15 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
+        ws.MultiplyTransform(glm::scale(glm::vec3(x, y, z)));
         break;
       }
       case ParseCmd::kPushTransform: {
-        workspace.PushTransform();
+        ws.PushTransform();
         break;
       }
       case ParseCmd::kPopTransform: {
-        workspace.PopTransform();
+        ws.PopTransform();
         break;
       }
         // Light commands.
@@ -315,7 +337,7 @@ Scene Parser::Parse() {
         }
         auto light = absl::make_unique<DirectionalLight>(glm::vec3(r, g, b),
                                                          glm::vec3(x, y, z));
-        scene.AddLight(std::move(light));
+        ws.scene->AddLight(std::move(light));
         break;
       }
       case ParseCmd::kPoint: {
@@ -326,8 +348,8 @@ Scene Parser::Parse() {
           break;
         }
         auto light = absl::make_unique<PointLight>(
-            glm::vec3(r, g, b), glm::vec3(x, y, z), scene.attenuation);
-        scene.AddLight(std::move(light));
+            glm::vec3(r, g, b), glm::vec3(x, y, z), ws.scene->attenuation);
+        ws.scene->AddLight(std::move(light));
         break;
       }
       case ParseCmd::kAttenuation: {
@@ -337,7 +359,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        scene.attenuation = glm::vec3(constant, linear, quadratic);
+        ws.scene->attenuation = glm::vec3(constant, linear, quadratic);
         break;
       }
       case ParseCmd::kAmbient: {
@@ -347,7 +369,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.material.ambient = glm::vec3(r, g, b);
+        ws.material.ambient = glm::vec3(r, g, b);
         break;
       }
         // Material commands.
@@ -358,7 +380,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.material.diffuse = glm::vec3(r, g, b);
+        ws.material.diffuse = glm::vec3(r, g, b);
         break;
       }
       case ParseCmd::kSpecular: {
@@ -368,7 +390,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.material.specular = glm::vec3(r, g, b);
+        ws.material.specular = glm::vec3(r, g, b);
         break;
       }
       case ParseCmd::kShininess: {
@@ -378,7 +400,7 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.material.shininess = shininess;
+        ws.material.shininess = shininess;
         break;
       }
       case ParseCmd::kEmission: {
@@ -388,15 +410,18 @@ Scene Parser::Parse() {
           logBadLine(line);
           break;
         }
-        workspace.material.emission = glm::vec3(r, g, b);
+        ws.material.emission = glm::vec3(r, g, b);
         break;
       }
     }
   }
 
-  workspace.accel->Init();
-  scene.root = std::move(workspace.accel);
-  return scene;
+  ws.accel->Init();
+  ws.scene->root = std::move(ws.accel);
+  return {
+      .scene = std::move(ws.scene),
+      .integrator = std::move(ws.integrator),
+  };
 }
 
 }  // namespace muon

@@ -5,6 +5,7 @@
 
 #include "muon/acceleration.h"
 #include "muon/acceleration_type.h"
+#include "muon/integration.h"
 #include "muon/options.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
@@ -18,8 +19,14 @@ class ParsingWorkspace {
   // Material properties.
   Material material;
 
+  // The scene.
+  std::unique_ptr<Scene> scene;
+
   // Acceleration structure.
   std::unique_ptr<acceleration::Structure> accel;
+
+  // Configured integrator.
+  std::unique_ptr<Integrator> integrator;
 
   // Multiplies the top of the stack with the given transform matrix.
   void MultiplyTransform(const glm::mat4 &m);
@@ -37,6 +44,12 @@ class ParsingWorkspace {
 };
 };  // namespace
 
+// Represents a configuration of a scene along with its supporting structures.
+struct SceneConfig {
+  std::unique_ptr<Scene> scene;
+  std::unique_ptr<Integrator> integrator;
+};
+
 // Parses a scene file into Scene format.
 class Parser {
  public:
@@ -45,14 +58,14 @@ class Parser {
       : scene_file_(scene_file), options_(options), stats_(stats) {}
 
   // Parses the scene file and returns corresponding Scene.
-  Scene Parse();
+  SceneConfig Parse();
 
  private:
   std::string scene_file_;
   const Options &options_;
   Stats &stats_;
 
-  void ApplyDefaults(ParsingWorkspace &workspace, Scene &scene) const;
+  void ApplyDefaults(ParsingWorkspace &workspace) const;
   std::unique_ptr<acceleration::Structure> CreateAccelerationStructure() const;
 };
 
