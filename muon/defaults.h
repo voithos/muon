@@ -20,6 +20,12 @@ constexpr int kMaxDepth = 5;
 // The output file name.
 constexpr char kOutput[] = "raytrace.png";
 
+// The number of samples per light.
+constexpr int kLightSamples = 1;
+
+// Whether or not to stratify light sampling.
+constexpr bool kLightStratify = false;
+
 // Light attenuation, in terms of constant, linear, and quadratic.
 static const glm::vec3 kAttenuation = glm::vec3(1.0f, 0.0f, 0.0f);
 

@@ -23,6 +23,10 @@ class Scene {
   int max_depth;
   std::string output;
 
+  // Integrator properties.
+  int light_samples;
+  bool light_stratify;
+
   // Global lighting properties.
   glm::vec3 attenuation;
 
@@ -39,9 +43,9 @@ class Scene {
   // Adds a Light to the scene.
   void AddLight(std::unique_ptr<Light> light);
 
-  inline const std::vector<Vertex> &vertices() const { return vertices_; }
+  inline std::vector<Vertex> &vertices() { return vertices_; }
 
-  inline const Lights &lights() const { return lights_; }
+  inline Lights &lights() { return lights_; }
 
  private:
   std::vector<Vertex> vertices_;

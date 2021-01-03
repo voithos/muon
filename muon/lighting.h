@@ -11,6 +11,9 @@ namespace muon {
 // TODO: This should really be in a separate geometry library; possibly need to
 // think of a better way to expose this data besides ShadingInfo.
 struct Quad {
+  // TODO: Corner represents the top-left corner of the quad, edge0 is the left
+  // edge, edge1 is the top edge, light comes out the front. Does this make
+  // sense...?
   glm::vec3 corner;
   glm::vec3 edge0;
   glm::vec3 edge1;

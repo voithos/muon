@@ -29,6 +29,7 @@ void Renderer::Render() {
 
   float x, y;
   while (sampler.NextSample(x, y)) {
+    // TODO: Change this to IncrementPrimaryRays.
     stats.IncrementSamples();
 
     float progress = stats.Progress();

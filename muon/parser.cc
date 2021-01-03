@@ -25,6 +25,8 @@ enum class ParseCmd {
   kOutput,
   // Integrator commands.
   kIntegrator,
+  kLightSamples,
+  kLightStratify,
   // Camera commands.
   kCamera,
   // Geometry commands.
@@ -57,6 +59,8 @@ std::map<std::string, ParseCmd> command_map = {
     {"maxdepth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
     {"integrator", ParseCmd::kIntegrator},
+    {"lightsamples", ParseCmd::kLightSamples},
+    {"lightstratify", ParseCmd::kLightStratify},
     {"camera", ParseCmd::kCamera},
     {"sphere", ParseCmd::kSphere},
     {"maxverts", ParseCmd::kIgnored},
@@ -124,6 +128,8 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->height = defaults::kSceneHeight;
   ws.scene->max_depth = defaults::kMaxDepth;
   ws.scene->output = defaults::kOutput;
+  ws.scene->light_samples = defaults::kLightSamples;
+  ws.scene->light_stratify = defaults::kLightStratify;
   ws.scene->attenuation = defaults::kAttenuation;
 }
 
@@ -225,6 +231,35 @@ SceneConfig Parser::Parse() {
           ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
         } else if (type == "analyticdirect") {
           ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
+        } else if (type == "direct") {
+          ws.integrator = absl::make_unique<MonteCarloDirect>(*ws.scene);
+        } else {
+          logBadLine(line);
+          break;
+        }
+        break;
+      }
+      case ParseCmd::kLightSamples: {
+        int light_samples;
+        iss >> light_samples;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.scene->light_samples = light_samples;
+        break;
+      }
+      case ParseCmd::kLightStratify: {
+        std::string light_stratify;
+        iss >> light_stratify;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (light_stratify == "on") {
+          ws.scene->light_stratify = true;
+        } else if (light_stratify == "off") {
+          ws.scene->light_stratify = false;
         } else {
           logBadLine(line);
           break;
@@ -378,11 +413,11 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
+        auto color = glm::vec3(r, g, b);
         auto corner = glm::vec3(corner_x, corner_y, corner_z);
         auto edge0 = glm::vec3(edge0_x, edge0_y, edge0_z);
         auto edge1 = glm::vec3(edge1_x, edge1_y, edge1_z);
-        auto light = absl::make_unique<QuadLight>(glm::vec3(r, g, b), corner,
-                                                  edge0, edge1);
+        auto light = absl::make_unique<QuadLight>(color, corner, edge0, edge1);
         ws.scene->AddLight(std::move(light));
 
         // Also create two tris to represent the area light itself.
@@ -396,7 +431,7 @@ SceneConfig Parser::Parse() {
         auto tri0 = absl::make_unique<Tri>(va, vb, vc);
         auto tri1 = absl::make_unique<Tri>(vb, vd, vc);
         Material material;
-        material.emission = glm::vec3(1.0f);  // Full emission.
+        material.emission = color;  // Emit based on color.
         glm::mat4 identity(1.0f);
         tri0->material = material;
         tri0->transform = identity;
