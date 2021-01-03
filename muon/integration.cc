@@ -120,7 +120,7 @@ glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
     glm::vec3 incident_radiance = info.color;
 
     // Compute phi(r).
-    glm::vec3 irradiance_vector;
+    glm::vec3 irradiance_vector(0.0f);
 
     for (int i = 0; i < kNumVertices; ++i) {
       int next_i = (i + 1) % kNumVertices;
