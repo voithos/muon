@@ -30,6 +30,7 @@ enum class ParseCmd {
   // Camera commands.
   kCamera,
   // Geometry commands.
+  kComputeVertexNormals,
   kSphere,
   kVertex,
   kVertexNormal,
@@ -62,6 +63,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"lightsamples", ParseCmd::kLightSamples},
     {"lightstratify", ParseCmd::kLightStratify},
     {"camera", ParseCmd::kCamera},
+    {"computeVertexNormals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
     {"maxverts", ParseCmd::kIgnored},
     {"maxvertnorms", ParseCmd::kIgnored},
@@ -128,6 +130,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->height = defaults::kSceneHeight;
   ws.scene->max_depth = defaults::kMaxDepth;
   ws.scene->output = defaults::kOutput;
+  ws.scene->compute_vertex_normals = defaults::kComputeVertexNormals;
   ws.scene->light_samples = defaults::kLightSamples;
   ws.scene->light_stratify = defaults::kLightStratify;
   ws.scene->attenuation = defaults::kAttenuation;
@@ -169,7 +172,7 @@ SceneConfig Parser::Parse() {
       continue;
     }
 
-    VLOG(2) << "Read line: " << line;
+    VLOG(3) << "Read line: " << line;
     std::istringstream iss(line);
 
     // Extract command.
@@ -283,6 +286,23 @@ SceneConfig Parser::Parse() {
         break;
       }
         // Geometry commands.
+      case ParseCmd::kComputeVertexNormals: {
+        std::string vertex_normals;
+        iss >> vertex_normals;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (vertex_normals == "on") {
+          ws.scene->compute_vertex_normals = true;
+        } else if (vertex_normals == "off") {
+          ws.scene->compute_vertex_normals = false;
+        } else {
+          logBadLine(line);
+          break;
+        }
+        break;
+      }
       case ParseCmd::kSphere: {
         float x, y, z, radius;
         iss >> x >> y >> z >> radius;
@@ -304,6 +324,8 @@ SceneConfig Parser::Parse() {
         }
         Vertex vert;
         vert.pos = glm::vec3(x, y, z);
+        // We initialize the normals later.
+        vert.normal = glm::vec3(0.0f);
         ws.scene->AddVertex(vert);
         break;
       }
@@ -320,8 +342,17 @@ SceneConfig Parser::Parse() {
         }
         auto &vertices = ws.scene->vertices();
         auto tri =
-            absl::make_unique<Tri>(vertices[v0], vertices[v1], vertices[v2]);
+            absl::make_unique<Tri>(vertices[v0], vertices[v1], vertices[v2],
+                                   ws.scene->compute_vertex_normals);
         ws.UpdatePrimitive(*tri);
+        if (ws.scene->compute_vertex_normals) {
+          // Compute vertex normals additively. We will later need to normalize
+          // these.
+          auto normal = tri->Normal();
+          vertices[v0].normal += normal;
+          vertices[v1].normal += normal;
+          vertices[v2].normal += normal;
+        }
         ws.accel->AddPrimitive(std::move(tri));
         break;
       }
@@ -428,8 +459,8 @@ SceneConfig Parser::Parse() {
         vd.pos = corner + edge0 + edge1;
 
         // TODO: This is pretty gross. Can we improve this?
-        auto tri0 = absl::make_unique<Tri>(va, vb, vc);
-        auto tri1 = absl::make_unique<Tri>(vb, vd, vc);
+        auto tri0 = absl::make_unique<Tri>(va, vb, vc, false);
+        auto tri1 = absl::make_unique<Tri>(vb, vd, vc, false);
         Material material;
         material.emission = color;  // Emit based on color.
         glm::mat4 identity(1.0f);
@@ -496,6 +527,13 @@ SceneConfig Parser::Parse() {
         ws.material.emission = glm::vec3(r, g, b);
         break;
       }
+    }
+  }
+
+  if (ws.scene->compute_vertex_normals) {
+    // Normalize vertex normals.
+    for (auto &vertex : ws.scene->vertices()) {
+      vertex.normal = glm::normalize(vertex.normal);
     }
   }
 

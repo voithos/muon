@@ -134,6 +134,7 @@ cc_library(
         ":camera",
         ":transform",
         ":types",
+        "@com_github_google_glog//:glog",
         "@com_google_absl//absl/types:optional",
     ],
 )

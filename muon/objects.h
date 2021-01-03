@@ -14,6 +14,7 @@ namespace muon {
 
 struct Vertex {
   glm::vec3 pos;
+  glm::vec3 normal;
 };
 
 // Represents the material properties of an object.
@@ -73,23 +74,28 @@ class Primitive : public Intersectable {
 // Represents a triangle.
 class Tri : public Primitive {
  public:
-  Tri(const Vertex &v0, const Vertex &v1, const Vertex &v2);
+  Tri(Vertex &v0, Vertex &v1, Vertex &v2, bool use_vertex_normals);
   // IDEA: Instead of relying on IntersectObjectSpace, tris can pre-transform
   // their vertices once at startup for a speed improvement.
   absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) override;
   Bounds ObjectBounds() const override;
   Bounds WorldBounds() const override;
 
+  glm::vec3 Normal() const { return normal_; }
+
  private:
   // Vertices specified in counter-clockwise order.
-  Vertex v0_;
-  Vertex v1_;
-  Vertex v2_;
-  // Face normal.
+  Vertex &v0_;
+  Vertex &v1_;
+  Vertex &v2_;
+  // Face normal. Note, we store it unnormalized so that we can use it for the
+  // intersection calculations.
   glm::vec3 normal_;
   // Squared length of the face normal. Used in computing barycentric
   // coordinates.
   float normal_length2_;
+  // Whether or not to use the vertex normals instead of the tri's normal.
+  bool use_vertex_normals_;
 };
 
 // Represents a sphere.

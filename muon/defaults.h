@@ -20,6 +20,9 @@ constexpr int kMaxDepth = 5;
 // The output file name.
 constexpr char kOutput[] = "raytrace.png";
 
+// Whether or not to compute vertex normals.
+constexpr bool kComputeVertexNormals = false;
+
 // The number of samples per light.
 constexpr int kLightSamples = 1;
 

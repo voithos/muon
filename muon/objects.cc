@@ -1,5 +1,6 @@
 #include "muon/objects.h"
 
+#include "glog/logging.h"
 #include "muon/transform.h"
 
 namespace muon {
@@ -43,8 +44,8 @@ absl::optional<Intersection> Primitive::Intersect(const Ray &ray) {
   return intersection;
 }
 
-Tri::Tri(const Vertex &v0, const Vertex &v1, const Vertex &v2)
-    : v0_(v0), v1_(v1), v2_(v2) {
+Tri::Tri(Vertex &v0, Vertex &v1, Vertex &v2, bool use_vertex_normals)
+    : v0_(v0), v1_(v1), v2_(v2), use_vertex_normals_(use_vertex_normals) {
   // Calculate the surface normal by computing the cross product of the
   // triangle's edges.
   const glm::vec3 &edge_ba = v1_.pos - v0_.pos;
@@ -155,15 +156,19 @@ absl::optional<Intersection> Tri::IntersectObjectSpace(const Ray &ray) {
     return absl::nullopt;
   }
 
-  // TODO: Use these.
   u /= normal_length2_;
   v /= normal_length2_;
   w /= normal_length2_;
 
+  // Compute the intersection's normal based on the vertex normals.
+  glm::vec3 n = use_vertex_normals_
+                    ? w * v0_.normal + u * v1_.normal + v * v2_.normal
+                    : glm::normalize(normal_);
+
   return Intersection{
       .distance = t,
       .pos = p,
-      .normal = glm::normalize(normal_),
+      .normal = n,
       .obj = this,
   };
 }

@@ -22,6 +22,7 @@ class Scene {
   int height;
   int max_depth;
   std::string output;
+  bool compute_vertex_normals;
 
   // Integrator properties.
   int light_samples;
