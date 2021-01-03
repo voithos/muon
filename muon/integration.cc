@@ -174,11 +174,38 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
   // themselves.
   glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
 
+  glm::vec3 reflected_dir =
+      ray.direction() -
+      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
+
   // Trace the light contributions.
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
-    // Skip non-area lights.
+    // Special case for non-area lights.
+    // TODO: This is messy and should probably be refactored. Move the BRDF
+    // calculation into the materials?
+    // TODO: I'm unconvinced that this is physically accurate...
     if (info.area == nullptr) {
+      Ray shadow_ray(shift_pos, info.direction);
+      if (scene_.root->HasIntersection(shadow_ray, info.distance)) {
+        // Light is occluded.
+        continue;
+      }
+      glm::vec3 irradiance = info.color;
+      if (info.distance < std::numeric_limits<float>::infinity()) {
+        irradiance /= info.distance * info.distance;
+      }
+      float cos_incident_angle =
+          glm::max(glm::dot(hit.normal, info.direction), 0.0f);
+      glm::vec3 diffuse = hit.obj->material.diffuse * glm::one_over_pi<float>();
+      glm::vec3 specular =
+          hit.obj->material.specular * (hit.obj->material.shininess + 2.0f) *
+          (0.5f * glm::one_over_pi<float>()) *
+          glm::pow(glm::max(glm::dot(reflected_dir, info.direction), 0.0f),
+                   hit.obj->material.shininess);
+      glm::vec3 phong_brdf = diffuse + specular;
+
+      color += irradiance * cos_incident_angle * phong_brdf;
       continue;
     }
 
@@ -198,10 +225,6 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
         glm::length(glm::cross(info.area->edge0, info.area->edge1));
     glm::vec3 light_reverse_normal =
         glm::normalize(glm::cross(info.area->edge0, info.area->edge1));
-
-    glm::vec3 reflected_dir =
-        ray.direction() -
-        (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
 
     // Sum the contributions of all samples. If enabled, we subdivide the
     // light's area via stratified sampling. Note, we assume that the number of

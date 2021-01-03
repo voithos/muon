@@ -60,6 +60,8 @@ class MonteCarloDirect : public Integrator {
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
                           const int depth) override;
+
+ private:
   // RNG and seed device for monte carlo. We use the Mersenne Twister because
   // it has high-quality characteristics.
   std::random_device rd;
