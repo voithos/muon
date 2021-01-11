@@ -39,6 +39,7 @@ class Scene {
   std::unique_ptr<Intersectable> root;
 
   void AddVertex(Vertex vert);
+  Vertex &GenVertex();
 
   using Lights = std::vector<std::unique_ptr<Light>>;
 
@@ -51,6 +52,10 @@ class Scene {
 
  private:
   std::vector<Vertex> vertices_;
+  // Vertices that are generated (for e.g. things like lights), as opposed to
+  // specified in the scene file.
+  // TODO: Is there a better way to do this?
+  std::vector<std::unique_ptr<Vertex>> gen_vertices_;
   Lights lights_;
 };
 

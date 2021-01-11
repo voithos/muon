@@ -452,7 +452,10 @@ SceneConfig Parser::Parse() {
         ws.scene->AddLight(std::move(light));
 
         // Also create two tris to represent the area light itself.
-        Vertex va, vb, vc, vd;
+        Vertex &va = ws.scene->GenVertex();
+        Vertex &vb = ws.scene->GenVertex();
+        Vertex &vc = ws.scene->GenVertex();
+        Vertex &vd = ws.scene->GenVertex();
         va.pos = corner;
         vb.pos = corner + edge0;
         vc.pos = corner + edge1;

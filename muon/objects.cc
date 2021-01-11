@@ -1,6 +1,7 @@
 #include "muon/objects.h"
 
 #include "glog/logging.h"
+#include "muon/strings.h"
 #include "muon/transform.h"
 
 namespace muon {

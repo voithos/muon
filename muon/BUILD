@@ -135,6 +135,7 @@ cc_library(
         ":bounds",
         ":camera",
         ":materials",
+        ":strings",
         ":transform",
         ":types",
         ":vertex",
