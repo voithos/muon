@@ -63,6 +63,16 @@ static inline std::string pprint(const glm::mat4 &mat) {
   return ss.str();
 }
 
+static inline std::string pprint(const glm::vec3 &vec) {
+  std::stringstream ss;
+  ss << "[ ";
+  for (int i = 0; i < 3; ++i) {
+    ss << std::setw(15) << vec[i];
+  }
+  ss << " ]";
+  return ss.str();
+}
+
 }  // namespace muon
 
 #endif
