@@ -197,13 +197,8 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
       }
       float cos_incident_angle =
           glm::max(glm::dot(hit.normal, info.direction), 0.0f);
-      glm::vec3 diffuse = hit.obj->material.diffuse * glm::one_over_pi<float>();
-      glm::vec3 specular =
-          hit.obj->material.specular * (hit.obj->material.shininess + 2.0f) *
-          (0.5f * glm::one_over_pi<float>()) *
-          glm::pow(glm::max(glm::dot(reflected_dir, info.direction), 0.0f),
-                   hit.obj->material.shininess);
-      glm::vec3 phong_brdf = diffuse + specular;
+      glm::vec3 phong_brdf =
+          brdf::Phong(hit.obj->material, info.direction, reflected_dir);
 
       color += irradiance * cos_incident_angle * phong_brdf;
       continue;
@@ -274,21 +269,8 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
           float geometry_term = cos_incident_angle * cos_light_emission_angle /
                                 (light_distance * light_distance);
 
-          // Compute the BRDF. We use a BRDF-compatible version of the Phong
-          // reflection model:
-          //   f(w_i, w_o) =
-          //       (k_d / pi) + (k_s * (s + 2) / (2 * pi)) * (r • w_i)^s
-          // where k_d is the diffuse color, k_s is the specular color, s is
-          // shininess, and r is the reflection vector.
-          glm::vec3 diffuse =
-              hit.obj->material.diffuse * glm::one_over_pi<float>();
-          glm::vec3 specular =
-              hit.obj->material.specular *
-              (hit.obj->material.shininess + 2.0f) *
-              (0.5f * glm::one_over_pi<float>()) *
-              glm::pow(glm::max(glm::dot(reflected_dir, light_dir), 0.0f),
-                       hit.obj->material.shininess);
-          glm::vec3 phong_brdf = diffuse + specular;
+          glm::vec3 phong_brdf =
+              brdf::Phong(hit.obj->material, light_dir, reflected_dir);
 
           sample_contributions += geometry_term * phong_brdf;
         }

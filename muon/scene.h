@@ -10,6 +10,7 @@
 #include "muon/lighting.h"
 #include "muon/objects.h"
 #include "muon/types.h"
+#include "muon/vertex.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {

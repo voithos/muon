@@ -6,6 +6,7 @@
 #include "muon/acceleration.h"
 #include "muon/acceleration_type.h"
 #include "muon/integration.h"
+#include "muon/materials.h"
 #include "muon/options.h"
 #include "muon/scene.h"
 #include "muon/stats.h"

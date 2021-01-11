@@ -1,13 +1,12 @@
 # TODO
 
 ## Features
-- [ ] Per-vertex normals
 - [ ] Recursive refraction
-- [ ] Area light source / stratified sampling
 - [ ] Antialiasing
 - [ ] More complex reflectance models, Torrance-Sparrow?
 - [ ] Other camera types, like orthographic
 - [ ] Support for a common file format (obj, glTF, USD?)
+- [ ] Tone mapping of the output image (gamma correction?)
 
 ## Scenes
 - [ ] Utah teapot
@@ -28,3 +27,5 @@
       avoid intersecting farther bounding boxes. Use the sign of the ray's
       direction vector for the coordinate axis along which the BVH node was
       split
+- [x] Per-vertex normals
+- [x] Area light source / stratified sampling

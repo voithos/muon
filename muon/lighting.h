@@ -2,7 +2,6 @@
 #define MUON_LIGHTING_H_
 
 #include "muon/camera.h"
-#include "muon/objects.h"
 #include "muon/types.h"
 #include "third_party/glm/glm.hpp"
 

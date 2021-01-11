@@ -7,26 +7,12 @@
 #include "absl/types/optional.h"
 #include "muon/bounds.h"
 #include "muon/camera.h"
+#include "muon/materials.h"
 #include "muon/types.h"
+#include "muon/vertex.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
-
-struct Vertex {
-  glm::vec3 pos;
-  glm::vec3 normal;
-};
-
-// Represents the material properties of an object.
-class Material {
- public:
-  glm::vec3 ambient = glm::vec3(0.0f);
-  glm::vec3 diffuse = glm::vec3(0.0f);
-  glm::vec3 specular = glm::vec3(0.0f);
-  glm::vec3 emission = glm::vec3(0.0f);
-
-  float shininess = 0.0f;
-};
 
 // Represents an object that supports intersection tests.
 class Intersectable {

@@ -47,6 +47,7 @@ cc_library(
         ":defaults",
         ":integration",
         ":lighting",
+        ":materials",
         ":options",
         ":scene",
         ":stats",
@@ -69,8 +70,10 @@ cc_library(
     deps = [
         ":camera",
         ":lighting",
+        ":objects",
         ":strings",
         ":types",
+        ":vertex",
         "//third_party/glm",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/types:optional",
@@ -114,7 +117,6 @@ cc_library(
     hdrs = ["lighting.h"],
     deps = [
         ":camera",
-        ":objects",
         ":types",
         "//third_party/glm",
     ],
@@ -132,8 +134,10 @@ cc_library(
     deps = [
         ":bounds",
         ":camera",
+        ":materials",
         ":transform",
         ":types",
+        ":vertex",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/types:optional",
     ],
@@ -211,5 +215,22 @@ cc_library(
     hdrs = ["options.h"],
     deps = [
         ":acceleration_type",
+    ],
+)
+
+cc_library(
+    name = "vertex",
+    hdrs = ["vertex.h"],
+    deps = [
+        "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "materials",
+    srcs = ["materials.cc"],
+    hdrs = ["materials.h"],
+    deps = [
+        "//third_party/glm",
     ],
 )
