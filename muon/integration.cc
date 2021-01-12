@@ -13,6 +13,8 @@ glm::vec3 Integrator::Trace(const Ray &ray) {
 }
 
 glm::vec3 Integrator::Trace(const Ray &ray, const int depth) {
+  // TODO: Switch the depth calculation to check against max_depth, for
+  // readability. Right now it goes to zero.
   if (depth == 0) {
     return glm::vec3(0.0f);
   }
@@ -178,7 +180,18 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
       ray.direction() -
       (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
 
-  // Trace the light contributions.
+  // Trace the direct light contributions.
+  color += ShadeDirect(hit, shift_pos, reflected_dir);
+
+  return color;
+}
+
+glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
+                                        const glm::vec3 &shift_pos,
+                                        const glm::vec3 &reflected_dir) {
+  glm::vec3 color(0.0f);
+
+  // Calculate direct lighting contributions .
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
     // Special case for non-area lights.
@@ -328,39 +341,63 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // Carlo estimator for the rendering equation, including both direct and
   // indirect terms.
   //
+  // In order to improve performance, we can compute the direct lighting at
+  // each intersection explicitly from our lighting information, instead of
+  // relying on the indirect accumulation via secondary rays that eventually
+  // make their way to a light source. This approach is known as next event
+  // estimation, and we must avoid double-counting the direct light
+  // contribution when we do this.
+  //
   // We only trace a single secondary ray at each iteration point because the
   // contribution attenuates after each "bounce" based on the BRDF and cosine
   // terms, meaning that it's more efficient to have many primary rays (since
   // their contribution is strongest) instead of having "bushy" secondary rays
   // per intersection.
 
-  // Only consider emission for base lighting.
-  glm::vec3 color = hit.obj->material.emission;
+  // Only consider emission for base lighting, but take special care when we're
+  // using next event estimation. Since emission from the first intersection is
+  // not sampled by NEE, we accumulate it _only_ for the first intersection and
+  // ignore it for subsequent depths.
+  // TODO: We treat emission objects and "lights" a bit differently, and
+  // probably incorrectly. Fix this.
+  glm::vec3 color;
+  if (scene_.next_event_estimation && depth < scene_.max_depth) {
+    color = glm::vec3(0.0f);
+  } else {
+    color = hit.obj->material.emission;
+  }
+
   // As a base case, return just the emission when we have reached our final
-  // depth.
-  if (depth == 1) {
+  // depth. If NEE is enabled, the path length effectively already gets
+  // extended by 1 due to the direct light sampling, so check for that here.
+  if (depth == 1 || (scene_.next_event_estimation && depth == 2)) {
     return color;
   }
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
   // themselves.
   glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
+  glm::vec3 reflected_dir =
+      ray.direction() -
+      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
+
+  if (scene_.next_event_estimation) {
+    // Trace the direct light contributions for next event estimation.
+    color += ShadeDirect(hit, shift_pos, reflected_dir);
+  }
+
   // We uniformly sample the hemisphere around the surface normal for an
   // outgoing direction.
   glm::vec3 sampled_dir = SampleHemisphere(hit.normal);
 
-  // Compute the BRDF and cosine terms.
-  glm::vec3 reflected_dir =
-      ray.direction() -
-      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
-  glm::vec3 phong_brdf =
-      brdf::Phong(hit.obj->material, sampled_dir, reflected_dir);
-
-  float cosine_term = glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
-
   // Trace the sampled ray.
   Ray sampled_ray(shift_pos, sampled_dir);
   glm::vec3 sampled_color = Trace(sampled_ray, depth - 1);
+
+  // Compute the BRDF and cosine terms.
+  glm::vec3 phong_brdf =
+      brdf::Phong(hit.obj->material, sampled_dir, reflected_dir);
+  float cosine_term = glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
 
   // For the final value of the sample, we divide by the sample's probability
   // density function, which in this case equates to a multiply by 2*pi (since

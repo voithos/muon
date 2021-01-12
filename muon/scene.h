@@ -29,6 +29,7 @@ class Scene {
   int samples_per_pixel;
   int light_samples;
   bool light_stratify;
+  bool next_event_estimation;
 
   // Global lighting properties.
   glm::vec3 attenuation;

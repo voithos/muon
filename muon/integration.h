@@ -73,12 +73,17 @@ class MonteCarloDirect : public MonteCarlo {
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
                           const int depth) override;
+
+  // Shades an intersection with only the direct lighting contribution, without
+  // any indirect recursion.
+  glm::vec3 ShadeDirect(const Intersection &hit, const glm::vec3 &shift_pos,
+                        const glm::vec3 &reflected_dir);
 };
 
 // A Monte Carlo based path tracer that handles indirect lighting.
-class PathTracer : public MonteCarlo {
+class PathTracer : public MonteCarloDirect {
  public:
-  explicit PathTracer(Scene &scene) : MonteCarlo(scene) {}
+  explicit PathTracer(Scene &scene) : MonteCarloDirect(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,

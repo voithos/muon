@@ -28,6 +28,7 @@ enum class ParseCmd {
   kSamplesPerPixel,
   kLightSamples,
   kLightStratify,
+  kNextEventEstimation,
   // Camera commands.
   kCamera,
   // Geometry commands.
@@ -64,6 +65,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"spp", ParseCmd::kSamplesPerPixel},
     {"lightsamples", ParseCmd::kLightSamples},
     {"lightstratify", ParseCmd::kLightStratify},
+    {"nexteventestimation", ParseCmd::kNextEventEstimation},
     {"camera", ParseCmd::kCamera},
     {"computeVertexNormals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
@@ -136,6 +138,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->samples_per_pixel = defaults::kSamplesPerPixel;
   ws.scene->light_samples = defaults::kLightSamples;
   ws.scene->light_stratify = defaults::kLightStratify;
+  ws.scene->next_event_estimation = defaults::kNextEventEstimation;
   ws.scene->attenuation = defaults::kAttenuation;
 }
 
@@ -278,6 +281,23 @@ SceneConfig Parser::Parse() {
           ws.scene->light_stratify = true;
         } else if (light_stratify == "off") {
           ws.scene->light_stratify = false;
+        } else {
+          logBadLine(line);
+          break;
+        }
+        break;
+      }
+      case ParseCmd::kNextEventEstimation: {
+        std::string next_event_estimation;
+        iss >> next_event_estimation;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (next_event_estimation == "on") {
+          ws.scene->next_event_estimation = true;
+        } else if (next_event_estimation == "off") {
+          ws.scene->next_event_estimation = false;
         } else {
           logBadLine(line);
           break;

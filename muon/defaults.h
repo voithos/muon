@@ -32,6 +32,9 @@ constexpr int kLightSamples = 1;
 // Whether or not to stratify light sampling.
 constexpr bool kLightStratify = false;
 
+// Whether or not to enable next event estimation.
+constexpr bool kNextEventEstimation = false;
+
 // Light attenuation, in terms of constant, linear, and quadratic.
 static const glm::vec3 kAttenuation = glm::vec3(1.0f, 0.0f, 0.0f);
 
