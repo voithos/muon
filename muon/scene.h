@@ -26,6 +26,7 @@ class Scene {
   bool compute_vertex_normals;
 
   // Integrator properties.
+  int samples_per_pixel;
   int light_samples;
   bool light_stratify;
 

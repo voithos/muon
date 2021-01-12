@@ -96,6 +96,7 @@ cc_library(
     srcs = ["sampler.cc"],
     hdrs = ["sampler.h"],
     deps = [
+        "@com_github_google_glog//:glog",
     ],
 )
 

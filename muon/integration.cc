@@ -287,4 +287,89 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
   return color;
 }
 
+glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
+  // Generate spherical coordinates using two random numbers in [0, 1).
+  float r1 = rand_(gen_);
+  float r2 = rand_(gen_);
+  float theta = glm::acos(r1);
+  float phi = 2.0f * glm::pi<float>() * r2;
+
+  glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
+              glm::cos(theta));
+
+  // We now have a hemisphere sample, but it's centered about the z-axis. We
+  // instead want to sample around the hemisphere centered about the normal of
+  // the surface, so we want to rotate the sample. We can do so by constructing
+  // an orthonormal coordinate frame around the normal and projecting the
+  // sample onto it.
+  const glm::vec3 &w = normal;
+  // Arbitrarily use the up vector to generate the coordinate frame, except if
+  // the normal is too close to it.
+  glm::vec3 a =
+      w.y <= 0.9f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
+  glm::vec3 u = glm::normalize(glm::cross(a, w));
+  glm::vec3 v = glm::normalize(glm::cross(w, u));
+
+  // Now we rotate s to find the final sample.
+  return s.x * u + s.y * v + s.z * w;
+}
+
+glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
+                            const int depth) {
+  // For physically based rendering, the rendering equation defines the
+  // reflected radiance:
+  //   L_r(w_o) = L_e(w_o) + ∫_omega(f(w_i, w_o) * L_i(w_i) * (n • w_i) * dw_i)
+  // where L_r is the reflected radiance, L_e is the emitted radiance, L_i is
+  // the incident radiance along some incident direction w_i, w_o is the
+  // outgoing direction, f() is the BRDF, n is the surface normal, and ∫_omega
+  // is the integral over all directions in the unit hemisphere.
+  //
+  // Each step of this integrator represents a single evaluation of the Monte
+  // Carlo estimator for the rendering equation, including both direct and
+  // indirect terms.
+  //
+  // We only trace a single secondary ray at each iteration point because the
+  // contribution attenuates after each "bounce" based on the BRDF and cosine
+  // terms, meaning that it's more efficient to have many primary rays (since
+  // their contribution is strongest) instead of having "bushy" secondary rays
+  // per intersection.
+
+  // Only consider emission for base lighting.
+  glm::vec3 color = hit.obj->material.emission;
+  // As a base case, return just the emission when we have reached our final
+  // depth.
+  if (depth == 1) {
+    return color;
+  }
+
+  // Shift the collision point by an epsilon to avoid surfaces shadowing
+  // themselves.
+  glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
+  // We uniformly sample the hemisphere around the surface normal for an
+  // outgoing direction.
+  glm::vec3 sampled_dir = SampleHemisphere(hit.normal);
+
+  // Compute the BRDF and cosine terms.
+  glm::vec3 reflected_dir =
+      ray.direction() -
+      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
+  glm::vec3 phong_brdf =
+      brdf::Phong(hit.obj->material, sampled_dir, reflected_dir);
+
+  float cosine_term = glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+
+  // Trace the sampled ray.
+  Ray sampled_ray(shift_pos, sampled_dir);
+  glm::vec3 sampled_color = Trace(sampled_ray, depth - 1);
+
+  // For the final value of the sample, we divide by the sample's probability
+  // density function, which in this case equates to a multiply by 2*pi (since
+  // there are 2*pi steradians in a hemisphere). Note that the brdf and cosine
+  // terms suffice to model all physically based attenuation, since radiance
+  // does not attenuate with distance.
+  color += 2.0f * glm::pi<float>() * sampled_color * phong_brdf * cosine_term;
+
+  return color;
+}
+
 }  // namespace muon

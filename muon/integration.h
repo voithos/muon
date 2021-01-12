@@ -51,22 +51,42 @@ class AnalyticDirect : public Integrator {
                           const int depth) override;
 };
 
-// A Monte Carlo integrator that calculates direct lighting contributions only.
-class MonteCarloDirect : public Integrator {
+// Base class for Monte Carlo based integrators.
+class MonteCarlo : public Integrator {
  public:
-  explicit MonteCarloDirect(Scene &scene)
-      : Integrator(scene), gen_(rd()), rand_(0.0f, 1.0f) {}
+  explicit MonteCarlo(Scene &scene)
+      : Integrator(scene), gen_(rd_()), rand_(0.0f, 1.0f) {}
+
+ protected:
+  // RNG and seed device for monte carlo. We use the Mersenne Twister because
+  // it has high-quality characteristics.
+  std::random_device rd_;
+  std::mt19937 gen_;
+  std::uniform_real_distribution<float> rand_;
+};
+
+// A Monte Carlo integrator that calculates direct lighting contributions only.
+class MonteCarloDirect : public MonteCarlo {
+ public:
+  explicit MonteCarloDirect(Scene &scene) : MonteCarlo(scene) {}
+
+ protected:
+  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const int depth) override;
+};
+
+// A Monte Carlo based path tracer that handles indirect lighting.
+class PathTracer : public MonteCarlo {
+ public:
+  explicit PathTracer(Scene &scene) : MonteCarlo(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
                           const int depth) override;
 
  private:
-  // RNG and seed device for monte carlo. We use the Mersenne Twister because
-  // it has high-quality characteristics.
-  std::random_device rd;
-  std::mt19937 gen_;
-  std::uniform_real_distribution<float> rand_;
+  // Uniformly samples a unit hemisphere centered about the given normal.
+  glm::vec3 SampleHemisphere(const glm::vec3 &normal);
 };
 
 }  // namespace muon

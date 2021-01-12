@@ -25,6 +25,7 @@ enum class ParseCmd {
   kOutput,
   // Integrator commands.
   kIntegrator,
+  kSamplesPerPixel,
   kLightSamples,
   kLightStratify,
   // Camera commands.
@@ -60,6 +61,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"maxdepth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
     {"integrator", ParseCmd::kIntegrator},
+    {"spp", ParseCmd::kSamplesPerPixel},
     {"lightsamples", ParseCmd::kLightSamples},
     {"lightstratify", ParseCmd::kLightStratify},
     {"camera", ParseCmd::kCamera},
@@ -131,6 +133,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->max_depth = defaults::kMaxDepth;
   ws.scene->output = defaults::kOutput;
   ws.scene->compute_vertex_normals = defaults::kComputeVertexNormals;
+  ws.scene->samples_per_pixel = defaults::kSamplesPerPixel;
   ws.scene->light_samples = defaults::kLightSamples;
   ws.scene->light_stratify = defaults::kLightStratify;
   ws.scene->attenuation = defaults::kAttenuation;
@@ -236,10 +239,22 @@ SceneConfig Parser::Parse() {
           ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
         } else if (type == "direct") {
           ws.integrator = absl::make_unique<MonteCarloDirect>(*ws.scene);
+        } else if (type == "pathtracer") {
+          ws.integrator = absl::make_unique<PathTracer>(*ws.scene);
         } else {
           logBadLine(line);
           break;
         }
+        break;
+      }
+      case ParseCmd::kSamplesPerPixel: {
+        int samples_per_pixel;
+        iss >> samples_per_pixel;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.scene->samples_per_pixel = samples_per_pixel;
         break;
       }
       case ParseCmd::kLightSamples: {

@@ -20,8 +20,10 @@ void Renderer::Render() {
   SceneConfig sc = parser.Parse();
   stats.BuildComplete();
 
-  Film film(sc.scene->width, sc.scene->height, sc.scene->output);
-  Sampler sampler(sc.scene->width, sc.scene->height);
+  Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
+            sc.scene->output);
+  Sampler sampler(sc.scene->width, sc.scene->height,
+                  sc.scene->samples_per_pixel);
   stats.SetTotalSamples(sampler.TotalSamples());
 
   // TODO: Refactor progress into separate class.
