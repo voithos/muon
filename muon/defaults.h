@@ -35,6 +35,9 @@ constexpr bool kLightStratify = false;
 // Whether or not to enable next event estimation.
 constexpr bool kNextEventEstimation = false;
 
+// Whether or not to enable Russian Roulette.
+constexpr bool kRussianRoulette = false;
+
 // Light attenuation, in terms of constant, linear, and quadratic.
 static const glm::vec3 kAttenuation = glm::vec3(1.0f, 0.0f, 0.0f);
 

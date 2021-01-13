@@ -5,14 +5,16 @@
 #include "glog/logging.h"
 #include "muon/lighting.h"
 #include "third_party/glm/gtc/constants.hpp"
+#include "third_party/glm/gtx/component_wise.hpp"
 
 namespace muon {
 
 glm::vec3 Integrator::Trace(const Ray &ray) {
-  return Trace(ray, scene_.max_depth);
+  return Trace(ray, glm::vec3(1.0f), scene_.max_depth);
 }
 
-glm::vec3 Integrator::Trace(const Ray &ray, const int depth) {
+glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
+                            const int depth) {
   // TODO: Switch the depth calculation to check against max_depth, for
   // readability. Right now it goes to zero.
   if (depth == 0) {
@@ -20,13 +22,13 @@ glm::vec3 Integrator::Trace(const Ray &ray, const int depth) {
   }
   absl::optional<Intersection> hit = scene_.root->Intersect(ray);
   if (hit) {
-    return Shade(hit.value(), ray, depth);
+    return Shade(hit.value(), ray, throughput, depth);
   }
   return glm::vec3(0.0f);
 }
 
 glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
-                           const int depth) {
+                           const glm::vec3 &throughput, const int depth) {
   glm::vec3 color = hit.obj->material.ambient + hit.obj->material.emission;
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
@@ -62,7 +64,7 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
         2.0f * glm::dot(hit.normal, ray.direction()) * hit.normal;
     Ray reflected_ray(shift_pos, reflected_dir);
 
-    glm::vec3 reflected_color = Trace(reflected_ray, depth - 1);
+    glm::vec3 reflected_color = Trace(reflected_ray, throughput, depth - 1);
     color += hit.obj->material.specular * reflected_color;
   }
 
@@ -70,7 +72,7 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
 }
 
 glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
-                                const int depth) {
+                                const glm::vec3 &throughput, const int depth) {
   // For physically based rendering, the rendering equation defines the
   // reflected radiance:
   //   L_r(w_o) = L_e(w_o) + ∫_omega(f(w_i, w_o) * L_i(w_i) * (n • w_i) * dw_i)
@@ -145,6 +147,7 @@ glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
 }
 
 glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
+                                  const glm::vec3 &throughput,
                                   const int depth) {
   // For physically based rendering, the rendering equation defines the
   // reflected radiance:
@@ -181,14 +184,15 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
       (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
 
   // Trace the direct light contributions.
-  color += ShadeDirect(hit, shift_pos, reflected_dir);
+  color += ShadeDirect(hit, shift_pos, reflected_dir, throughput);
 
   return color;
 }
 
 glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
                                         const glm::vec3 &shift_pos,
-                                        const glm::vec3 &reflected_dir) {
+                                        const glm::vec3 &reflected_dir,
+                                        const glm::vec3 &throughput) {
   glm::vec3 color(0.0f);
 
   // Calculate direct lighting contributions .
@@ -297,7 +301,7 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
     color += info.color * sample_contributions;
   }
 
-  return color;
+  return throughput * color;
 }
 
 glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
@@ -328,7 +332,7 @@ glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
 }
 
 glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
-                            const int depth) {
+                            const glm::vec3 &throughput, const int depth) {
   // For physically based rendering, the rendering equation defines the
   // reflected radiance:
   //   L_r(w_o) = L_e(w_o) + ∫_omega(f(w_i, w_o) * L_i(w_i) * (n • w_i) * dw_i)
@@ -353,6 +357,15 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // terms, meaning that it's more efficient to have many primary rays (since
   // their contribution is strongest) instead of having "bushy" secondary rays
   // per intersection.
+  //
+  // Further, we can randomly terminate paths with a probability proportional
+  // to their current throughput (e.g. how much they'll affect the final
+  // color), and then "boost" any paths that survive this test by the inverse
+  // of that probability to remain unbiased. This is a technique known as
+  // Russian Roulette, and allows us to drop lengthy computations in a deep
+  // path which won't contribute much to the final radiance, without
+  // introducing bias.
+  //
 
   // Only consider emission for base lighting, but take special care when we're
   // using next event estimation. Since emission from the first intersection is
@@ -364,13 +377,16 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   if (scene_.next_event_estimation && depth < scene_.max_depth) {
     color = glm::vec3(0.0f);
   } else {
-    color = hit.obj->material.emission;
+    color = throughput * hit.obj->material.emission;
   }
 
-  // As a base case, return just the emission when we have reached our final
-  // depth. If NEE is enabled, the path length effectively already gets
-  // extended by 1 due to the direct light sampling, so check for that here.
-  if (depth == 1 || (scene_.next_event_estimation && depth == 2)) {
+  // When Russian Roulette is enabled, we rely on it to probabilistically end
+  // paths. Without it, as a base case, return just the emission when we have
+  // reached our final depth. If NEE is enabled, the path length effectively
+  // already gets extended by 1 due to the direct light sampling, so check for
+  // that here.
+  if (!scene_.russian_roulette &&
+      (depth == 1 || (scene_.next_event_estimation && depth == 2))) {
     return color;
   }
 
@@ -383,16 +399,12 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
 
   if (scene_.next_event_estimation) {
     // Trace the direct light contributions for next event estimation.
-    color += ShadeDirect(hit, shift_pos, reflected_dir);
+    color += ShadeDirect(hit, shift_pos, reflected_dir, throughput);
   }
 
   // We uniformly sample the hemisphere around the surface normal for an
   // outgoing direction.
   glm::vec3 sampled_dir = SampleHemisphere(hit.normal);
-
-  // Trace the sampled ray.
-  Ray sampled_ray(shift_pos, sampled_dir);
-  glm::vec3 sampled_color = Trace(sampled_ray, depth - 1);
 
   // Compute the BRDF and cosine terms.
   glm::vec3 phong_brdf =
@@ -401,10 +413,37 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
 
   // For the final value of the sample, we divide by the sample's probability
   // density function, which in this case equates to a multiply by 2*pi (since
-  // there are 2*pi steradians in a hemisphere). Note that the brdf and cosine
-  // terms suffice to model all physically based attenuation, since radiance
-  // does not attenuate with distance.
-  color += 2.0f * glm::pi<float>() * sampled_color * phong_brdf * cosine_term;
+  // there are 2*pi steradians in a hemisphere). The BRDF, cosine term, and
+  // sampling PDF together make up the throughput at the current vertex, and we
+  // keep track of the current ray's throughput as a recursive product of this,
+  // which we pass along to the next indirect ray (note that we don't multiply
+  // the result of Trace() with the new throughput, as that would apply it
+  // twice).
+  // Note that the BRDF and cosine terms suffice to model all
+  // physically based attenuation, since radiance does not attenuate with
+  // distance.
+  glm::vec3 next_throughput =
+      throughput * 2.0f * glm::pi<float>() * phong_brdf * cosine_term;
+
+  // Handle Russian Roulette.
+  if (scene_.russian_roulette) {
+    // Randomly terminate paths with a probability proportional to their
+    // current throughput. This allows us to drop paths that won't be
+    // contributing much to the final color anyway.
+    float continuation_probability =
+        glm::min(glm::compMax(next_throughput), 1.0f);
+    if (continuation_probability < rand_(gen_)) {
+      return color;
+    }
+
+    // Add back the energy we lose by randomly terminating paths, in order to
+    // remain unbiased.
+    next_throughput /= continuation_probability;
+  }
+
+  // Trace the sampled ray.
+  Ray sampled_ray(shift_pos, sampled_dir);
+  color += Trace(sampled_ray, next_throughput, depth - 1);
 
   return color;
 }

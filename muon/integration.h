@@ -17,13 +17,13 @@ class Integrator {
 
   // Traces a ray against the scene and returns a traced color.
   glm::vec3 Trace(const Ray &ray);
-  glm::vec3 Trace(const Ray &ray, const int depth);
+  glm::vec3 Trace(const Ray &ray, const glm::vec3 &throughput, const int depth);
 
  protected:
   // Shades an intersection based on the current scene lighting, returning the
   // resulting color.
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
-                          const int depth) = 0;
+                          const glm::vec3 &throughput, const int depth) = 0;
 
   Scene &scene_;
 };
@@ -36,6 +36,7 @@ class Raytracer : public Integrator {
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
                           const int depth) override;
 };
 
@@ -48,6 +49,7 @@ class AnalyticDirect : public Integrator {
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
                           const int depth) override;
 };
 
@@ -72,12 +74,14 @@ class MonteCarloDirect : public MonteCarlo {
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
                           const int depth) override;
 
   // Shades an intersection with only the direct lighting contribution, without
   // any indirect recursion.
   glm::vec3 ShadeDirect(const Intersection &hit, const glm::vec3 &shift_pos,
-                        const glm::vec3 &reflected_dir);
+                        const glm::vec3 &reflected_dir,
+                        const glm::vec3 &throughput);
 };
 
 // A Monte Carlo based path tracer that handles indirect lighting.
@@ -87,6 +91,7 @@ class PathTracer : public MonteCarloDirect {
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
                           const int depth) override;
 
  private:

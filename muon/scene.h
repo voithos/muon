@@ -26,10 +26,12 @@ class Scene {
   bool compute_vertex_normals;
 
   // Integrator properties.
+  // TODO: Move these into a separate struct.
   int samples_per_pixel;
   int light_samples;
   bool light_stratify;
   bool next_event_estimation;
+  bool russian_roulette;
 
   // Global lighting properties.
   glm::vec3 attenuation;

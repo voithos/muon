@@ -29,6 +29,7 @@ enum class ParseCmd {
   kLightSamples,
   kLightStratify,
   kNextEventEstimation,
+  kRussianRoulette,
   // Camera commands.
   kCamera,
   // Geometry commands.
@@ -66,6 +67,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"lightsamples", ParseCmd::kLightSamples},
     {"lightstratify", ParseCmd::kLightStratify},
     {"nexteventestimation", ParseCmd::kNextEventEstimation},
+    {"russianroulette", ParseCmd::kRussianRoulette},
     {"camera", ParseCmd::kCamera},
     {"computeVertexNormals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
@@ -139,6 +141,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->light_samples = defaults::kLightSamples;
   ws.scene->light_stratify = defaults::kLightStratify;
   ws.scene->next_event_estimation = defaults::kNextEventEstimation;
+  ws.scene->russian_roulette = defaults::kRussianRoulette;
   ws.scene->attenuation = defaults::kAttenuation;
 }
 
@@ -298,6 +301,23 @@ SceneConfig Parser::Parse() {
           ws.scene->next_event_estimation = true;
         } else if (next_event_estimation == "off") {
           ws.scene->next_event_estimation = false;
+        } else {
+          logBadLine(line);
+          break;
+        }
+        break;
+      }
+      case ParseCmd::kRussianRoulette: {
+        std::string russian_roulette;
+        iss >> russian_roulette;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (russian_roulette == "on") {
+          ws.scene->russian_roulette = true;
+        } else if (russian_roulette == "off") {
+          ws.scene->russian_roulette = false;
         } else {
           logBadLine(line);
           break;
