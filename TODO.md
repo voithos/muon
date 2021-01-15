@@ -2,17 +2,15 @@
 
 ## Features
 - [ ] Recursive refraction
-- [ ] Antialiasing
 - [ ] More complex reflectance models, Torrance-Sparrow?
 - [ ] Other camera types, like orthographic
 - [ ] Support for a common file format (obj, glTF, USD?)
 - [ ] Tone mapping of the output image (gamma correction?)
+- [ ] Allow separate rendering of direct and bounce light
 
 ## Scenes
 - [ ] Utah teapot
-- [ ] Cornell box
 - [ ] Stanford bunny
-- [ ] Stanford dragon
 - [ ] pbrt scenes?
 
 ## Performance improvements
@@ -29,3 +27,6 @@
       split
 - [x] Per-vertex normals
 - [x] Area light source / stratified sampling
+- [x] Antialiasing
+- [x] Cornell box
+- [x] Stanford dragon
