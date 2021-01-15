@@ -1,7 +1,5 @@
 #include "muon/sampler.h"
 
-#include <stdexcept>
-
 #include "glog/logging.h"
 
 namespace muon {
@@ -21,21 +19,13 @@ bool Sampler::NextSample(float &x, float &y) {
   } else {
     // TODO: This currently samples randomly, but ideally we'd also support
     // stratified sampling.
-    float u = rand_(gen_);
-    float v = rand_(gen_);
-    if (u == 1.0f || v == 1.0f) {
-      LOG(WARNING) << "Generated a random value outside the range! u=" << u
-                   << " v=" << v;
-    }
+    float u = rand_.Next();
+    float v = rand_.Next();
     x = cur_x_ + u;
     y = cur_y_ + v;
 
-    // There is a bug in many standard implementations of
-    // std::uniform_real_distribution<float> that causes the distribution to
-    // sometimes incorrectly return the actual end value. This occurs due to a
-    // rounding error from `double` to `float`. We try to detect this and round
-    // to negative infinity if it has occurred.
-    // TODO: Figure out why the arithmetic is causing this?
+    // At times, we'll overshoot onto the next pixel due to rounding error, so
+    // we try to detect this and round to negative infinity if it has occurred.
     if (x == (cur_x_ + 1.0f)) {
       x = std::nextafter(x, -std::numeric_limits<float>::infinity());
     }

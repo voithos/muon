@@ -96,6 +96,7 @@ cc_library(
     srcs = ["sampler.cc"],
     hdrs = ["sampler.h"],
     deps = [
+        ":random",
         "@com_github_google_glog//:glog",
     ],
 )
@@ -235,5 +236,14 @@ cc_library(
     hdrs = ["materials.h"],
     deps = [
         "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "random",
+    srcs = ["random.cc"],
+    hdrs = ["random.h"],
+    deps = [
+        "@com_github_google_glog//:glog",
     ],
 )
