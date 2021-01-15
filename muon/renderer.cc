@@ -24,17 +24,13 @@ void Renderer::Render() {
             sc.scene->output);
   Sampler sampler(sc.scene->width, sc.scene->height,
                   sc.scene->samples_per_pixel);
-  stats.SetTotalSamples(sampler.TotalSamples());
 
   // TODO: Refactor progress into separate class.
   int last_percent = 0;
 
   float x, y;
   while (sampler.NextSample(x, y)) {
-    // TODO: Change this to IncrementPrimaryRays.
-    stats.IncrementSamples();
-
-    float progress = stats.Progress();
+    float progress = sampler.Progress();
     int percent = int(progress * 100);
     LOG_IF(INFO, percent > last_percent) << "Completion: " << percent << " %";
     last_percent = percent;

@@ -7,6 +7,8 @@
 - [ ] Support for a common file format (obj, glTF, USD?)
 - [ ] Tone mapping of the output image (gamma correction?)
 - [ ] Allow separate rendering of direct and bounce light
+- [ ] Depth of field
+- [ ] Golden testing framework
 
 ## Scenes
 - [ ] Utah teapot

@@ -1,13 +1,10 @@
 #include "muon/stats.h"
 
+#include <cmath>
 #include <iomanip>
 #include <ostream>
 
 namespace muon {
-
-void Stats::SetTotalSamples(uint64_t total_samples) {
-  total_samples_ = total_samples;
-}
 
 void Stats::Start() { start_time_ = std::chrono::steady_clock::now(); }
 
@@ -16,10 +13,6 @@ void Stats::BuildComplete() {
 }
 
 void Stats::Stop() { end_time_ = std::chrono::steady_clock::now(); }
-
-float Stats::Progress() const {
-  return samples_so_far_ / static_cast<float>(total_samples_);
-}
 
 constexpr int kLabelWidth = 18;
 constexpr int kFieldWidth = 12;
@@ -43,6 +36,8 @@ std::ostream& operator<<(std::ostream& os, const Stats& stats) {
       (stats.object_hits_ / static_cast<double>(stats.object_tests_)) * 100.0f;
   double bounds_hit_rate =
       (stats.bounds_hits_ / static_cast<double>(stats.bounds_tests_)) * 100.0f;
+  object_hit_rate = std::isnan(object_hit_rate) ? 0 : object_hit_rate;
+  bounds_hit_rate = std::isnan(bounds_hit_rate) ? 0 : bounds_hit_rate;
 
   os << std::setw(kLineWidth) << std::setfill('-') << ">>" << std::setfill(' ')
      << std::endl;
@@ -55,8 +50,10 @@ std::ostream& operator<<(std::ostream& os, const Stats& stats) {
   os << Label << "Render time"
      << " : " << Field << std::fixed << std::setprecision(2)
      << render_duration.count() << " (sec)" << std::endl;
-  os << Label << "Samples"
-     << " : " << Field << stats.samples_so_far_ << std::endl;
+  os << Label << "Primary rays"
+     << " : " << Field << stats.primary_rays_ << std::endl;
+  os << Label << "Secondary rays"
+     << " : " << Field << stats.secondary_rays_ << std::endl;
   os << Label << "Ray-object tests"
      << " : " << Field << stats.object_tests_ << std::endl;
   os << Label << "Ray-object hits"

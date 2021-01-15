@@ -130,7 +130,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
 
   ws.scene = absl::make_unique<Scene>();
   ws.accel = CreateAccelerationStructure();
-  ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
+  ws.integrator = absl::make_unique<Raytracer>(*ws.scene, stats_);
 
   ws.scene->width = defaults::kSceneWidth;
   ws.scene->height = defaults::kSceneHeight;
@@ -240,13 +240,14 @@ SceneConfig Parser::Parse() {
           break;
         }
         if (type == "raytracer") {
-          ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
+          ws.integrator = absl::make_unique<Raytracer>(*ws.scene, stats_);
         } else if (type == "analyticdirect") {
-          ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
+          ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene, stats_);
         } else if (type == "direct") {
-          ws.integrator = absl::make_unique<MonteCarloDirect>(*ws.scene);
+          ws.integrator =
+              absl::make_unique<MonteCarloDirect>(*ws.scene, stats_);
         } else if (type == "pathtracer") {
-          ws.integrator = absl::make_unique<PathTracer>(*ws.scene);
+          ws.integrator = absl::make_unique<PathTracer>(*ws.scene, stats_);
         } else {
           logBadLine(line);
           break;

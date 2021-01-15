@@ -108,6 +108,7 @@ cc_library(
         ":camera",
         ":lighting",
         ":scene",
+        ":stats",
         "//third_party/glm",
     ],
 )

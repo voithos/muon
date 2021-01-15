@@ -22,6 +22,11 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
   if (!scene_.russian_roulette && depth == 0) {
     return glm::vec3(0.0f);
   }
+  if (depth == scene_.max_depth) {
+    stats_.IncrementPrimaryRays();
+  } else {
+    stats_.IncrementSecondaryRays();
+  }
   absl::optional<Intersection> hit = scene_.root->Intersect(ray);
   if (hit) {
     return Shade(hit.value(), ray, throughput, depth);

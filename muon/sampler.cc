@@ -57,10 +57,12 @@ bool Sampler::NextSample(float &x, float &y) {
   return true;
 }
 
-int Sampler::TotalSamples() const {
-  return height_ * width_ * samples_per_pixel_;
-}
+int Sampler::TotalSamples() const { return total_samples_; }
 
 int Sampler::RequestedSamples() const { return samples_; }
+
+float Sampler::Progress() const {
+  return samples_ / static_cast<float>(total_samples_);
+}
 
 }  // namespace muon

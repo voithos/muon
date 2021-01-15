@@ -11,6 +11,7 @@ class Sampler {
       : width_(width),
         height_(height),
         samples_per_pixel_(samples_per_pixel),
+        total_samples_(width * height * samples_per_pixel),
         gen_(rd_()),
         rand_(0.0f, 1.0f) {}
 
@@ -24,10 +25,15 @@ class Sampler {
   // Returns the number of samples requested so far.
   int RequestedSamples() const;
 
+  // Returns the rendering progress, based on total and requested sample counts.
+  float Progress() const;
+
  private:
   int width_;
   int height_;
   int samples_per_pixel_;
+  int total_samples_;
+
   int cur_x_ = 0;
   int cur_y_ = 0;
   int cur_pixel_sample_ = 0;

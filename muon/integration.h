@@ -5,6 +5,7 @@
 
 #include "muon/camera.h"
 #include "muon/scene.h"
+#include "muon/stats.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -12,7 +13,7 @@ namespace muon {
 // Integrates lighting contributions for a ray against a scene.
 class Integrator {
  public:
-  explicit Integrator(Scene &scene) : scene_(scene) {}
+  Integrator(Scene &scene, Stats &stats) : scene_(scene), stats_(stats) {}
   virtual ~Integrator() {}
 
   // Traces a ray against the scene and returns a traced color.
@@ -26,13 +27,14 @@ class Integrator {
                           const glm::vec3 &throughput, const int depth) = 0;
 
   Scene &scene_;
+  Stats &stats_;
 };
 
 // A simple integrator that approximates the rendering equation by tracing rays
 // directly and shading using a simple Phong lighting model.
 class Raytracer : public Integrator {
  public:
-  explicit Raytracer(Scene &scene) : Integrator(scene) {}
+  Raytracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -45,7 +47,7 @@ class Raytracer : public Integrator {
 // visibility into account, and does not do global illumination.
 class AnalyticDirect : public Integrator {
  public:
-  explicit AnalyticDirect(Scene &scene) : Integrator(scene) {}
+  AnalyticDirect(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -56,8 +58,8 @@ class AnalyticDirect : public Integrator {
 // Base class for Monte Carlo based integrators.
 class MonteCarlo : public Integrator {
  public:
-  explicit MonteCarlo(Scene &scene)
-      : Integrator(scene), gen_(rd_()), rand_(0.0f, 1.0f) {}
+  MonteCarlo(Scene &scene, Stats &stats)
+      : Integrator(scene, stats), gen_(rd_()), rand_(0.0f, 1.0f) {}
 
  protected:
   // RNG and seed device for monte carlo. We use the Mersenne Twister because
@@ -70,7 +72,7 @@ class MonteCarlo : public Integrator {
 // A Monte Carlo integrator that calculates direct lighting contributions only.
 class MonteCarloDirect : public MonteCarlo {
  public:
-  explicit MonteCarloDirect(Scene &scene) : MonteCarlo(scene) {}
+  MonteCarloDirect(Scene &scene, Stats &stats) : MonteCarlo(scene, stats) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -87,7 +89,7 @@ class MonteCarloDirect : public MonteCarlo {
 // A Monte Carlo based path tracer that handles indirect lighting.
 class PathTracer : public MonteCarloDirect {
  public:
-  explicit PathTracer(Scene &scene) : MonteCarloDirect(scene) {}
+  PathTracer(Scene &scene, Stats &stats) : MonteCarloDirect(scene, stats) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
