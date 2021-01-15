@@ -108,6 +108,7 @@ cc_library(
     deps = [
         ":camera",
         ":lighting",
+        ":random",
         ":scene",
         ":stats",
         "//third_party/glm",

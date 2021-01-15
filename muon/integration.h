@@ -4,6 +4,7 @@
 #include <random>
 
 #include "muon/camera.h"
+#include "muon/random.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
 #include "third_party/glm/glm.hpp"
@@ -58,15 +59,11 @@ class AnalyticDirect : public Integrator {
 // Base class for Monte Carlo based integrators.
 class MonteCarlo : public Integrator {
  public:
-  MonteCarlo(Scene &scene, Stats &stats)
-      : Integrator(scene, stats), gen_(rd_()), rand_(0.0f, 1.0f) {}
+  MonteCarlo(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
 
  protected:
-  // RNG and seed device for monte carlo. We use the Mersenne Twister because
-  // it has high-quality characteristics.
-  std::random_device rd_;
-  std::mt19937 gen_;
-  std::uniform_real_distribution<float> rand_;
+  // RNG for monte carlo.
+  UniformRandom rand_;
 };
 
 // A Monte Carlo integrator that calculates direct lighting contributions only.

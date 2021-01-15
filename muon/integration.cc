@@ -261,8 +261,8 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
           // stratified sampling is enabled, this scales the u, v random values
           // by the size of each strata and offsets into the current section
           // that we're sampling from.
-          float u = rand_(gen_);
-          float v = rand_(gen_);
+          float u = rand_.Next();
+          float v = rand_.Next();
           assert(u >= 0 && u < 1 && v >= 0 && v < 1);
           glm::vec3 light_pos = info.area->corner +
                                 (i + u) / strata * info.area->edge0 +
@@ -313,8 +313,8 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
 
 glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
   // Generate spherical coordinates using two random numbers in [0, 1).
-  float r1 = rand_(gen_);
-  float r2 = rand_(gen_);
+  float r1 = rand_.Next();
+  float r2 = rand_.Next();
   float theta = glm::acos(r1);
   float phi = 2.0f * glm::pi<float>() * r2;
 
@@ -429,7 +429,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
     // contributing much to the final color anyway.
     float continuation_probability =
         glm::min(glm::compMax(next_throughput), 1.0f);
-    if (continuation_probability < rand_(gen_)) {
+    if (continuation_probability < rand_.Next()) {
       return color;
     }
 
