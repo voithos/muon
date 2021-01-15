@@ -7,8 +7,7 @@
 
 namespace muon {
 
-// TODO: These should be size_t.
-void Film::SetPixel(int x, int y, glm::vec3 color) {
+void Film::SetPixel(size_t x, size_t y, glm::vec3 color) {
   // Verify bounds of x and y.
   if (x < 0 || y < 0 || x >= width_ || y >= height_) {
     throw std::invalid_argument(
@@ -22,8 +21,8 @@ void Film::SetPixel(int x, int y, glm::vec3 color) {
 void Film::WriteOutput() {
   VLOG(1) << "Writing to output: " << output_file_;
 
-  for (int x = 0; x < width_; ++x) {
-    for (int y = 0; y < height_; ++y) {
+  for (size_t x = 0; x < width_; ++x) {
+    for (size_t y = 0; y < height_; ++y) {
       glm::vec3 value =
           accumulator_[x][y] / static_cast<float>(samples_per_pixel_);
       glm::vec3 color = glm::clamp(value, 0.0f, 1.0f);
