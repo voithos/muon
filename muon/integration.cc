@@ -15,9 +15,11 @@ glm::vec3 Integrator::Trace(const Ray &ray) {
 
 glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
                             const int depth) {
+  // When Russian Roulette is enabled, we rely on it to probabilistically end
+  // paths.
   // TODO: Switch the depth calculation to check against max_depth, for
   // readability. Right now it goes to zero.
-  if (depth == 0) {
+  if (!scene_.russian_roulette && depth == 0) {
     return glm::vec3(0.0f);
   }
   absl::optional<Intersection> hit = scene_.root->Intersect(ray);
@@ -378,16 +380,6 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
     color = glm::vec3(0.0f);
   } else {
     color = throughput * hit.obj->material.emission;
-  }
-
-  // When Russian Roulette is enabled, we rely on it to probabilistically end
-  // paths. Without it, as a base case, return just the emission when we have
-  // reached our final depth. If NEE is enabled, the path length effectively
-  // already gets extended by 1 due to the direct light sampling, so check for
-  // that here.
-  if (!scene_.russian_roulette &&
-      (depth == 1 || (scene_.next_event_estimation && depth == 2))) {
-    return color;
   }
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
