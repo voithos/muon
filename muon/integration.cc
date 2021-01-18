@@ -315,7 +315,7 @@ glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
   // Generate spherical coordinates using two random numbers in [0, 1).
   float r1 = rand_.Next();
   float r2 = rand_.Next();
-  float theta = glm::acos(r1);
+  float theta = glm::acos(glm::sqrt(r1));
   float phi = 2.0f * glm::pi<float>() * r2;
 
   glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
@@ -406,7 +406,6 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // Compute the BRDF and cosine terms.
   glm::vec3 phong_brdf =
       brdf::Phong(hit.obj->material, sampled_dir, reflected_dir);
-  float cosine_term = glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
 
   // For the final value of the sample, we divide by the sample's probability
   // density function, which in this case equates to a multiply by 2*pi (since
@@ -419,8 +418,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // Note that the BRDF and cosine terms suffice to model all
   // physically based attenuation, since radiance does not attenuate with
   // distance.
-  glm::vec3 next_throughput =
-      throughput * 2.0f * glm::pi<float>() * phong_brdf * cosine_term;
+  glm::vec3 next_throughput = throughput * glm::pi<float>() * phong_brdf;
 
   // Handle Russian Roulette.
   if (scene_.russian_roulette) {
