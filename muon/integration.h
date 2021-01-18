@@ -31,8 +31,20 @@ class Integrator {
   Stats &stats_;
 };
 
-// A simple integrator that approximates the rendering equation by tracing rays
-// directly and shading using a simple Phong lighting model.
+// A debug integrator that renders the normals of the scene.
+class NormalsTracer : public Integrator {
+ public:
+  NormalsTracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+
+ protected:
+  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
+                          const int depth) override;
+};
+
+// A simple, non-physically-based integrator that approximates the rendering
+// equation by tracing rays directly and shading using a simple Phong lighting
+// model.
 class Raytracer : public Integrator {
  public:
   Raytracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}

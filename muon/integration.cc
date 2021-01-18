@@ -34,6 +34,12 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
   return glm::vec3(0.0f);
 }
 
+glm::vec3 NormalsTracer::Shade(const Intersection &hit, const Ray &ray,
+                               const glm::vec3 &throughput, const int depth) {
+  // Transform the indices from [-1, 1] to [0, 1].
+  return hit.normal * 0.5f + 0.5f;
+}
+
 glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
                            const glm::vec3 &throughput, const int depth) {
   glm::vec3 color = hit.obj->material.ambient + hit.obj->material.emission;
