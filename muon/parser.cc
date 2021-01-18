@@ -241,6 +241,8 @@ SceneConfig Parser::Parse() {
         }
         if (type == "normals") {
           ws.integrator = absl::make_unique<NormalsTracer>(*ws.scene, stats_);
+        } else if (type == "depth") {
+          ws.integrator = absl::make_unique<DepthTracer>(*ws.scene, stats_);
         } else if (type == "raytracer") {
           ws.integrator = absl::make_unique<Raytracer>(*ws.scene, stats_);
         } else if (type == "analyticdirect") {

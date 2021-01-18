@@ -36,8 +36,15 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
 
 glm::vec3 NormalsTracer::Shade(const Intersection &hit, const Ray &ray,
                                const glm::vec3 &throughput, const int depth) {
-  // Transform the indices from [-1, 1] to [0, 1].
+  // Map from [-1, 1] to [0, 1].
   return hit.normal * 0.5f + 0.5f;
+}
+
+glm::vec3 DepthTracer::Shade(const Intersection &hit, const Ray &ray,
+                             const glm::vec3 &throughput, const int depth) {
+  // Map distance from [0, inf] to [1, 0].
+  // TODO: This often leads to dark images; is there a way to normalize?
+  return glm::vec3(1.0f / (1.0f + hit.distance));
 }
 
 glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,

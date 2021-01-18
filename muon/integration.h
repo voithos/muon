@@ -42,6 +42,17 @@ class NormalsTracer : public Integrator {
                           const int depth) override;
 };
 
+// A debug integrator that renders the depth of the scene.
+class DepthTracer : public Integrator {
+ public:
+  DepthTracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+
+ protected:
+  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
+                          const int depth) override;
+};
+
 // A simple, non-physically-based integrator that approximates the rendering
 // equation by tracing rays directly and shading using a simple Phong lighting
 // model.
