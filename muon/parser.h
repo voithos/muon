@@ -1,6 +1,7 @@
 #ifndef MUON_PARSER_H_
 #define MUON_PARSER_H_
 
+#include <memory>
 #include <string>
 
 #include "muon/acceleration.h"
@@ -18,7 +19,7 @@ namespace {
 class ParsingWorkspace {
  public:
   // Material properties.
-  Material material;
+  std::shared_ptr<Material> material;
 
   // The scene.
   std::unique_ptr<Scene> scene;
@@ -35,6 +36,9 @@ class ParsingWorkspace {
   void PushTransform();
   // Pops the current transform from the stack.
   void PopTransform();
+  // Copies the current material into a new shared material. This should be
+  // called prior to modifications to the material.
+  void GenMaterial();
 
   // Applies current working properties to the given primitive.
   void UpdatePrimitive(Primitive &obj);

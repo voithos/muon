@@ -50,7 +50,7 @@ glm::vec3 DepthTracer::Shade(const Intersection &hit, const Ray &ray,
 
 glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
                            const glm::vec3 &throughput, const int depth) {
-  glm::vec3 color = hit.obj->material.ambient + hit.obj->material.emission;
+  glm::vec3 color = hit.obj->material->ambient + hit.obj->material->emission;
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
   // themselves.
@@ -66,27 +66,28 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
     }
     // Apply a simple Blinn Phong shading model.
     glm::vec3 diffuse_cmp =
-        hit.obj->material.diffuse *
+        hit.obj->material->diffuse *
         glm::max(glm::dot(hit.normal, info.direction), 0.0f);
 
     glm::vec3 half_angle = glm::normalize(info.direction - ray.direction());
     glm::vec3 specular_cmp =
-        hit.obj->material.specular *
+        hit.obj->material->specular *
         glm::pow(glm::max(glm::dot(hit.normal, half_angle), 0.0f),
-                 hit.obj->material.shininess);
+                 hit.obj->material->shininess);
 
     color += info.color * (diffuse_cmp + specular_cmp);
   }
 
   // Trace reflectance if the object has any specularity.
-  if (glm::any(glm::greaterThan(hit.obj->material.specular, glm::vec3(0.0f)))) {
+  if (glm::any(
+          glm::greaterThan(hit.obj->material->specular, glm::vec3(0.0f)))) {
     glm::vec3 reflected_dir =
         ray.direction() -
         2.0f * glm::dot(hit.normal, ray.direction()) * hit.normal;
     Ray reflected_ray(shift_pos, reflected_dir);
 
     glm::vec3 reflected_color = Trace(reflected_ray, throughput, depth - 1);
-    color += hit.obj->material.specular * reflected_color;
+    color += hit.obj->material->specular * reflected_color;
   }
 
   return color;
@@ -121,7 +122,7 @@ glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
   // these from the vertices of the polygonal light.
 
   // Only consider emission for base lighting.
-  glm::vec3 color = hit.obj->material.emission;
+  glm::vec3 color = hit.obj->material->emission;
 
   // Trace the light contributions.
   for (const auto &light : scene_.lights()) {
@@ -141,7 +142,7 @@ glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
 
     // Divide by pi for energy conservation.
     glm::vec3 diffuse_brdf =
-        hit.obj->material.diffuse * glm::one_over_pi<float>();
+        hit.obj->material->diffuse * glm::one_over_pi<float>();
     glm::vec3 incident_radiance = info.color;
 
     // Compute phi(r).
@@ -194,7 +195,7 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
   // where A is the area of the light and N is the number of samples.
 
   // Only consider emission for base lighting.
-  glm::vec3 color = hit.obj->material.emission;
+  glm::vec3 color = hit.obj->material->emission;
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
   // themselves.
@@ -236,7 +237,7 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
       float cos_incident_angle =
           glm::max(glm::dot(hit.normal, info.direction), 0.0f);
       glm::vec3 phong_brdf =
-          brdf::Phong(hit.obj->material, info.direction, reflected_dir);
+          brdf::Phong(*hit.obj->material, info.direction, reflected_dir);
 
       color += irradiance * cos_incident_angle * phong_brdf;
       continue;
@@ -308,7 +309,7 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
                                 (light_distance * light_distance);
 
           glm::vec3 phong_brdf =
-              brdf::Phong(hit.obj->material, light_dir, reflected_dir);
+              brdf::Phong(*hit.obj->material, light_dir, reflected_dir);
 
           sample_contributions += geometry_term * phong_brdf;
         }
@@ -400,7 +401,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   if (scene_.next_event_estimation && depth < scene_.max_depth) {
     color = glm::vec3(0.0f);
   } else {
-    color = throughput * hit.obj->material.emission;
+    color = throughput * hit.obj->material->emission;
   }
 
   // Shift the collision point by an epsilon to avoid surfaces shadowing
@@ -431,7 +432,7 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
 
   // Compute the BRDF and cosine terms.
   glm::vec3 phong_brdf =
-      brdf::Phong(hit.obj->material, sampled_dir, reflected_dir);
+      brdf::Phong(*hit.obj->material, sampled_dir, reflected_dir);
 
   // For the final value of the sample, we divide by the sample's probability
   // density function, which in this case equates to a multiply by 2*pi (since

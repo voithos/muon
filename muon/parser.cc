@@ -111,6 +111,11 @@ void ParsingWorkspace::PopTransform() {
   VLOG(3) << "  Transform stack size: " << transforms_.size();
 }
 
+void ParsingWorkspace::GenMaterial() {
+  auto m = std::make_shared<Material>(*material);
+  material = m;
+}
+
 void ParsingWorkspace::UpdatePrimitive(Primitive &obj) {
   obj.material = material;
 
@@ -124,11 +129,12 @@ void logBadLine(std::string line) {
 }
 
 void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
-  ws.material.ambient = defaults::kAmbient;
-  ws.material.diffuse = defaults::kDiffuse;
-  ws.material.specular = defaults::kSpecular;
-  ws.material.emission = defaults::kEmission;
-  ws.material.shininess = defaults::kShininess;
+  ws.material = std::make_shared<Material>();
+  ws.material->ambient = defaults::kAmbient;
+  ws.material->diffuse = defaults::kDiffuse;
+  ws.material->specular = defaults::kSpecular;
+  ws.material->emission = defaults::kEmission;
+  ws.material->shininess = defaults::kShininess;
 
   ws.scene = absl::make_unique<Scene>();
   ws.accel = CreateAccelerationStructure();
@@ -544,8 +550,8 @@ SceneConfig Parser::Parse() {
         // TODO: This is pretty gross. Can we improve this?
         auto tri0 = absl::make_unique<Tri>(va, vb, vc, false);
         auto tri1 = absl::make_unique<Tri>(vb, vd, vc, false);
-        Material material;
-        material.emission = color;  // Emit based on color.
+        auto material = std::make_shared<Material>();
+        material->emission = color;  // Emit based on color.
         glm::mat4 identity(1.0f);
         tri0->material = material;
         tri0->transform = identity;
@@ -567,7 +573,8 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        ws.material.ambient = glm::vec3(r, g, b);
+        ws.GenMaterial();
+        ws.material->ambient = glm::vec3(r, g, b);
         break;
       }
       case ParseCmd::kDiffuse: {
@@ -577,7 +584,8 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        ws.material.diffuse = glm::vec3(r, g, b);
+        ws.GenMaterial();
+        ws.material->diffuse = glm::vec3(r, g, b);
         break;
       }
       case ParseCmd::kSpecular: {
@@ -587,7 +595,8 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        ws.material.specular = glm::vec3(r, g, b);
+        ws.GenMaterial();
+        ws.material->specular = glm::vec3(r, g, b);
         break;
       }
       case ParseCmd::kShininess: {
@@ -597,7 +606,8 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        ws.material.shininess = shininess;
+        ws.GenMaterial();
+        ws.material->shininess = shininess;
         break;
       }
       case ParseCmd::kEmission: {
@@ -607,7 +617,8 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        ws.material.emission = glm::vec3(r, g, b);
+        ws.GenMaterial();
+        ws.material->emission = glm::vec3(r, g, b);
         break;
       }
     }

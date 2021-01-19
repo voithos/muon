@@ -53,8 +53,7 @@ class Primitive : public Intersectable {
   glm::mat4 inv_transform;
   glm::mat4 inv_transpose_transform;
 
-  // TODO: Store reference to material to avoid per-primitive duplication.
-  Material material;
+  std::shared_ptr<Material> material;
 };
 
 // Represents a triangle.
