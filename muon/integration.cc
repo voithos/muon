@@ -415,6 +415,16 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
     color += ShadeDirect(hit, shift_pos, reflected_dir, throughput);
   }
 
+  color += ShadeIndirect(hit, shift_pos, reflected_dir, throughput, depth);
+
+  return color;
+}
+
+glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
+                                    const glm::vec3 &shift_pos,
+                                    const glm::vec3 &reflected_dir,
+                                    const glm::vec3 &throughput,
+                                    const int depth) {
   // We uniformly sample the hemisphere around the surface normal for an
   // outgoing direction.
   glm::vec3 sampled_dir = SampleHemisphere(hit.normal);
@@ -448,7 +458,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
     float continuation_probability =
         glm::min(glm::compMax(next_throughput), 1.0f);
     if (continuation_probability < rand_.Next()) {
-      return color;
+      return glm::vec3(0.0f);
     }
 
     // Add back the energy we lose by randomly terminating paths, in order to
@@ -458,9 +468,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
 
   // Trace the sampled ray.
   Ray sampled_ray(shift_pos, sampled_dir);
-  color += Trace(sampled_ray, next_throughput, depth - 1);
-
-  return color;
+  return Trace(sampled_ray, next_throughput, depth - 1);
 }
 
 }  // namespace muon

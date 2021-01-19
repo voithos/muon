@@ -119,6 +119,11 @@ class PathTracer : public MonteCarloDirect {
  private:
   // Uniformly samples a unit hemisphere centered about the given normal.
   glm::vec3 SampleHemisphere(const glm::vec3 &normal);
+
+  // Shades an intersection with only the indirect light contribution.
+  glm::vec3 ShadeIndirect(const Intersection &hit, const glm::vec3 &shift_pos,
+                          const glm::vec3 &reflected_dir,
+                          const glm::vec3 &throughput, const int depth);
 };
 
 }  // namespace muon
