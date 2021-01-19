@@ -44,6 +44,7 @@ glm::vec3 DepthTracer::Shade(const Intersection &hit, const Ray &ray,
                              const glm::vec3 &throughput, const int depth) {
   // Map distance from [0, inf] to [1, 0].
   // TODO: This often leads to dark images; is there a way to normalize?
+  // Add a configurable scale factor to hit.distance?
   return glm::vec3(1.0f / (1.0f + hit.distance));
 }
 
@@ -328,7 +329,9 @@ glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
   // Generate spherical coordinates using two random numbers in [0, 1).
   float r1 = rand_.Next();
   float r2 = rand_.Next();
-  float theta = glm::acos(glm::sqrt(r1));
+  float theta = scene_.importance_sampling == ImportanceSampling::kCosine
+                    ? glm::acos(glm::sqrt(r1))
+                    : glm::acos(r1);
   float phi = 2.0f * glm::pi<float>() * r2;
 
   glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
@@ -431,7 +434,11 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // Note that the BRDF and cosine terms suffice to model all
   // physically based attenuation, since radiance does not attenuate with
   // distance.
-  glm::vec3 next_throughput = throughput * glm::pi<float>() * phong_brdf;
+  glm::vec3 next_throughput =
+      throughput * glm::pi<float>() * phong_brdf *
+      (scene_.importance_sampling == ImportanceSampling::kCosine
+           ? 1.0f
+           : 2.0f * glm::max(glm::dot(hit.normal, sampled_dir), 0.0f));
 
   // Handle Russian Roulette.
   if (scene_.russian_roulette) {

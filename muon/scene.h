@@ -7,6 +7,7 @@
 
 #include "absl/types/optional.h"
 #include "muon/camera.h"
+#include "muon/importance_sampling.h"
 #include "muon/lighting.h"
 #include "muon/objects.h"
 #include "muon/types.h"
@@ -32,6 +33,7 @@ class Scene {
   bool light_stratify;
   bool next_event_estimation;
   bool russian_roulette;
+  ImportanceSampling importance_sampling;
 
   // Global lighting properties.
   glm::vec3 attenuation;

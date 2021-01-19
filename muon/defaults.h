@@ -1,6 +1,7 @@
 #ifndef MUON_DEFAULTS_H_
 #define MUON_DEFAULTS_H_
 
+#include "muon/importance_sampling.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -37,6 +38,10 @@ constexpr bool kNextEventEstimation = false;
 
 // Whether or not to enable Russian Roulette.
 constexpr bool kRussianRoulette = false;
+
+// The default importance sampling approach.
+constexpr ImportanceSampling kImportanceSampling =
+    ImportanceSampling::kHemisphere;
 
 // Light attenuation, in terms of constant, linear, and quadratic.
 static const glm::vec3 kAttenuation = glm::vec3(1.0f, 0.0f, 0.0f);

@@ -69,6 +69,7 @@ cc_library(
     hdrs = ["scene.h"],
     deps = [
         ":camera",
+        ":importance_sampling",
         ":lighting",
         ":objects",
         ":strings",
@@ -160,6 +161,7 @@ cc_library(
     name = "defaults",
     hdrs = ["defaults.h"],
     deps = [
+        ":importance_sampling",
         "//third_party/glm",
     ],
 )
@@ -246,5 +248,12 @@ cc_library(
     hdrs = ["random.h"],
     deps = [
         "@com_github_google_glog//:glog",
+    ],
+)
+
+cc_library(
+    name = "importance_sampling",
+    hdrs = ["importance_sampling.h"],
+    deps = [
     ],
 )
