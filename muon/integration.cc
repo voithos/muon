@@ -331,9 +331,23 @@ glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
   // Generate spherical coordinates using two random numbers in [0, 1).
   float r1 = rand_.Next();
   float r2 = rand_.Next();
-  float theta = scene_.importance_sampling == ImportanceSampling::kCosine
-                    ? glm::acos(glm::sqrt(r1))
-                    : glm::acos(r1);
+  float theta = glm::acos(r1);
+  float phi = 2.0f * glm::pi<float>() * r2;
+
+  glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
+              glm::cos(theta));
+
+  // We now have a hemisphere sample, but it's centered about the z-axis. We
+  // instead want to sample around the hemisphere centered about the normal of
+  // the surface, so we want to rotate the sample.
+  return RotateToOrthonormalFrame(s, normal);
+}
+
+glm::vec3 PathTracer::SampleCosine(const glm::vec3 &normal) {
+  // Generate spherical coordinates using two random numbers in [0, 1).
+  float r1 = rand_.Next();
+  float r2 = rand_.Next();
+  float theta = glm::acos(glm::sqrt(r1));
   float phi = 2.0f * glm::pi<float>() * r2;
 
   glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
@@ -416,12 +430,20 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
                                     const glm::vec3 &reflected_dir,
                                     const glm::vec3 &throughput,
                                     const int depth) {
-  // We uniformly sample the hemisphere around the surface normal for an
-  // outgoing direction.
-  glm::vec3 sampled_dir = SampleHemisphere(hit.normal);
+  // First we sample the hemisphere around the surface normal for an outgoing
+  // direction.
+  glm::vec3 sampled_dir;
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      sampled_dir = SampleHemisphere(hit.normal);
+      break;
+    case ImportanceSampling::kCosine:
+      sampled_dir = SampleCosine(hit.normal);
+      break;
+  }
 
   // Compute the BRDF and cosine terms.
-  glm::vec3 phong_brdf =
+  glm::vec3 brdf_term =
       brdf::Phong(*hit.obj->material, sampled_dir, reflected_dir);
 
   // For the final value of the sample, we divide by the sample's probability
@@ -435,11 +457,21 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
   // Note that the BRDF and cosine terms suffice to model all
   // physically based attenuation, since radiance does not attenuate with
   // distance.
-  glm::vec3 next_throughput =
-      throughput * glm::pi<float>() * phong_brdf *
-      (scene_.importance_sampling == ImportanceSampling::kCosine
-           ? 1.0f
-           : 2.0f * glm::max(glm::dot(hit.normal, sampled_dir), 0.0f));
+  glm::vec3 next_throughput;
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      // The PDF of hemisphere sampling is just the number of steradians per
+      // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
+      // thus the multiplication by 2pi.
+      next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+      break;
+    case ImportanceSampling::kCosine:
+      // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
+      // canceled out and we're left with a multiply by pi.
+      next_throughput = throughput * glm::pi<float>() * brdf_term;
+      break;
+  }
 
   // Handle Russian Roulette.
   if (scene_.russian_roulette) {
