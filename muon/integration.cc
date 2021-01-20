@@ -4,6 +4,7 @@
 
 #include "glog/logging.h"
 #include "muon/lighting.h"
+#include "muon/transform.h"
 #include "third_party/glm/gtc/constants.hpp"
 #include "third_party/glm/gtx/component_wise.hpp"
 
@@ -340,19 +341,8 @@ glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
 
   // We now have a hemisphere sample, but it's centered about the z-axis. We
   // instead want to sample around the hemisphere centered about the normal of
-  // the surface, so we want to rotate the sample. We can do so by constructing
-  // an orthonormal coordinate frame around the normal and projecting the
-  // sample onto it.
-  const glm::vec3 &w = normal;
-  // Arbitrarily use the up vector to generate the coordinate frame, except if
-  // the normal is too close to it.
-  glm::vec3 a =
-      w.y <= 0.9f ? glm::vec3(0.0f, 1.0f, 0.0f) : glm::vec3(1.0f, 0.0f, 0.0f);
-  glm::vec3 u = glm::normalize(glm::cross(a, w));
-  glm::vec3 v = glm::normalize(glm::cross(w, u));
-
-  // Now we rotate s to find the final sample.
-  return s.x * u + s.y * v + s.z * w;
+  // the surface, so we want to rotate the sample.
+  return RotateToOrthonormalFrame(s, normal);
 }
 
 glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,

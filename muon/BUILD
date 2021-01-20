@@ -112,6 +112,7 @@ cc_library(
         ":random",
         ":scene",
         ":stats",
+        ":transform",
         "//third_party/glm",
     ],
 )
@@ -201,6 +202,7 @@ cc_library(
 
 cc_library(
     name = "transform",
+    srcs = ["transform.cc"],
     hdrs = ["transform.h"],
     deps = [
         "//third_party/glm",
