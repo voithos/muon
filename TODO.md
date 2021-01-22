@@ -9,6 +9,9 @@
 - [ ] Allow separate rendering of direct and bounce light
 - [ ] Depth of field
 - [ ] Golden testing framework
+- [ ] Measured BRDF support
+- [ ] Features from "Ray tracing in a weekend" + "Ray tracing: the next week"
+- [ ] GUI scene viewer
 
 ## Scenes
 - [ ] Utah teapot
@@ -19,6 +22,7 @@
 - [ ] Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
 - [ ] Add multithreading support
+- [ ] SIMD support?
 
 ## DONE
 - [x] Add surface area heuristic to BVH

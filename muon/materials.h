@@ -49,6 +49,7 @@ class BRDF {
 // where k_d is the diffuse color, k_s is the specular color, s is shininess,
 // and r is the reflection vector.
 class Phong : public BRDF {
+ public:
   virtual glm::vec3 Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
                            UniformRandom& rand) override;
 
@@ -59,6 +60,13 @@ class Phong : public BRDF {
                          const glm::vec3& normal) override;
 
   virtual std::unique_ptr<BRDF> Clone() const override;
+
+ private:
+  // Reflectiveness of the material (the amount of "color" that comes from
+  // specular component vs combined). This is a number in [0, 1].
+  float reflectiveness_ = -1.0f;
+
+  float reflectiveness();
 };
 
 }  // namespace brdf

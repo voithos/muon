@@ -405,6 +405,11 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
       break;
   }
 
+  // Early return in case the sample is below the visible hemisphere.
+  if (glm::dot(sampled_dir, hit.normal) < 0.0f) {
+    return glm::vec3(0.0f);
+  }
+
   // Compute the BRDF term.
   glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
 
