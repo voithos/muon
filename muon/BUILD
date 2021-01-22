@@ -108,6 +108,7 @@ cc_library(
     hdrs = ["integration.h"],
     deps = [
         ":camera",
+        ":hemisphere_sampling",
         ":lighting",
         ":random",
         ":scene",
@@ -257,5 +258,16 @@ cc_library(
     name = "importance_sampling",
     hdrs = ["importance_sampling.h"],
     deps = [
+    ],
+)
+
+cc_library(
+    name = "hemisphere_sampling",
+    srcs = ["hemisphere_sampling.cc"],
+    hdrs = ["hemisphere_sampling.h"],
+    deps = [
+        ":random",
+        ":transform",
+        "//third_party/glm",
     ],
 )

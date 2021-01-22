@@ -3,6 +3,7 @@
 #include <limits>
 
 #include "glog/logging.h"
+#include "muon/hemisphere_sampling.h"
 #include "muon/lighting.h"
 #include "muon/transform.h"
 #include "third_party/glm/gtc/constants.hpp"
@@ -327,38 +328,6 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
   return throughput * color;
 }
 
-glm::vec3 PathTracer::SampleHemisphere(const glm::vec3 &normal) {
-  // Generate spherical coordinates using two random numbers in [0, 1).
-  float r1 = rand_.Next();
-  float r2 = rand_.Next();
-  float theta = glm::acos(r1);
-  float phi = 2.0f * glm::pi<float>() * r2;
-
-  glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
-              glm::cos(theta));
-
-  // We now have a hemisphere sample, but it's centered about the z-axis. We
-  // instead want to sample around the hemisphere centered about the normal of
-  // the surface, so we want to rotate the sample.
-  return RotateToOrthonormalFrame(s, normal);
-}
-
-glm::vec3 PathTracer::SampleCosine(const glm::vec3 &normal) {
-  // Generate spherical coordinates using two random numbers in [0, 1).
-  float r1 = rand_.Next();
-  float r2 = rand_.Next();
-  float theta = glm::acos(glm::sqrt(r1));
-  float phi = 2.0f * glm::pi<float>() * r2;
-
-  glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
-              glm::cos(theta));
-
-  // We now have a hemisphere sample, but it's centered about the z-axis. We
-  // instead want to sample around the hemisphere centered about the normal of
-  // the surface, so we want to rotate the sample.
-  return RotateToOrthonormalFrame(s, normal);
-}
-
 glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
                             const glm::vec3 &throughput, const int depth) {
   // For physically based rendering, the rendering equation defines the
@@ -435,10 +404,10 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
   glm::vec3 sampled_dir;
   switch (scene_.importance_sampling) {
     case ImportanceSampling::kHemisphere:
-      sampled_dir = SampleHemisphere(hit.normal);
+      sampled_dir = SampleHemisphere(hit.normal, rand_);
       break;
     case ImportanceSampling::kCosine:
-      sampled_dir = SampleCosine(hit.normal);
+      sampled_dir = SampleCosine(hit.normal, rand_);
       break;
   }
 

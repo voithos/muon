@@ -117,12 +117,6 @@ class PathTracer : public MonteCarloDirect {
                           const int depth) override;
 
  private:
-  // Uniformly samples a unit hemisphere centered about the given normal.
-  glm::vec3 SampleHemisphere(const glm::vec3 &normal);
-
-  // Samples the unit hemisphere according to the cosine of the normal.
-  glm::vec3 SampleCosine(const glm::vec3 &normal);
-
   // Shades an intersection with only the indirect light contribution.
   glm::vec3 ShadeIndirect(const Intersection &hit, const glm::vec3 &shift_pos,
                           const glm::vec3 &reflected_dir,

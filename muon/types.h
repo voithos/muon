@@ -12,6 +12,7 @@ namespace muon {
 // http://www.pbr-book.org/3ed-2018/Shapes/Managing_Rounding_Error.html).
 constexpr float kEpsilon = 0.0001;
 
+// TODO: Remove this header in favor of more specific headers.
 class Primitive;
 
 // Represents an intersection of a ray with a primitive.
