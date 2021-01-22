@@ -9,6 +9,8 @@ enum class ImportanceSampling {
   kHemisphere = 0,
   // Cosine sampling, which works well for near-Lambertian surfaces.
   kCosine,
+  // BRDF sampling, which samples across the BRDF itself.
+  kBRDF,
 };
 
 }  // namespace muon

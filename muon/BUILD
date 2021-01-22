@@ -44,6 +44,7 @@ cc_library(
     deps = [
         ":acceleration",
         ":acceleration_type",
+        ":brdf_type",
         ":defaults",
         ":integration",
         ":lighting",
@@ -163,6 +164,7 @@ cc_library(
     name = "defaults",
     hdrs = ["defaults.h"],
     deps = [
+        ":brdf_type",
         ":importance_sampling",
         "//third_party/glm",
     ],
@@ -241,7 +243,10 @@ cc_library(
     srcs = ["materials.cc"],
     hdrs = ["materials.h"],
     deps = [
+        ":hemisphere_sampling",
+        ":random",
         "//third_party/glm",
+        "@com_google_absl//absl/types:optional",
     ],
 )
 
@@ -269,5 +274,12 @@ cc_library(
         ":random",
         ":transform",
         "//third_party/glm",
+    ],
+)
+
+cc_library(
+    name = "brdf_type",
+    hdrs = ["brdf_type.h"],
+    deps = [
     ],
 )

@@ -102,8 +102,7 @@ class MonteCarloDirect : public MonteCarlo {
   // Shades an intersection with only the direct lighting contribution, without
   // any indirect recursion.
   glm::vec3 ShadeDirect(const Intersection &hit, const glm::vec3 &shift_pos,
-                        const glm::vec3 &reflected_dir,
-                        const glm::vec3 &throughput);
+                        const Ray &ray, const glm::vec3 &throughput);
 };
 
 // A Monte Carlo based path tracer that handles indirect lighting.
@@ -119,8 +118,8 @@ class PathTracer : public MonteCarloDirect {
  private:
   // Shades an intersection with only the indirect light contribution.
   glm::vec3 ShadeIndirect(const Intersection &hit, const glm::vec3 &shift_pos,
-                          const glm::vec3 &reflected_dir,
-                          const glm::vec3 &throughput, const int depth);
+                          const Ray &ray, const glm::vec3 &throughput,
+                          const int depth);
 };
 
 }  // namespace muon

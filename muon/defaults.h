@@ -1,6 +1,7 @@
 #ifndef MUON_DEFAULTS_H_
 #define MUON_DEFAULTS_H_
 
+#include "muon/brdf_type.h"
 #include "muon/importance_sampling.h"
 #include "third_party/glm/glm.hpp"
 
@@ -53,6 +54,9 @@ static const glm::vec3 kSpecular = glm::vec3(0.0f);
 static const glm::vec3 kEmission = glm::vec3(0.0f);
 
 constexpr float kShininess = 1.0f;
+
+// The default BRDF to use.
+constexpr BRDFType kBRDF = BRDFType::kPhong;
 
 }  // namespace defaults
 }  // namespace muon

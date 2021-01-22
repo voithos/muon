@@ -8,6 +8,7 @@
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
 #include "muon/acceleration.h"
+#include "muon/brdf_type.h"
 #include "muon/defaults.h"
 #include "muon/lighting.h"
 #include "muon/objects.h"
@@ -128,6 +129,16 @@ void logBadLine(std::string line) {
   LOG(WARNING) << "Malformed input line: " << line;
 }
 
+std::unique_ptr<brdf::BRDF> CreateBRDF(BRDFType type) {
+  std::unique_ptr<brdf::BRDF> brdf;
+  switch (type) {
+    case BRDFType::kPhong:
+      brdf = absl::make_unique<brdf::Phong>();
+      break;
+  }
+  return brdf;
+}
+
 void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.material = std::make_shared<Material>();
   ws.material->ambient = defaults::kAmbient;
@@ -135,6 +146,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.material->specular = defaults::kSpecular;
   ws.material->emission = defaults::kEmission;
   ws.material->shininess = defaults::kShininess;
+  ws.material->SetBRDF(CreateBRDF(defaults::kBRDF));
 
   ws.scene = absl::make_unique<Scene>();
   ws.accel = CreateAccelerationStructure();
@@ -349,6 +361,8 @@ SceneConfig Parser::Parse() {
           ws.scene->importance_sampling = ImportanceSampling::kHemisphere;
         } else if (importance_sampling == "cosine") {
           ws.scene->importance_sampling = ImportanceSampling::kCosine;
+        } else if (importance_sampling == "brdf") {
+          ws.scene->importance_sampling = ImportanceSampling::kBRDF;
         } else {
           logBadLine(line);
           break;
@@ -551,6 +565,7 @@ SceneConfig Parser::Parse() {
         auto tri0 = absl::make_unique<Tri>(va, vb, vc, false);
         auto tri1 = absl::make_unique<Tri>(vb, vd, vc, false);
         auto material = std::make_shared<Material>();
+        material->SetBRDF(CreateBRDF(defaults::kBRDF));
         material->emission = color;  // Emit based on color.
         glm::mat4 identity(1.0f);
         tri0->material = material;

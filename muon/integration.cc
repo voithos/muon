@@ -83,10 +83,7 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
   // Trace reflectance if the object has any specularity.
   if (glm::any(
           glm::greaterThan(hit.obj->material->specular, glm::vec3(0.0f)))) {
-    glm::vec3 reflected_dir =
-        ray.direction() -
-        2.0f * glm::dot(hit.normal, ray.direction()) * hit.normal;
-    Ray reflected_ray(shift_pos, reflected_dir);
+    Ray reflected_ray(shift_pos, Reflect(ray.direction(), hit.normal));
 
     glm::vec3 reflected_color = Trace(reflected_ray, throughput, depth - 1);
     color += hit.obj->material->specular * reflected_color;
@@ -203,19 +200,15 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
   // themselves.
   glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
 
-  glm::vec3 reflected_dir =
-      ray.direction() -
-      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
-
   // Trace the direct light contributions.
-  color += ShadeDirect(hit, shift_pos, reflected_dir, throughput);
+  color += ShadeDirect(hit, shift_pos, ray, throughput);
 
   return color;
 }
 
 glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
                                         const glm::vec3 &shift_pos,
-                                        const glm::vec3 &reflected_dir,
+                                        const Ray &ray,
                                         const glm::vec3 &throughput) {
   glm::vec3 color(0.0f);
 
@@ -238,10 +231,10 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
       }
       float cos_incident_angle =
           glm::max(glm::dot(hit.normal, info.direction), 0.0f);
-      glm::vec3 phong_brdf =
-          brdf::Phong(*hit.obj->material, info.direction, reflected_dir);
+      glm::vec3 brdf_term = hit.obj->material->BRDF().Eval(
+          info.direction, ray.direction(), hit.normal);
 
-      color += irradiance * cos_incident_angle * phong_brdf;
+      color += irradiance * cos_incident_angle * brdf_term;
       continue;
     }
 
@@ -310,10 +303,10 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
           float geometry_term = cos_incident_angle * cos_light_emission_angle /
                                 (light_distance * light_distance);
 
-          glm::vec3 phong_brdf =
-              brdf::Phong(*hit.obj->material, light_dir, reflected_dir);
+          glm::vec3 brdf_term = hit.obj->material->BRDF().Eval(
+              light_dir, ray.direction(), hit.normal);
 
-          sample_contributions += geometry_term * phong_brdf;
+          sample_contributions += geometry_term * brdf_term;
         }
       }
     }
@@ -380,25 +373,23 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // Shift the collision point by an epsilon to avoid surfaces shadowing
   // themselves.
   glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
-  glm::vec3 reflected_dir =
-      ray.direction() -
-      (2 * glm::dot(ray.direction(), hit.normal) * hit.normal);
 
   if (scene_.next_event_estimation) {
     // Trace the direct light contributions for next event estimation.
-    color += ShadeDirect(hit, shift_pos, reflected_dir, throughput);
+    color += ShadeDirect(hit, shift_pos, ray, throughput);
   }
 
-  color += ShadeIndirect(hit, shift_pos, reflected_dir, throughput, depth);
+  color += ShadeIndirect(hit, shift_pos, ray, throughput, depth);
 
   return color;
 }
 
 glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
-                                    const glm::vec3 &shift_pos,
-                                    const glm::vec3 &reflected_dir,
+                                    const glm::vec3 &shift_pos, const Ray &ray,
                                     const glm::vec3 &throughput,
                                     const int depth) {
+  auto &brdf = hit.obj->material->BRDF();
+
   // First we sample the hemisphere around the surface normal for an outgoing
   // direction.
   glm::vec3 sampled_dir;
@@ -409,11 +400,13 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
     case ImportanceSampling::kCosine:
       sampled_dir = SampleCosine(hit.normal, rand_);
       break;
+    case ImportanceSampling::kBRDF:
+      sampled_dir = brdf.Sample(ray.direction(), hit.normal, rand_);
+      break;
   }
 
-  // Compute the BRDF and cosine terms.
-  glm::vec3 brdf_term =
-      brdf::Phong(*hit.obj->material, sampled_dir, reflected_dir);
+  // Compute the BRDF term.
+  glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
 
   // For the final value of the sample, we divide by the sample's probability
   // density function, which in this case equates to a multiply by 2*pi (since
@@ -439,6 +432,12 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
       // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
       // canceled out and we're left with a multiply by pi.
       next_throughput = throughput * glm::pi<float>() * brdf_term;
+      break;
+    case ImportanceSampling::kBRDF:
+      // Estimate the throughput based on the PDF of the current BRDF.
+      float pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
+      next_throughput = throughput * brdf_term / pdf *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
       break;
   }
 
