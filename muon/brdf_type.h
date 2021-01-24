@@ -7,6 +7,8 @@ namespace muon {
 enum class BRDFType {
   // Uses a modified Phong BRDF.
   kPhong = 0,
+  // Uses the GGX specular BRDF.
+  kGGX,
 };
 
 }  // namespace muon

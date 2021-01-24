@@ -53,7 +53,11 @@ static const glm::vec3 kDiffuse = glm::vec3(0.0f);
 static const glm::vec3 kSpecular = glm::vec3(0.0f);
 static const glm::vec3 kEmission = glm::vec3(0.0f);
 
+// Shininess exponent.
 constexpr float kShininess = 1.0f;
+
+// Surface roughness, in the range [0, 1].
+constexpr float kRoughness = 0.0f;
 
 // The default BRDF to use.
 constexpr BRDFType kBRDF = BRDFType::kPhong;

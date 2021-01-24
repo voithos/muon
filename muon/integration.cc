@@ -71,10 +71,10 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
         hit.obj->material->diffuse *
         glm::max(glm::dot(hit.normal, info.direction), 0.0f);
 
-    glm::vec3 half_angle = glm::normalize(info.direction - ray.direction());
+    glm::vec3 half_vector = glm::normalize(info.direction - ray.direction());
     glm::vec3 specular_cmp =
         hit.obj->material->specular *
-        glm::pow(glm::max(glm::dot(hit.normal, half_angle), 0.0f),
+        glm::pow(glm::max(glm::dot(hit.normal, half_vector), 0.0f),
                  hit.obj->material->shininess);
 
     color += info.color * (diffuse_cmp + specular_cmp);
@@ -406,7 +406,7 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
   }
 
   // Early return in case the sample is below the visible hemisphere.
-  if (glm::dot(sampled_dir, hit.normal) < 0.0f) {
+  if (glm::dot(sampled_dir, hit.normal) <= 0.0f) {
     return glm::vec3(0.0f);
   }
 

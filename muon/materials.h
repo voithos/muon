@@ -69,17 +69,52 @@ class Phong : public BRDF {
   float reflectiveness();
 };
 
+// A BRDF based on the GGX microfacet model.
+// It consists of a diffuse Lambertian portion and a complex specular component
+// defined as:
+//   f(w_i, w_o) =
+//       F(w_i, h) * G(w_i, w_o) * D(h) /
+//       (4 * (w_i • n) * (w_o • n))
+// where h is the half vector, F is the fresnel reflection function (which
+// accounts for the Fresnel effect), G is the shadowing-masking function (which
+// accounts for light bouncing several times on the micro-scale geometry of the
+// surface before bouncing away), and D is the microfacet distribution function
+// (which defines the probability density of a specific "microsurface normal"
+// on the surface).
+class GGX : public BRDF {
+ public:
+  virtual glm::vec3 Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
+                           UniformRandom& rand) override;
+
+  virtual float PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                    const glm::vec3& normal) override;
+
+  virtual glm::vec3 Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                         const glm::vec3& normal) override;
+
+  virtual std::unique_ptr<BRDF> Clone() const override;
+
+ private:
+  // Reflectiveness of the material (the amount of "color" that comes from
+  // specular component vs combined). This is a number in [0, 1].
+  float reflectiveness_ = -1.0f;
+
+  float reflectiveness();
+};
+
 }  // namespace brdf
 
 // Represents the material properties of an object.
 class Material {
  public:
+  // TODO: Document these.
   glm::vec3 ambient = glm::vec3(0.0f);
   glm::vec3 diffuse = glm::vec3(0.0f);
   glm::vec3 specular = glm::vec3(0.0f);
   glm::vec3 emission = glm::vec3(0.0f);
 
   float shininess = 0.0f;
+  float roughness = 0.0f;
 
   Material() {}
   // Allow copying.

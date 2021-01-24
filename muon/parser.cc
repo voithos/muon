@@ -53,10 +53,12 @@ enum class ParseCmd {
   kAttenuation,
   kQuadLight,
   // Material commands.
+  kBRDF,
   kAmbient,
   kDiffuse,
   kSpecular,
   kShininess,
+  kRoughness,
   kEmission,
 };
 
@@ -89,10 +91,12 @@ std::map<std::string, ParseCmd> command_map = {
     {"point", ParseCmd::kPoint},
     {"attenuation", ParseCmd::kAttenuation},
     {"quadLight", ParseCmd::kQuadLight},
+    {"brdf", ParseCmd::kBRDF},
     {"ambient", ParseCmd::kAmbient},
     {"diffuse", ParseCmd::kDiffuse},
     {"specular", ParseCmd::kSpecular},
     {"shininess", ParseCmd::kShininess},
+    {"roughness", ParseCmd::kRoughness},
     {"emission", ParseCmd::kEmission},
 };
 
@@ -135,6 +139,9 @@ std::unique_ptr<brdf::BRDF> CreateBRDF(BRDFType type) {
     case BRDFType::kPhong:
       brdf = absl::make_unique<brdf::Phong>();
       break;
+    case BRDFType::kGGX:
+      brdf = absl::make_unique<brdf::GGX>();
+      break;
   }
   return brdf;
 }
@@ -146,6 +153,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.material->specular = defaults::kSpecular;
   ws.material->emission = defaults::kEmission;
   ws.material->shininess = defaults::kShininess;
+  ws.material->roughness = defaults::kRoughness;
   ws.material->SetBRDF(CreateBRDF(defaults::kBRDF));
 
   ws.scene = absl::make_unique<Scene>();
@@ -581,6 +589,26 @@ SceneConfig Parser::Parse() {
         break;
       }
         // Material commands.
+      case ParseCmd::kBRDF: {
+        BRDFType type;
+        std::string brdf;
+        iss >> brdf;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        if (brdf == "phong") {
+          type = BRDFType::kPhong;
+        } else if (brdf == "ggx") {
+          type = BRDFType::kGGX;
+        } else {
+          logBadLine(line);
+          break;
+        }
+        ws.GenMaterial();
+        ws.material->SetBRDF(CreateBRDF(type));
+        break;
+      }
       case ParseCmd::kAmbient: {
         float r, g, b;
         iss >> r >> g >> b;
@@ -623,6 +651,17 @@ SceneConfig Parser::Parse() {
         }
         ws.GenMaterial();
         ws.material->shininess = shininess;
+        break;
+      }
+      case ParseCmd::kRoughness: {
+        float roughness;
+        iss >> roughness;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.GenMaterial();
+        ws.material->roughness = roughness;
         break;
       }
       case ParseCmd::kEmission: {
