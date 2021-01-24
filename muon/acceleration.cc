@@ -364,6 +364,8 @@ std::unique_ptr<BVHNode> BVH::Build(
           combined_size += buckets[i + 1].size;
           combined_bounds =
               Bounds::Union(combined_bounds, buckets[i + 1].bounds);
+          // TODO: This can sometimes result in a NaN if combined_size is 0 and
+          // the surface area is inf.
           split_costs[i] += combined_size * combined_bounds.SurfaceArea();
         }
       }

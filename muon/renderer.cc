@@ -1,5 +1,6 @@
 #include "muon/renderer.h"
 
+#include <cfenv>
 #include <iostream>
 
 #include "glog/logging.h"
@@ -13,6 +14,11 @@
 namespace muon {
 
 void Renderer::Render() {
+  // TODO: Move this to a separate debug library?
+#if 0
+  feenableexcept(FE_DIVBYZERO | FE_INVALID);
+#endif
+
   Stats stats;
   stats.Start();
 

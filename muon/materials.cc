@@ -93,20 +93,6 @@ std::unique_ptr<BRDF> Phong::Clone() const {
   return absl::make_unique<Phong>();
 }
 
-glm::vec3 GGX::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
-                      UniformRandom& rand) {
-  assert(material_ != nullptr);
-  // TODO: Implement
-  return SampleHemisphere(normal, rand);
-}
-
-float GGX::PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
-               const glm::vec3& normal) {
-  assert(material_ != nullptr);
-  // TODO: Implement
-  return 0.5f * glm::one_over_pi<float>();
-}
-
 // Calculates the GGX microfacet distribution function:
 //   D(h) = a^2 / (pi * cos^4(theta_h) * (a^2 + tan^2(theta_h))^2)
 float GGXMicrofacetDistribution(float half_angle, float roughness) {
@@ -153,6 +139,56 @@ glm::vec3 FresnelSchlick(const glm::vec3 in_dir, const glm::vec3& half_vector,
                          const glm::vec3& specular) {
   return specular + (1.0f - specular) *
                         (1.0f - glm::pow(glm::dot(in_dir, half_vector), 5.0f));
+}
+
+glm::vec3 GGX::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
+                      UniformRandom& rand) {
+  assert(material_ != nullptr);
+
+  // First we select between the diffuse and specular lobes.
+  float r0 = rand.Next();
+  if (r0 > reflectiveness()) {
+    // Diffuse sample.
+    return SampleCosine(normal, rand);
+  }
+
+  // Specular sample.
+  // For microfacet BRDFs, instead of sampling the target lobe directly, we
+  // instead generate a half vector from the microfacet distribution.
+  float r1 = rand.Next();
+  float r2 = rand.Next();
+  float theta =
+      glm::atan(material_->roughness * glm::sqrt(r1) / glm::sqrt(1.0f - r1));
+  float phi = 2.0f * glm::pi<float>() * r2;
+
+  // TODO: Avoid this duplication.
+  glm::vec3 s(glm::cos(phi) * glm::sin(theta), glm::sin(phi) * glm::sin(theta),
+              glm::cos(theta));
+
+  glm::vec3 half_vector = RotateToOrthonormalFrame(s, normal);
+
+  // Finally, we must reflect the ray direction over the half vector to obtain
+  // the final sample.
+  return Reflect(ray_dir, half_vector);
+}
+
+float GGX::PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+               const glm::vec3& normal) {
+  assert(material_ != nullptr);
+
+  // Compute the BRDF's PDF:
+  //   pdf(w_i, w_o) =
+  //       (1 - t) * (n • w_i) / pi + t * D(h) * (n • h) / (4 * (h • w_i))
+  // where t is the reflectiveness, w_i is the incident direction, and h is the
+  // half vector.
+  float t = reflectiveness();
+  glm::vec3 half_vector = glm::normalize(in_dir - ray_dir);
+  float half_angle = glm::acos(glm::dot(half_vector, normal));
+  return (1.0f - t) * glm::max(glm::dot(normal, in_dir), 0.0f) *
+             glm::one_over_pi<float>() +
+         t * GGXMicrofacetDistribution(half_angle, material_->roughness) *
+             glm::max(glm::dot(normal, half_vector), 0.0f) /
+             (4.0f * glm::dot(half_vector, in_dir));
 }
 
 glm::vec3 GGX::Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
@@ -204,17 +240,18 @@ float GGX::reflectiveness() {
     float specular = glm::compAdd(material_->specular) / 3.0f;
     float diffuse = glm::compAdd(material_->diffuse) / 3.0f;
     float denom = diffuse + specular;
-    // If both diffuse and specular components of the material are zero, then
-    // we only really care about the Fresnel effect, so we should just always
-    // the specular lobe.
     if (denom == 0.0f) {
+      // If both diffuse and specular components of the material are zero, then
+      // we only really care about the Fresnel effect, so we should just always
+      // the specular lobe.
       reflectiveness_ = 1.0f;
+    } else {
+      // Otherwise we still want to sample the specular lobe reasonably
+      // frequently in order to account for the Fresnel effect, so retain a
+      // minimum reflectiveness.
+      // TODO: Move this magic number somewhere else.
+      reflectiveness_ = glm::max(specular / denom, 0.25f);
     }
-    // Otherwise we still want to sample the specular lobe reasonably
-    // frequently in order to account for the Fresnel effect, so retain a
-    // minimum reflectiveness.
-    // TODO: Move this magic number somewhere else.
-    reflectiveness_ = glm::max(specular / denom, 0.25f);
   }
   return reflectiveness_;
 }
