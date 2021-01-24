@@ -157,8 +157,8 @@ glm::vec3 GGX::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
   // instead generate a half vector from the microfacet distribution.
   float r1 = rand.Next();
   float r2 = rand.Next();
-  float theta =
-      glm::atan(material_->roughness * glm::sqrt(r1) / glm::sqrt(1.0f - r1));
+  float theta = glm::atan(material_->roughness * glm::sqrt(r1) *
+                          glm::inversesqrt(1.0f - r1));
   float phi = 2.0f * glm::pi<float>() * r2;
 
   // TODO: Avoid this duplication.

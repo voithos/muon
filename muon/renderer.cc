@@ -27,7 +27,7 @@ void Renderer::Render() {
   stats.BuildComplete();
 
   Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
-            sc.scene->output);
+            sc.scene->gamma, sc.scene->output);
   Sampler sampler(sc.scene->width, sc.scene->height,
                   sc.scene->samples_per_pixel);
 

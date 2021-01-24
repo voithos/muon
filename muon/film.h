@@ -17,11 +17,12 @@ class Film {
  public:
   // Initializes a new Film with a given width and height and a path to an
   // output file, which should be a png.
-  Film(size_t width, size_t height, size_t samples_per_pixel,
+  Film(size_t width, size_t height, size_t samples_per_pixel, float gamma,
        std::string output_file)
       : width_(width),
         height_(height),
         samples_per_pixel_(samples_per_pixel),
+        gamma_(gamma),
         output_file_(output_file),
         accumulator_(width, std::vector<glm::vec3>(height, glm::vec3(0.0f))),
         output_(width, height, kImageLayers, kNumColors, /* default */ 0) {}
@@ -38,6 +39,7 @@ class Film {
   size_t width_;
   size_t height_;
   size_t samples_per_pixel_;
+  float gamma_;
   std::string output_file_;
   std::vector<std::vector<glm::vec3>> accumulator_;
   cimg_library::CImg<unsigned char> output_;

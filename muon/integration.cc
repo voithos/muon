@@ -216,8 +216,6 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
     // Special case for non-area lights.
-    // TODO: This is messy and should probably be refactored. Move the BRDF
-    // calculation into the materials?
     // TODO: I'm unconvinced that this is physically accurate...
     if (info.area == nullptr) {
       Ray shadow_ray(shift_pos, info.direction);

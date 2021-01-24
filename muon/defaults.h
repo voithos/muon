@@ -22,6 +22,9 @@ constexpr int kMaxDepth = 5;
 // The output file name.
 constexpr char kOutput[] = "raytrace.png";
 
+// The gamma of the final image.
+constexpr float kGamma = 1.0f;
+
 // Whether or not to compute vertex normals.
 constexpr bool kComputeVertexNormals = false;
 

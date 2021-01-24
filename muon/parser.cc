@@ -24,6 +24,7 @@ enum class ParseCmd {
   kSize,
   kMaxDepth,
   kOutput,
+  kGamma,
   // Integrator commands.
   kIntegrator,
   kSamplesPerPixel,
@@ -66,6 +67,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"size", ParseCmd::kSize},
     {"maxdepth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
+    {"gamma", ParseCmd::kGamma},
     {"integrator", ParseCmd::kIntegrator},
     {"spp", ParseCmd::kSamplesPerPixel},
     {"lightsamples", ParseCmd::kLightSamples},
@@ -164,6 +166,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->height = defaults::kSceneHeight;
   ws.scene->max_depth = defaults::kMaxDepth;
   ws.scene->output = defaults::kOutput;
+  ws.scene->gamma = defaults::kGamma;
   ws.scene->compute_vertex_normals = defaults::kComputeVertexNormals;
   ws.scene->samples_per_pixel = defaults::kSamplesPerPixel;
   ws.scene->light_samples = defaults::kLightSamples;
@@ -258,6 +261,16 @@ SceneConfig Parser::Parse() {
           break;
         }
         ws.scene->output = output;
+        break;
+      }
+      case ParseCmd::kGamma: {
+        float gamma;
+        iss >> gamma;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.scene->gamma = gamma;
         break;
       }
         // Integrator commands.

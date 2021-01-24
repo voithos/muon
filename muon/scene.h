@@ -24,6 +24,7 @@ class Scene {
   int height;
   int max_depth;
   std::string output;
+  float gamma;
   bool compute_vertex_normals;
 
   // Integrator properties.

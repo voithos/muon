@@ -25,6 +25,12 @@ void Film::WriteOutput() {
     for (size_t y = 0; y < height_; ++y) {
       glm::vec3 value =
           accumulator_[x][y] / static_cast<float>(samples_per_pixel_);
+
+      // Gamma correction.
+      value.r = glm::pow(value.r, 1.0f / gamma_);
+      value.g = glm::pow(value.g, 1.0f / gamma_);
+      value.b = glm::pow(value.b, 1.0f / gamma_);
+
       glm::vec3 color = glm::clamp(value, 0.0f, 1.0f);
       output_(x, y, 0) = color.r * 255;
       output_(x, y, 1) = color.g * 255;
