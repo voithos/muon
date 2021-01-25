@@ -19,9 +19,13 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
                             const int depth) {
   // When Russian Roulette is enabled, we rely on it to probabilistically end
   // paths.
+  // When Next Event Estimation is active, we shorten paths by 1, since NEE
+  // effectively increases path lengths by one since it samples direct
+  // lighting.
   // TODO: Switch the depth calculation to check against max_depth, for
   // readability. Right now it goes to zero.
-  if (!scene_.russian_roulette && depth == 0) {
+  if (!scene_.russian_roulette &&
+      depth < (scene_.next_event_estimation ? 1 : 0)) {
     return glm::vec3(0.0f);
   }
   if (depth == scene_.max_depth) {
@@ -362,7 +366,8 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // TODO: We treat emission objects and "lights" a bit differently, and
   // probably incorrectly. Fix this.
   glm::vec3 color;
-  if (scene_.next_event_estimation && depth < scene_.max_depth) {
+  if ((scene_.next_event_estimation && depth < scene_.max_depth) ||
+      glm::dot(hit.normal, -ray.direction()) < 0.0f) {
     color = glm::vec3(0.0f);
   } else {
     color = throughput * hit.obj->material->emission;

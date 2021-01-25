@@ -583,8 +583,8 @@ SceneConfig Parser::Parse() {
         vd.pos = corner + edge0 + edge1;
 
         // TODO: This is pretty gross. Can we improve this?
-        auto tri0 = absl::make_unique<Tri>(va, vb, vc, false);
-        auto tri1 = absl::make_unique<Tri>(vb, vd, vc, false);
+        auto tri0 = absl::make_unique<Tri>(va, vc, vb, false);
+        auto tri1 = absl::make_unique<Tri>(vb, vc, vd, false);
         auto material = std::make_shared<Material>();
         material->SetBRDF(CreateBRDF(defaults::kBRDF));
         material->emission = color;  // Emit based on color.
