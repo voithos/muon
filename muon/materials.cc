@@ -104,8 +104,7 @@ float GGXMicrofacetDistribution(const glm::vec3& half_vector,
   float denom =
       glm::pi<float>() * glm::pow(glm::cos(half_angle), 4.0f) *
       glm::pow(a_squared + glm::pow(glm::tan(half_angle), 2.0f), 2.0f);
-  assert(denom != 0.0f);
-  return a_squared / denom;
+  return denom > 0.0f ? a_squared / denom : 0.0f;
 }
 
 // Returns a monodirectional shadowing-masking result for the given direction.
