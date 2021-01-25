@@ -27,6 +27,7 @@ void Film::WriteOutput() {
           accumulator_[x][y] / static_cast<float>(samples_per_pixel_);
 
       // Gamma correction.
+      // TODO: Pull this out into a post-process system.
       value.r = glm::pow(value.r, 1.0f / gamma_);
       value.g = glm::pow(value.g, 1.0f / gamma_);
       value.b = glm::pow(value.b, 1.0f / gamma_);

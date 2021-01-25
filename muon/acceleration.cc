@@ -350,6 +350,9 @@ std::unique_ptr<BVHNode> BVH::Build(
         Bounds combined_bounds;
         for (size_t i = 0; i < kNumSAHSplitPoints; ++i) {
           combined_size += buckets[i].size;
+          if (combined_size == 0) {
+            continue;
+          }
           combined_bounds = Bounds::Union(combined_bounds, buckets[i].bounds);
           split_costs[i] = combined_size * combined_bounds.SurfaceArea();
         }
@@ -362,6 +365,9 @@ std::unique_ptr<BVHNode> BVH::Build(
           // Use i+1 for the bucket index since we are considering the right
           // branch.
           combined_size += buckets[i + 1].size;
+          if (combined_size == 0) {
+            continue;
+          }
           combined_bounds =
               Bounds::Union(combined_bounds, buckets[i + 1].bounds);
           // TODO: This can sometimes result in a NaN if combined_size is 0 and

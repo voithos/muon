@@ -96,7 +96,10 @@ std::unique_ptr<BRDF> Phong::Clone() const {
 
 // Calculates the GGX microfacet distribution function:
 //   D(h) = a^2 / (pi * cos^4(theta_h) * (a^2 + tan^2(theta_h))^2)
-float GGXMicrofacetDistribution(float half_angle, float roughness) {
+float GGXMicrofacetDistribution(const glm::vec3& half_vector,
+                                const glm::vec3& normal, float roughness) {
+  float half_angle =
+      glm::acos(glm::clamp(glm::dot(half_vector, normal), 0.0f, 1.0f));
   float a_squared = roughness * roughness;
   float denom =
       glm::pi<float>() * glm::pow(glm::cos(half_angle), 4.0f) *
@@ -116,7 +119,7 @@ float SmithGGXMonodirectional(const glm::vec3& dir, const glm::vec3& normal,
   if (dir_dot_normal <= 0.0f) {
     return 0.0f;
   }
-  float dir_angle = glm::acos(dir_dot_normal);
+  float dir_angle = glm::acos(glm::clamp(dir_dot_normal, 0.0f, 1.0f));
   float a_squared = roughness * roughness;
   return 2.0f /
          (1.0f +
@@ -158,8 +161,8 @@ glm::vec3 GGX::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
   // instead generate a half vector from the microfacet distribution.
   float r1 = rand.Next();
   float r2 = rand.Next();
-  float theta = glm::atan(material_->roughness * glm::sqrt(r1) *
-                          glm::inversesqrt(1.0f - r1));
+  float theta =
+      glm::atan(material_->roughness * glm::sqrt(r1) / glm::sqrt(1.0f - r1));
   float phi = 2.0f * glm::pi<float>() * r2;
 
   // TODO: Avoid this duplication.
@@ -184,10 +187,11 @@ float GGX::PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
   // half vector.
   float t = reflectiveness();
   glm::vec3 half_vector = glm::normalize(in_dir - ray_dir);
-  float half_angle = glm::acos(glm::dot(half_vector, normal));
   return (1.0f - t) * glm::max(glm::dot(normal, in_dir), 0.0f) *
              glm::one_over_pi<float>() +
-         t * GGXMicrofacetDistribution(half_angle, material_->roughness) *
+         t *
+             GGXMicrofacetDistribution(half_vector, normal,
+                                       material_->roughness) *
              glm::max(glm::dot(normal, half_vector), 0.0f) /
              (4.0f * glm::dot(half_vector, in_dir));
 }
@@ -207,9 +211,7 @@ glm::vec3 GGX::Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
   // distribution function (which defines the probability density of a specific
   // "microsurface normal" on the surface).
 
-  // First we define some reused values.
   glm::vec3 half_vector = glm::normalize(in_dir - ray_dir);
-  float half_angle = glm::acos(glm::dot(half_vector, normal));
 
   // We compute the diffuse component as a standard Lambertian.
   glm::vec3 diffuse = material_->diffuse * glm::one_over_pi<float>();
@@ -219,7 +221,7 @@ glm::vec3 GGX::Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
   float shadowing_masking =
       SmithGGX(in_dir, ray_dir, normal, material_->roughness);
   float microfacet_distribution =
-      GGXMicrofacetDistribution(half_angle, material_->roughness);
+      GGXMicrofacetDistribution(half_vector, normal, material_->roughness);
 
   // The ray_dir is facing towards the surface, so we flip it when computing the
   // dot product with the normal.
