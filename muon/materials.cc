@@ -5,6 +5,7 @@
 #include "absl/memory/memory.h"
 #include "glog/logging.h"
 #include "muon/hemisphere_sampling.h"
+#include "muon/strings.h"
 #include "muon/transform.h"
 #include "third_party/glm/gtc/constants.hpp"
 #include "third_party/glm/gtx/component_wise.hpp"
@@ -138,7 +139,7 @@ float SmithGGX(const glm::vec3& in_dir, const glm::vec3& ray_dir,
 glm::vec3 FresnelSchlick(const glm::vec3 in_dir, const glm::vec3& half_vector,
                          const glm::vec3& specular) {
   return specular + (1.0f - specular) *
-                        (1.0f - glm::pow(glm::dot(in_dir, half_vector), 5.0f));
+                        glm::pow(1.0f - glm::dot(in_dir, half_vector), 5.0f);
 }
 
 glm::vec3 GGX::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,

@@ -245,6 +245,7 @@ cc_library(
     deps = [
         ":hemisphere_sampling",
         ":random",
+        ":strings",
         "//third_party/glm",
         "@com_google_absl//absl/types:optional",
     ],
