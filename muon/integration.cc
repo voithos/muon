@@ -366,6 +366,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // TODO: We treat emission objects and "lights" a bit differently, and
   // probably incorrectly. Fix this.
   glm::vec3 color;
+  // TODO: Is this "reverse tri" check necessary?
   if ((scene_.next_event_estimation && depth < scene_.max_depth) ||
       glm::dot(hit.normal, -ray.direction()) < 0.0f) {
     color = glm::vec3(0.0f);

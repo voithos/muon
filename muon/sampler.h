@@ -11,17 +11,18 @@ class Sampler {
       : width_(width),
         height_(height),
         samples_per_pixel_(samples_per_pixel),
-        total_samples_(width * height * samples_per_pixel) {}
+        total_samples_(width * height *
+                       static_cast<long int>(samples_per_pixel)) {}
 
   // Generates the next sample location, in terms of x and y coordinates in
   // screen space. If there are no more samples to generate, returns false.
   bool NextSample(float &x, float &y);
 
   // Returns the total number of samples configured.
-  int TotalSamples() const;
+  long int TotalSamples() const;
 
   // Returns the number of samples requested so far.
-  int RequestedSamples() const;
+  long int RequestedSamples() const;
 
   // Returns the rendering progress, based on total and requested sample counts.
   float Progress() const;
@@ -30,13 +31,13 @@ class Sampler {
   int width_;
   int height_;
   int samples_per_pixel_;
-  int total_samples_;
+  long int total_samples_;
 
   int cur_x_ = 0;
   int cur_y_ = 0;
   int cur_pixel_sample_ = 0;
   // The number of samples generated so far.
-  int samples_ = 0;
+  long int samples_ = 0;
 
   // RNG for random sampling within the pixel.
   UniformRandom rand_;
