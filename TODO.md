@@ -10,8 +10,12 @@
 - [ ] Depth of field
 - [ ] Golden testing framework
 - [ ] Measured BRDF support
-- [ ] Features from "Ray tracing in a weekend" + "Ray tracing: the next week"
-- [ ] GUI scene viewer
+- [ ] Features from "Ray tracing in a weekend" series
+  - [ ] Ray tracing in a weekend
+  - [ ] Ray tracing: the next week
+  - [ ] Ray tracing: the rest of your life
+- [ ] Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
+- [ ] GUI scene viewer (imgui?)
 
 ## Scenes
 - [ ] Utah teapot
