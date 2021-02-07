@@ -11,3 +11,9 @@ scene_diff_test(
     golden = "testdata/transforms.png",
     scene = "transforms.test",
 )
+
+scene_diff_test(
+    name = "spheres_raytrace_test",
+    golden = "testdata/spheres_raytrace.png",
+    scene = "spheres_raytrace.test",
+)
