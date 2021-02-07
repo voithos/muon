@@ -1,0 +1,22 @@
+# A simple quad viewed from the side
+
+size 640 480 
+
+camera -4 -4 4 1 0 0 0 1 0 30
+
+ambient .1 .1 .1
+directional 0 0 1 .5 .5 .5 
+point 4 0 4 .5 .5 .5
+diffuse 1 0 0 
+specular 0 0 0
+
+maxverts 4 
+
+vertex -1 -1 0 
+vertex +1 -1 0
+vertex +1 +1 0
+vertex -1 +1 0
+
+tri 0 1 2
+tri 0 2 3
+

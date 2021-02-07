@@ -1,3 +1,5 @@
+package(default_visibility = ["//test:__subpackages__"])
+
 cc_binary(
     name = "muon",
     srcs = ["muon.cc"],
