@@ -1,0 +1,2 @@
+# Optimized mode is useful for quick renders.
+build --compilation_mode=opt
