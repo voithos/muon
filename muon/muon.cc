@@ -10,6 +10,7 @@
 #include "muon/renderer.h"
 
 ABSL_FLAG(std::string, scene, "", "Path to a scene file");
+ABSL_FLAG(std::string, output, "", "Path to output file");
 ABSL_FLAG(muon::AccelerationType, acceleration, muon::AccelerationType::kBVH,
           "The type of acceleration structure to use");
 ABSL_FLAG(muon::PartitionStrategy, partition_strategy,
@@ -35,6 +36,7 @@ int main(int argc, char **argv) {
     return 1;
   }
   muon::Options options = {
+      .output = absl::GetFlag(FLAGS_output),
       .acceleration = absl::GetFlag(FLAGS_acceleration),
       .partition_strategy = absl::GetFlag(FLAGS_partition_strategy),
       .show_stats = absl::GetFlag(FLAGS_stats),

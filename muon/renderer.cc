@@ -26,8 +26,10 @@ void Renderer::Render() {
   SceneConfig sc = parser.Parse();
   stats.BuildComplete();
 
+  const std::string& output =
+      options_.output != "" ? options_.output : sc.scene->output;
   Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
-            sc.scene->gamma, sc.scene->output);
+            sc.scene->gamma, output);
   Sampler sampler(sc.scene->width, sc.scene->height,
                   sc.scene->samples_per_pixel);
 

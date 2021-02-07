@@ -9,6 +9,9 @@ namespace muon {
 
 // Input options for the renderer.
 struct Options {
+  // The path to the output file. Overrides the output specified in the scene
+  // file.
+  std::string output;
   // The acceleration structure to use.
   AccelerationType acceleration;
   // The strategy to use when partitioning primitives in a BVH.
