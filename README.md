@@ -29,3 +29,9 @@ To run the linter, first build the compilation database and then run:
 ```
 $ clang-tidy muon/*.cc
 ```
+
+To run the image diff tests, install ImageMagick and then run:
+
+```
+$ bazel test //test:all
+```
