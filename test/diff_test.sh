@@ -1,6 +1,8 @@
 #!/bin/bash
 #
 # A modular test that renders a scene and compares it with a golden image.
+# Usage:
+#   diff_test.sh <test_scene> <golden_image>
 
 # --- begin runfiles.bash initialization v2 ---
 # Copy-pasted from the Bazel Bash runfiles library v2.
@@ -21,27 +23,30 @@ if ! hash compare &> /dev/null; then
   exit 1
 fi
 
+# Unpack arguments.
 SCENE="$1"
+GOLDEN="$2"
+
 if [[ "$SCENE" == "" ]]; then
   echo "ERROR: Scene file not provided"
   exit 1
 fi
 
-MUON="$(rlocation __main__/muon/muon)"
+MUON="$(rlocation __main__/muon/muon || :)"
 if [[ ! -f $MUON ]]; then
   echo "ERROR: muon binary not found"
   exit 1
 fi
 
-SCENE_FILE="$(rlocation "__main__/test/$SCENE")"
+SCENE_FILE="$(rlocation "__main__/$SCENE" || :)"
 if [[ ! -f $SCENE_FILE ]]; then
-  echo "ERROR: Scene file __main__/test/$SCENE not found"
+  echo "ERROR: Scene file __main__/$SCENE not found"
   exit 1
 fi
 
-GOLDEN_IMAGE="$(rlocation "__main__/test/testdata/${SCENE%.*}.png")"
+GOLDEN_IMAGE="$(rlocation "__main__/$GOLDEN" || :)"
 if [[ ! -f $GOLDEN_IMAGE ]]; then
-  echo "ERROR: Golden image __main__/test/testdata/${SCENE%.*}.png not found"
+  echo "ERROR: Golden image __main__/$GOLDEN not found"
   exit 1
 fi
 

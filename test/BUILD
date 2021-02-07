@@ -1,19 +1,13 @@
-load("//test:build_defs.bzl", "scene_diff_tests")
+load("//test:build_defs.bzl", "scene_diff_test")
 
-scene_diff_tests(
-    scenes = ["tri.test"],
+scene_diff_test(
+    name = "intersection_test",
+    golden = "testdata/intersection.png",
+    scene = "intersection.test",
 )
-# sh_test(
-# name = "tri_test",
-# size = "medium",
-# srcs = ["diff_test.sh"],
-# args = ["tri.test"],
-# data = [
-# "testdata/tri.png",
-# "tri.test",
-# "//muon",
-# ],
-# deps = [
-# "@bazel_tools//tools/bash/runfiles",
-# ],
-# )
+
+scene_diff_test(
+    name = "transforms_test",
+    golden = "testdata/transforms.png",
+    scene = "transforms.test",
+)

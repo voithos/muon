@@ -1,0 +1,154 @@
+# A simple test showcasing transforms.
+
+size 640 480 
+
+camera 0 -4 3 0 -1 0 0 0 1 45
+
+maxverts 8
+
+vertex -1 -1 -1
+vertex +1 -1 -1 
+vertex +1 +1 -1 
+vertex -1 +1 -1 
+vertex -1 -1 +1
+vertex +1 -1 +1 
+vertex +1 +1 +1
+vertex -1 +1 +1
+
+pushTransform
+
+ambient .2 .2 .5
+
+scale 2 1 .25
+tri 0 1 5 
+tri 0 5 4 
+tri 3 7 6
+tri 3 6 2
+tri 1 2 6
+tri 1 6 5 
+tri 0 7 3 
+tri 0 4 7 
+tri 0 3 2 
+tri 0 2 1
+tri 4 5 6 
+tri 4 6 7 
+
+popTransform
+pushTransform 
+
+ambient .2 .2 0
+
+translate -1.75 -.8 -.25 
+translate 0 0 -2.0 
+scale 0.15 0.15 2.0 
+tri 0 1 5 
+tri 0 5 4 
+tri 3 7 6
+tri 3 6 2
+tri 1 2 6
+tri 1 6 5 
+tri 0 7 3 
+tri 0 4 7 
+tri 0 3 2 
+tri 0 2 1
+tri 4 5 6 
+tri 4 6 7 
+
+popTransform
+pushTransform 
+translate +1.75 -.8 -.25
+translate 0 0 -2.0 
+scale 0.15 0.15 2.0 
+tri 0 1 5 
+tri 0 5 4 
+tri 3 7 6
+tri 3 6 2
+tri 1 2 6
+tri 1 6 5 
+tri 0 7 3 
+tri 0 4 7 
+tri 0 3 2 
+tri 0 2 1
+tri 4 5 6 
+tri 4 6 7 
+
+popTransform
+pushTransform 
+translate +1.75 +.8 -.25
+translate 0 0 -2.0 
+scale 0.15 0.15 2.0 
+tri 0 1 5 
+tri 0 5 4 
+tri 3 7 6
+tri 3 6 2
+tri 1 2 6
+tri 1 6 5 
+tri 0 7 3 
+tri 0 4 7 
+tri 0 3 2 
+tri 0 2 1
+tri 4 5 6 
+tri 4 6 7 
+
+popTransform
+pushTransform 
+translate -1.75 +.8 -.25
+translate 0 0 -2.0 
+scale 0.15 0.15 2.0 
+tri 0 1 5 
+tri 0 5 4 
+tri 3 7 6
+tri 3 6 2
+tri 1 2 6
+tri 1 6 5 
+tri 0 7 3 
+tri 0 4 7 
+tri 0 3 2 
+tri 0 2 1
+tri 4 5 6 
+tri 4 6 7 
+
+
+ambient 0 .5 0 
+popTransform
+pushTransform 
+translate  0 0 0.5
+rotate 0 0 1 45
+scale 1.0 0.25 0.25 
+sphere 0 0 0 1
+
+ambient .5 0 0
+popTransform
+pushTransform 
+translate  0 0 0.5
+rotate 0 0 1 -45
+scale 1.0 0.25 0.25 
+sphere 0 0 0 1
+
+ambient 0 .5 .5 
+popTransform
+pushTransform
+translate -1.5 -.8 0.65
+scale 0.4 0.4 0.4
+sphere 0 0 0 1
+
+ambient 0 .5 .5 
+popTransform
+pushTransform
+translate 1.5 -.8 0.65
+scale 0.4 0.4 0.4
+sphere 0 0 0 1
+
+ambient 0 .5 .5 
+popTransform
+pushTransform
+translate 1.5 .8 0.65
+scale 0.4 0.4 0.4
+sphere 0 0 0 1
+
+ambient 0 .5 .5 
+popTransform
+pushTransform
+translate -1.5 .8 0.65
+scale 0.4 0.4 0.4
+sphere 0 0 0 1
