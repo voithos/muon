@@ -1,8 +1,12 @@
-# A simple Cornell Box with normals.
-size 480 480
-integrator normals
-camera 0.0001 1 3 0 1 0 0 1 0 45
+# A simple Cornell Box with phong materials.
+size 256 256
+integrator pathtracer
+camera 0.0001 1.7 3 0 1 0 0 1 0 45
+nexteventestimation on
+russianroulette on
+spp 64
 
+brdf phong
 
 maxverts 12
 # Planar face

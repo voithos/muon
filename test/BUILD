@@ -49,3 +49,27 @@ scene_diff_test(
     tolerance = "0.0005",
     truth = "testdata/sphere_truth.png",
 )
+
+scene_diff_test(
+    name = "cornell_phong_test",
+    golden = "testdata/cornell_phong_golden.png",
+    scene = "cornell_phong.test",
+    tolerance = "0.002",
+    truth = "testdata/cornell_phong_truth.png",
+)
+
+scene_diff_test(
+    name = "cornell_brdf_test",
+    golden = "testdata/cornell_brdf_golden.png",
+    scene = "cornell_brdf.test",
+    tolerance = "0.002",
+    truth = "testdata/cornell_brdf_truth.png",
+)
+
+scene_diff_test(
+    name = "ggx_test",
+    golden = "testdata/ggx_golden.png",
+    scene = "ggx.test",
+    tolerance = "0.002",
+    truth = "testdata/ggx_truth.png",
+)
