@@ -29,3 +29,11 @@ scene_diff_test(
     golden = "testdata/analytic.png",
     scene = "analytic.test",
 )
+
+scene_diff_test(
+    name = "sphere_test",
+    golden = "testdata/sphere_golden.png",
+    scene = "sphere.test",
+    tolerance = "0.0005",
+    truth = "testdata/sphere_truth.png",
+)
