@@ -37,6 +37,12 @@ scene_diff_test(
 )
 
 scene_diff_test(
+    name = "cornell_depth_test",
+    golden = "testdata/cornell_depth.png",
+    scene = "cornell_depth.test",
+)
+
+scene_diff_test(
     name = "sphere_test",
     golden = "testdata/sphere_golden.png",
     scene = "sphere.test",
