@@ -1,21 +1,20 @@
 # TODO
 
 ## Features
-- [ ] Recursive refraction
-- [ ] More complex reflectance models, Torrance-Sparrow?
-- [ ] Other camera types, like orthographic
-- [ ] Support for a common file format (obj, glTF, USD?)
-- [ ] Tone mapping of the output image (gamma correction?)
-- [ ] Allow separate rendering of direct and bounce light
-- [ ] Depth of field
-- [ ] Golden testing framework
-- [ ] Measured BRDF support
-- [ ] Features from "Ray tracing in a weekend" series
+- [ ] P0: MIS
+- [ ] P0: Recursive refraction
+- [ ] P0: Allow separate rendering of direct and bounce light
+- [ ] P0: Depth of field
+- [ ] P0: Features from "Ray tracing in a weekend" series
   - [ ] Ray tracing in a weekend
   - [ ] Ray tracing: the next week
   - [ ] Ray tracing: the rest of your life
-- [ ] Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
-- [ ] GUI scene viewer (imgui?)
+- [ ] P1: Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
+- [ ] P1: GUI scene viewer (imgui?)
+- [ ] P1: Support for a common file format (obj, glTF, USD?)
+- [ ] P3: Other camera types, like orthographic
+- [ ] P3: More complex reflectance models, Torrance-Sparrow?
+- [ ] P3: Measured BRDF support
 
 ## Scenes
 - [ ] Utah teapot
@@ -23,10 +22,10 @@
 - [ ] pbrt scenes?
 
 ## Performance improvements
-- [ ] Include an end bound on ray intersections to avoid costly intersection
-      tests that are further away than already-known intersections
-- [ ] Add multithreading support
+- [ ] P1: Add multithreading support
 - [ ] SIMD support?
+- [ ] P3: Include an end bound on ray intersections to avoid costly intersection
+      tests that are further away than already-known intersections
 
 ## DONE
 - [x] Add surface area heuristic to BVH
@@ -40,3 +39,5 @@
 - [x] Antialiasing
 - [x] Cornell box
 - [x] Stanford dragon
+- [x] Tone mapping of the output image (gamma correction?)
+- [x] Golden testing framework

@@ -12,7 +12,7 @@
 namespace muon {
 
 glm::vec3 Integrator::Trace(const Ray &ray) {
-  return Trace(ray, glm::vec3(1.0f), scene_.max_depth);
+  return Trace(ray, glm::vec3(1.0f), 0);
 }
 
 glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
@@ -22,13 +22,12 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
   // When Next Event Estimation is active, we shorten paths by 1, since NEE
   // effectively increases path lengths by one since it samples direct
   // lighting.
-  // TODO: Switch the depth calculation to check against max_depth, for
-  // readability. Right now it goes to zero.
   if (!scene_.russian_roulette &&
-      depth < (scene_.next_event_estimation ? 1 : 0)) {
+      depth > (scene_.next_event_estimation ? scene_.max_depth - 1
+                                            : scene_.max_depth)) {
     return glm::vec3(0.0f);
   }
-  if (depth == scene_.max_depth) {
+  if (depth == 0) {
     stats_.IncrementPrimaryRays();
   } else {
     stats_.IncrementSecondaryRays();
@@ -89,7 +88,7 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
           glm::greaterThan(hit.obj->material->specular, glm::vec3(0.0f)))) {
     Ray reflected_ray(shift_pos, Reflect(ray.direction(), hit.normal));
 
-    glm::vec3 reflected_color = Trace(reflected_ray, throughput, depth - 1);
+    glm::vec3 reflected_color = Trace(reflected_ray, throughput, depth + 1);
     color += hit.obj->material->specular * reflected_color;
   }
 
@@ -367,7 +366,7 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // probably incorrectly. Fix this.
   glm::vec3 color;
   // TODO: Is this "reverse tri" check necessary?
-  if ((scene_.next_event_estimation && depth < scene_.max_depth) ||
+  if ((scene_.next_event_estimation && depth > 0) ||
       glm::dot(hit.normal, -ray.direction()) < 0.0f) {
     color = glm::vec3(0.0f);
   } else {
@@ -468,7 +467,7 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
 
   // Trace the sampled ray.
   Ray sampled_ray(shift_pos, sampled_dir);
-  return Trace(sampled_ray, next_throughput, depth - 1);
+  return Trace(sampled_ray, next_throughput, depth + 1);
 }
 
 }  // namespace muon
