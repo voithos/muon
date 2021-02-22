@@ -8,6 +8,8 @@ russianroulette on
 camera  0 1 8  0 -3 2.5  0 1 0  30
 spp 64
 
+maxdepth -1
+
 maxverts 8
 
 vertex -20 -4 -2

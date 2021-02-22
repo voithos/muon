@@ -16,7 +16,10 @@ constexpr int kSceneWidth = 150;
 // The scene height, in pixels.
 constexpr int kSceneHeight = 150;
 
-// The maximum tracing depth.
+// The minimum tracing depth (inclusive).
+constexpr int kMinDepth = 0;
+
+// The maximum tracing depth (inclusive).
 constexpr int kMaxDepth = 5;
 
 // The output file name.

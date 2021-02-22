@@ -22,6 +22,7 @@ class Scene {
   // General properties.
   int width;
   int height;
+  int min_depth;
   int max_depth;
   std::string output;
   float gamma;

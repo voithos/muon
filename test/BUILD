@@ -73,3 +73,25 @@ scene_diff_test(
     tolerance = "0.002",
     truth = "testdata/ggx_truth.png",
 )
+
+scene_diff_test(
+    name = "partial_emission_test",
+    golden = "testdata/partial_emission.png",
+    scene = "partial_emission.test",
+)
+
+scene_diff_test(
+    name = "partial_direct_test",
+    golden = "testdata/partial_direct_golden.png",
+    scene = "partial_direct.test",
+    tolerance = "0.0005",
+    truth = "testdata/partial_direct_truth.png",
+)
+
+scene_diff_test(
+    name = "partial_indirect_test",
+    golden = "testdata/partial_indirect_golden.png",
+    scene = "partial_indirect.test",
+    tolerance = "0.001",
+    truth = "testdata/partial_indirect_truth.png",
+)

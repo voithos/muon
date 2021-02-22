@@ -22,6 +22,7 @@ enum class ParseCmd {
   kIgnored = 0,  // Ignored.
   // General commands.
   kSize,
+  kMinDepth,
   kMaxDepth,
   kOutput,
   kGamma,
@@ -65,6 +66,7 @@ enum class ParseCmd {
 
 std::map<std::string, ParseCmd> command_map = {
     {"size", ParseCmd::kSize},
+    {"mindepth", ParseCmd::kMinDepth},
     {"maxdepth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
     {"gamma", ParseCmd::kGamma},
@@ -164,6 +166,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
 
   ws.scene->width = defaults::kSceneWidth;
   ws.scene->height = defaults::kSceneHeight;
+  ws.scene->min_depth = defaults::kMinDepth;
   ws.scene->max_depth = defaults::kMaxDepth;
   ws.scene->output = defaults::kOutput;
   ws.scene->gamma = defaults::kGamma;
@@ -243,7 +246,19 @@ SceneConfig Parser::Parse() {
         ws.scene->height = height;
         break;
       }
+      case ParseCmd::kMinDepth: {
+        int min_depth;
+        iss >> min_depth;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.scene->min_depth = min_depth;
+        break;
+      }
       case ParseCmd::kMaxDepth: {
+        // TODO: Currently enabling Russian Roulette requires setting maxdepth
+        // to -1 to work properly; make this more automatic.
         int max_depth;
         iss >> max_depth;
         if (iss.fail()) {

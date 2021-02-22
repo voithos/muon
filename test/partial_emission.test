@@ -1,27 +1,39 @@
-# A simple Cornell Box with phong materials, testing brdf importance sampling.
+# Path traced scene testing emission only via mindepth and maxdepth.
 size 256 256
 integrator pathtracer
-camera 0 1.7 3 0 1 0 0 1 0 45
-importancesampling brdf
-nexteventestimation on
+camera 0.0001 1.7 3 0 1 0 0 1 0 45
+nexteventestimation off
 russianroulette on
-spp 64
+spp 1
 
-maxdepth -1
+# Only sample direct emission.
+mindepth 0
+maxdepth 0
 
 brdf phong
 
-maxverts 4
+maxverts 12
 # Planar face
 vertex -1 +1 0
 vertex -1 -1 0
 vertex +1 -1 0
 vertex +1 +1 0
 
+# Cube
+vertex -1 +1 +1
+vertex +1 +1 +1
+vertex -1 -1 +1
+vertex +1 -1 +1
+
+vertex -1 +1 -1
+vertex +1 +1 -1
+vertex -1 -1 -1
+vertex +1 -1 -1
+
 
 ambient 0 0 0
 specular 0 0 0
-shininess 1000
+shininess 30
 emission 0 0 0
 diffuse 0 0 0
 
@@ -83,12 +95,35 @@ tri 0 1 2
 tri 0 2 3
 popTransform
 
-# Sphere
-diffuse 0.2 0.2 0.2
-specular 0.8 0.8 0.8
+# Cube
+diffuse 0.8 0.8 0.8
+specular 0.2 0.2 0.2
 pushTransform
-translate 0 0.5 0
-scale 0.5 0.5 0.5
+translate -0.3 0.6 -0.2
+rotate 0 1 0 23
+scale 0.3 0.6 0.2
+
+tri 4 6 5
+tri 6 7 5
+tri 4 5 8
+tri 5 9 8
+tri 7 9 5
+tri 7 11 9
+tri 4 8 10
+tri 4 10 6
+tri 6 10 11
+tri 6 11 7
+tri 10 8 9
+tri 10 9 11
+popTransform
+
+# Sphere
+diffuse 0.8 0.8 0.8
+specular 0.2 0.2 0.2
+pushTransform
+translate 0.3 0.3 0.2
+rotate 0 1 0 -20
+scale 0.3 0.3 0.3
 
 sphere 0 0 0 1
 

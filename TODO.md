@@ -3,8 +3,8 @@
 ## Features
 - [ ] P0: MIS
 - [ ] P0: Recursive refraction
-- [ ] P0: Allow separate rendering of direct and bounce light
 - [ ] P0: Depth of field
+- [ ] P0: Volumetrics
 - [ ] P0: Features from "Ray tracing in a weekend" series
   - [ ] Ray tracing in a weekend
   - [ ] Ray tracing: the next week
@@ -41,3 +41,4 @@
 - [x] Stanford dragon
 - [x] Tone mapping of the output image (gamma correction?)
 - [x] Golden testing framework
+- [x] P0: Allow separate rendering of direct and bounce light

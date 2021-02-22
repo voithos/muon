@@ -18,11 +18,12 @@ glm::vec3 Integrator::Trace(const Ray &ray) {
 glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
                             const int depth) {
   // When Russian Roulette is enabled, we rely on it to probabilistically end
-  // paths.
+  // paths. Currently, max_depth must be -1 when Russian Roulette is enabled in
+  // order to result in an unbiased render.
   // When Next Event Estimation is active, we shorten paths by 1, since NEE
   // effectively increases path lengths by one since it samples direct
   // lighting.
-  if (!scene_.russian_roulette &&
+  if (scene_.max_depth != -1 &&
       depth > (scene_.next_event_estimation ? scene_.max_depth - 1
                                             : scene_.max_depth)) {
     return glm::vec3(0.0f);
@@ -358,6 +359,16 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // introducing bias.
   //
 
+  // Shift the collision point by an epsilon to avoid surfaces shadowing
+  // themselves.
+  glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
+
+  // Only return indirect light if current depth is being filtered. We only
+  // need to check min_depth since max_depth is checked in Integrator::Trace.
+  if (depth < scene_.min_depth) {
+    return ShadeIndirect(hit, shift_pos, ray, throughput, depth);
+  }
+
   // Only consider emission for base lighting, but take special care when we're
   // using next event estimation. Since emission from the first intersection is
   // not sampled by NEE, we accumulate it _only_ for the first intersection and
@@ -372,10 +383,6 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   } else {
     color = throughput * hit.obj->material->emission;
   }
-
-  // Shift the collision point by an epsilon to avoid surfaces shadowing
-  // themselves.
-  glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
 
   if (scene_.next_event_estimation) {
     // Trace the direct light contributions for next event estimation.
