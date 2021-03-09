@@ -43,6 +43,23 @@ class BRDF {
   Material* material_;
 };
 
+// A simple Lambertian reflection model.
+//   f(w_i, w_o) = k_d / pi
+// where k_d is the diffuse color.
+class Lambertian : public BRDF {
+ public:
+  virtual glm::vec3 Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
+                           UniformRandom& rand) override;
+
+  virtual float PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                    const glm::vec3& normal) override;
+
+  virtual glm::vec3 Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                         const glm::vec3& normal) override;
+
+  virtual std::unique_ptr<BRDF> Clone() const override;
+};
+
 // A PBR-compatible version of the Phong reflection model.
 //   f(w_i, w_o) =
 //       (k_d / pi) + (k_s * (s + 2) / (2 * pi)) * (r • w_i)^s

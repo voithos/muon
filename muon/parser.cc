@@ -140,6 +140,8 @@ void logBadLine(std::string line) {
 std::unique_ptr<brdf::BRDF> CreateBRDF(BRDFType type) {
   std::unique_ptr<brdf::BRDF> brdf;
   switch (type) {
+    case BRDFType::kLambertian:
+      brdf = absl::make_unique<brdf::Lambertian>();
     case BRDFType::kPhong:
       brdf = absl::make_unique<brdf::Phong>();
       break;
@@ -625,7 +627,9 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        if (brdf == "phong") {
+        if (brdf == "lambertian") {
+          type = BRDFType::kLambertian;
+        } else if (brdf == "phong") {
           type = BRDFType::kPhong;
         } else if (brdf == "ggx") {
           type = BRDFType::kGGX;

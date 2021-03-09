@@ -5,8 +5,10 @@ namespace muon {
 
 // The types of BRDFs available.
 enum class BRDFType {
+  // Uses the simple Lambertian BRDF.
+  kLambertian = 0,
   // Uses a modified Phong BRDF.
-  kPhong = 0,
+  kPhong,
   // Uses the GGX specular BRDF.
   kGGX,
 };

@@ -14,6 +14,38 @@ namespace muon {
 
 namespace brdf {
 
+glm::vec3 Lambertian::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
+                             UniformRandom& rand) {
+  assert(material_ != nullptr);
+
+  // Simple diffuse sample.
+  return SampleCosine(normal, rand);
+}
+
+float Lambertian::PDF(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                      const glm::vec3& normal) {
+  assert(material_ != nullptr);
+
+  // Compute the BRDF's PDF:
+  //   pdf(w_i, w_o) = (n • w_i) / pi
+  // where w_i is the incident direction.
+  return glm::max(glm::dot(normal, in_dir), 0.0f) * glm::one_over_pi<float>();
+}
+
+glm::vec3 Lambertian::Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
+                           const glm::vec3& normal) {
+  assert(material_ != nullptr);
+
+  // Compute the BRDF.
+  //   f(w_i, w_o) = k_d / pi
+  // where k_d is the diffuse color.
+  return material_->diffuse * glm::one_over_pi<float>();
+}
+
+std::unique_ptr<BRDF> Lambertian::Clone() const {
+  return absl::make_unique<Lambertian>();
+}
+
 glm::vec3 Phong::Sample(const glm::vec3& ray_dir, const glm::vec3& normal,
                         UniformRandom& rand) {
   assert(material_ != nullptr);
