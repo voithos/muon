@@ -11,7 +11,9 @@ namespace muon {
 namespace debug {
 
 void MaybeEnableFloatingPointExceptions() {
-  feenableexcept(FE_DIVBYZERO | FE_INVALID);
+  if (absl::GetFlag(FLAGS_enable_feexcept)) {
+    feenableexcept(FE_DIVBYZERO | FE_INVALID);
+  }
 }
 
 }  // namespace debug
