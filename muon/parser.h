@@ -14,7 +14,6 @@
 
 namespace muon {
 
-namespace {
 // Represents a working area used while parsing.
 class ParsingWorkspace {
  public:
@@ -47,7 +46,6 @@ class ParsingWorkspace {
   // Transform stack.
   std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
 };
-};  // namespace
 
 // Represents a configuration of a scene along with its supporting structures.
 struct SceneConfig {

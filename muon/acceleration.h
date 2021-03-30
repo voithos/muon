@@ -45,7 +45,6 @@ class Linear : public Structure {
   }
 };
 
-namespace {
 // Working info on primitives used during BVH construction.
 class PrimitiveInfo {
  public:
@@ -60,7 +59,6 @@ class PrimitiveInfo {
   // The centroid of the primitive bounds.
   glm::vec3 centroid;
 };
-}  // namespace
 
 // A single node of a BVH tree.
 class BVHNode {
