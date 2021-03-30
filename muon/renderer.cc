@@ -12,7 +12,7 @@
 
 namespace muon {
 
-void Renderer::Render() {
+void Renderer::Render() const {
   Stats stats;
   stats.Start();
 

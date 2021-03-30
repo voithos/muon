@@ -12,7 +12,7 @@ class Camera {
          int height);
 
   // Generates a Ray through the viewport at (x, y) in screen space.
-  Ray CastRay(float x, float y);
+  Ray CastRay(float x, float y) const;
 
  private:
   glm::vec3 eye_;

@@ -16,7 +16,7 @@ class Renderer {
   }
 
   // Runs the ray tracer based on the renderer's configuration.
-  void Render();
+  void Render() const;
 
  private:
   std::string scene_file_;

@@ -34,7 +34,7 @@ Camera::Camera(glm::vec3 eye, glm::vec3 look_at, glm::vec3 up, float fov,
   v_ = glm::cross(w_, u_);
 }
 
-Ray Camera::CastRay(float x, float y) {
+Ray Camera::CastRay(float x, float y) const {
   float half_width = width_ / 2.0f;
   float half_height = height_ / 2.0f;
 
