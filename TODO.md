@@ -14,12 +14,13 @@
 - [ ] P1: Support for a common file format (obj, glTF, USD?)
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: More complex reflectance models, Torrance-Sparrow?
+- [ ] P3: Disney BRDF
 - [ ] P3: Measured BRDF support
 
 ## Scenes
 - [ ] Utah teapot
 - [ ] Stanford bunny
-- [ ] pbrt scenes?
+- [ ] pbrt scenes? https://benedikt-bitterli.me/resources/
 
 ## Performance improvements
 - [ ] P1: Add multithreading support

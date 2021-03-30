@@ -16,6 +16,7 @@ cc_library(
     srcs = ["renderer.cc"],
     hdrs = ["renderer.h"],
     deps = [
+        ":debug",
         ":film",
         ":integration",
         ":options",
@@ -284,5 +285,14 @@ cc_library(
     name = "brdf_type",
     hdrs = ["brdf_type.h"],
     deps = [
+    ],
+)
+
+cc_library(
+    name = "debug",
+    srcs = ["debug.cc"],
+    hdrs = ["debug.h"],
+    deps = [
+        "@com_google_absl//absl/flags:flag",
     ],
 )
