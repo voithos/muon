@@ -1,8 +1,40 @@
 #include "muon/sampler.h"
 
+#include <cassert>
+
 #include "glog/logging.h"
 
 namespace muon {
+
+std::vector<Tile> TileImage(int width, int height, int num_tiles) {
+  // For now, we just split the image vertically into thin "tiles".
+  // In the future, this could do something more interesting / heuristic.
+  std::vector<Tile> tiles;
+  tiles.reserve(num_tiles);
+
+  int tile_height = height / num_tiles;
+  assert(tile_height > 0);
+
+  // Account for leftover due to integer truncation.
+  int excess_height = height - tile_height * num_tiles;
+  Tile first_tile = {
+      .x = 0, .y = 0, .width = width, .height = tile_height + excess_height};
+  assert(first_tile.x + first_tile.width <= width);
+  assert(first_tile.y + first_tile.height <= height);
+  tiles.push_back(first_tile);
+
+  // Generate subsequent tiles.
+  for (int i = 1; i < num_tiles; ++i) {
+    Tile tile = {.x = 0,
+                 .y = i * tile_height + excess_height,
+                 .width = width,
+                 .height = tile_height};
+    assert(tile.x + tile.width <= width);
+    assert(tile.y + tile.height <= height);
+    tiles.push_back(tile);
+  }
+  return tiles;
+}
 
 bool Sampler::NextSample(float &x, float &y) {
   if (cur_y_ == height_) {

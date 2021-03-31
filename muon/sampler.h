@@ -1,9 +1,25 @@
 #ifndef MUON_SAMPLER_H_
 #define MUON_SAMPLER_H_
 
+#include <vector>
+
 #include "muon/random.h"
 
 namespace muon {
+
+struct Tile {
+  // The starting x pixel of the tile.
+  int x;
+  // The starting y pixel of the tile.
+  int y;
+  // The width of the tile.
+  int width;
+  // The height of the tile.
+  int height;
+};
+
+// Generates sub-tiles of an image based on a number of desired tiles.
+std::vector<Tile> TileImage(int width, int height, int num_tiles);
 
 class Sampler {
  public:
