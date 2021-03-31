@@ -17,7 +17,7 @@ namespace muon {
 // Represents an object that supports intersection tests.
 class Intersectable {
  public:
-  virtual ~Intersectable() {}
+  virtual ~Intersectable() = default;
 
   // Intersects with a ray and returns the intersection point.
   virtual absl::optional<Intersection> Intersect(const Ray &ray) = 0;
@@ -31,7 +31,7 @@ class Intersectable {
 // transformed as needed for intersection tests.
 class Primitive : public Intersectable {
  public:
-  virtual ~Primitive() {}
+  virtual ~Primitive() = default;
 
   // Returns the bounding box that encompasses the geometry of the primitive,
   // in object coordinates.

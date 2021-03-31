@@ -23,7 +23,7 @@ class Workspace {};
 class Structure {
  public:
   explicit Structure(Stats &stats) : stats_(stats) {}
-  virtual ~Structure() {}
+  virtual ~Structure() = default;
 
   // Adds a Primitive to the acceleration structure.
   virtual void AddPrimitive(std::unique_ptr<Primitive> obj);

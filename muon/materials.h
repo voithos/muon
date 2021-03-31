@@ -15,7 +15,7 @@ namespace brdf {
 // Base class for all BRDFs.
 class BRDF {
  public:
-  virtual ~BRDF() {}
+  virtual ~BRDF() = default;
 
   void SetMaterial(Material* material) { material_ = material; }
 

@@ -22,7 +22,8 @@ class Integrator {
         // The scene may not be fully formed at the time of construction, so we
         // save any important work to Init().
         workspace_(nullptr) {}
-  virtual ~Integrator() {}
+
+  virtual ~Integrator() = default;
 
   // Initializes the integrator.
   virtual void Init() { workspace_ = scene_.root->CreateWorkspace(); }
