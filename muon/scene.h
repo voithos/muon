@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "absl/types/optional.h"
+#include "muon/acceleration.h"
 #include "muon/camera.h"
 #include "muon/importance_sampling.h"
 #include "muon/lighting.h"
@@ -44,7 +45,7 @@ class Scene {
 
   // The root intersectable object for the scene.
   // All tracing starts at this object.
-  std::unique_ptr<Intersectable> root;
+  std::unique_ptr<acceleration::Structure> root;
 
   void AddVertex(Vertex vert);
   Vertex &GenVertex();

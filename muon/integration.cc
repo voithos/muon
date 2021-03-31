@@ -33,7 +33,8 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
   } else {
     stats_.IncrementSecondaryRays();
   }
-  absl::optional<Intersection> hit = scene_.root->Intersect(ray);
+  absl::optional<Intersection> hit =
+      scene_.root->Intersect(workspace_.get(), ray);
   if (hit) {
     return Shade(hit.value(), ray, throughput, depth);
   }
@@ -66,7 +67,8 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
     Ray shadow_ray(shift_pos, info.direction);
-    if (scene_.root->HasIntersection(shadow_ray, info.distance)) {
+    if (scene_.root->HasIntersection(workspace_.get(), shadow_ray,
+                                     info.distance)) {
       // Light is occluded.
       continue;
     }
@@ -223,7 +225,8 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
     // TODO: I'm unconvinced that this is physically accurate...
     if (info.area == nullptr) {
       Ray shadow_ray(shift_pos, info.direction);
-      if (scene_.root->HasIntersection(shadow_ray, info.distance)) {
+      if (scene_.root->HasIntersection(workspace_.get(), shadow_ray,
+                                       info.distance)) {
         // Light is occluded.
         continue;
       }
@@ -290,7 +293,8 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
 
           // First check to see if light is occluded.
           Ray shadow_ray(shift_pos, light_dir);
-          if (scene_.root->HasIntersection(shadow_ray, light_distance)) {
+          if (scene_.root->HasIntersection(workspace_.get(), shadow_ray,
+                                           light_distance)) {
             // Light is occluded; discard the sample.
             continue;
           }

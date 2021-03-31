@@ -72,6 +72,7 @@ cc_library(
     srcs = ["scene.cc"],
     hdrs = ["scene.h"],
     deps = [
+        ":acceleration",
         ":camera",
         ":importance_sampling",
         ":lighting",

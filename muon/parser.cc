@@ -719,6 +719,7 @@ SceneConfig Parser::Parse() {
 
   ws.accel->Init();
   ws.scene->root = std::move(ws.accel);
+  ws.integrator->Init();
   return {
       .scene = std::move(ws.scene),
       .integrator = std::move(ws.integrator),

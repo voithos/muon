@@ -11,7 +11,8 @@ void Structure::AddPrimitive(std::unique_ptr<Primitive> obj) {
   primitives_.push_back(std::move(obj));
 }
 
-absl::optional<Intersection> Linear::Intersect(const Ray &ray) {
+absl::optional<Intersection> Linear::Intersect(Workspace *workspace,
+                                               const Ray &ray) const {
   float min_dist = std::numeric_limits<float>::infinity();
   absl::optional<Intersection> hit;
 
@@ -33,7 +34,8 @@ absl::optional<Intersection> Linear::Intersect(const Ray &ray) {
   return hit;
 }
 
-bool Linear::HasIntersection(const Ray &ray, const float max_distance) {
+bool Linear::HasIntersection(Workspace *workspace, const Ray &ray,
+                             const float max_distance) const {
   for (const auto &obj : primitives_) {
     if (obj->HasIntersection(ray, max_distance)) {
       return true;
@@ -60,7 +62,10 @@ BVHNode::BVHNode(std::unique_ptr<BVHNode> left, std::unique_ptr<BVHNode> right,
       children{std::move(left), std::move(right)},
       bounds(Bounds::Union(children[0]->bounds, children[1]->bounds)) {}
 
-absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
+absl::optional<Intersection> BVH::Intersect(Workspace *workspace,
+                                            const Ray &ray) const {
+  std::vector<BVHNode *> &frontier =
+      static_cast<BVHWorkspace *>(workspace)->frontier_;
   // Precompute the child order that we will check for each of the potential
   // split axes based on the sign of the ray in the split axis. If the sign is
   // negative, then we should check the second child since the primitives that
@@ -86,11 +91,11 @@ absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
     // Skip the current node if we don't intersect with its bounds.
     stats_.IncrementBoundsTests();
     if (!node->bounds.HasIntersection(ray, min_dist)) {
-      if (frontier_.empty()) {
+      if (frontier.empty()) {
         break;
       }
-      node = frontier_.back();
-      frontier_.pop_back();
+      node = frontier.back();
+      frontier.pop_back();
       continue;
     }
     stats_.IncrementBoundsHits();
@@ -118,25 +123,28 @@ absl::optional<Intersection> BVH::Intersect(const Ray &ray) {
           hit = intersection;
         }
       }
-      if (frontier_.empty()) {
+      if (frontier.empty()) {
         break;
       }
-      node = frontier_.back();
-      frontier_.pop_back();
+      node = frontier.back();
+      frontier.pop_back();
       continue;
     }
 
     // If we reach here, then we're dealing with an internal node.
     size_t c = child_to_visit_first[node->axis];
     // Save the farther child for later.
-    frontier_.push_back(node->children[1 - c].get());
+    frontier.push_back(node->children[1 - c].get());
     node = node->children[c].get();
   }
 
   return hit;
 }
 
-bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
+bool BVH::HasIntersection(Workspace *workspace, const Ray &ray,
+                          const float max_distance) const {
+  std::vector<BVHNode *> &frontier =
+      static_cast<BVHWorkspace *>(workspace)->frontier_;
   // See Intersect() for details on how the intersection logic works. The main
   // difference here is that we use HasIntersection with the primitives, and
   // return immediately if true.
@@ -153,11 +161,11 @@ bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
     // Skip the current node if we don't intersect with its bounds.
     stats_.IncrementBoundsTests();
     if (!node->bounds.HasIntersection(ray, max_distance)) {
-      if (frontier_.empty()) {
+      if (frontier.empty()) {
         break;
       }
-      node = frontier_.back();
-      frontier_.pop_back();
+      node = frontier.back();
+      frontier.pop_back();
       continue;
     }
     stats_.IncrementBoundsHits();
@@ -171,22 +179,22 @@ bool BVH::HasIntersection(const Ray &ray, const float max_distance) {
           stats_.IncrementObjectHits();
           // Clear the frontier since we're exiting before searching it
           // completely.
-          frontier_.clear();
+          frontier.clear();
           return true;
         }
       }
-      if (frontier_.empty()) {
+      if (frontier.empty()) {
         break;
       }
-      node = frontier_.back();
-      frontier_.pop_back();
+      node = frontier.back();
+      frontier.pop_back();
       continue;
     }
 
     // If we reach here, then we're dealing with an internal node.
     size_t c = child_to_visit_first[node->axis];
     // Save the farther child for later.
-    frontier_.push_back(node->children[1 - c].get());
+    frontier.push_back(node->children[1 - c].get());
     node = node->children[c].get();
   }
 

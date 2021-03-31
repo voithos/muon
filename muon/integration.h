@@ -1,8 +1,10 @@
 #ifndef MUON_INTEGRATION_H_
 #define MUON_INTEGRATION_H_
 
+#include <memory>
 #include <random>
 
+#include "muon/acceleration.h"
 #include "muon/camera.h"
 #include "muon/random.h"
 #include "muon/scene.h"
@@ -14,8 +16,16 @@ namespace muon {
 // Integrates lighting contributions for a ray against a scene.
 class Integrator {
  public:
-  Integrator(Scene &scene, Stats &stats) : scene_(scene), stats_(stats) {}
+  Integrator(Scene &scene, Stats &stats)
+      : scene_(scene),
+        stats_(stats),
+        // The scene may not be fully formed at the time of construction, so we
+        // save any important work to Init().
+        workspace_(nullptr) {}
   virtual ~Integrator() {}
+
+  // Initializes the integrator.
+  virtual void Init() { workspace_ = scene_.root->CreateWorkspace(); }
 
   // Traces a ray against the scene and returns a traced color.
   glm::vec3 Trace(const Ray &ray);
@@ -29,6 +39,7 @@ class Integrator {
 
   Scene &scene_;
   Stats &stats_;
+  std::unique_ptr<acceleration::Workspace> workspace_;
 };
 
 // A debug integrator that renders the normals of the scene.
