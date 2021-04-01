@@ -10,7 +10,6 @@
 #include "muon/materials.h"
 #include "muon/options.h"
 #include "muon/scene.h"
-#include "muon/stats.h"
 
 namespace muon {
 
@@ -49,7 +48,10 @@ class ParsingWorkspace {
 
 // Represents a configuration of a scene along with its supporting structures.
 struct SceneConfig {
+  // The scene to render.
   std::unique_ptr<Scene> scene;
+  // The integrator to use. The underlying object should be copied and
+  // initialized per thread.
   std::unique_ptr<Integrator> integrator;
 };
 
@@ -57,8 +59,8 @@ struct SceneConfig {
 class Parser {
  public:
   // Initializes a new Parser with the given scene file.
-  Parser(std::string scene_file, const Options &options, Stats &stats)
-      : scene_file_(scene_file), options_(options), stats_(stats) {}
+  Parser(std::string scene_file, const Options &options)
+      : scene_file_(scene_file), options_(options) {}
 
   // Parses the scene file and returns corresponding Scene.
   SceneConfig Parse();
@@ -66,7 +68,6 @@ class Parser {
  private:
   std::string scene_file_;
   const Options &options_;
-  Stats &stats_;
 
   void ApplyDefaults(ParsingWorkspace &workspace) const;
   std::unique_ptr<acceleration::Structure> CreateAccelerationStructure() const;

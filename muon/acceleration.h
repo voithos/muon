@@ -16,13 +16,15 @@ namespace acceleration {
 
 // Base scratch space for acceleration structures. Individual acceleration
 // structures create their own subtypes.
-class Workspace {};
+class Workspace {
+ public:
+  TraceStats stats;
+};
 
 // Abstract base class for acceleration structures. They share similar
 // intersection APIs to objects, but sometimes require scratch space.
 class Structure {
  public:
-  explicit Structure(Stats &stats) : stats_(stats) {}
   virtual ~Structure() = default;
 
   // Adds a Primitive to the acceleration structure.
@@ -32,9 +34,10 @@ class Structure {
   // have been added.
   virtual void Init() = 0;
 
-  // Creates a unique reusable workspace for the structure. Default
-  // implementation returns null, for structures that don't need a workspace.
-  virtual std::unique_ptr<Workspace> CreateWorkspace() const { return nullptr; }
+  // Creates a unique reusable workspace for the structure.
+  virtual std::unique_ptr<Workspace> CreateWorkspace() const {
+    return absl::make_unique<Workspace>();
+  }
 
   // Intersects with a ray and returns the intersection point. Thread safe as
   // long as each thread has a unique workspace.
@@ -46,7 +49,6 @@ class Structure {
                                const float max_distance) const = 0;
 
  protected:
-  Stats &stats_;
   std::vector<std::unique_ptr<Primitive>> primitives_;
 };
 
@@ -54,8 +56,6 @@ class Structure {
 // sequentially.
 class Linear : public Structure {
  public:
-  explicit Linear(Stats &stats) : Structure(stats) {}
-
   void Init() override {
     // No-op.
   }
@@ -125,8 +125,7 @@ class BVHWorkspace : public Workspace {
 // split, and splitting based on the surface area heuristic.
 class BVH : public Structure {
  public:
-  BVH(PartitionStrategy strategy, Stats &stats)
-      : Structure(stats), partition_strategy_(strategy) {}
+  explicit BVH(PartitionStrategy strategy) : partition_strategy_(strategy) {}
 
   void Init() override;
 

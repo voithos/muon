@@ -164,7 +164,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
 
   ws.scene = absl::make_unique<Scene>();
   ws.accel = CreateAccelerationStructure();
-  ws.integrator = absl::make_unique<Raytracer>(*ws.scene, stats_);
+  ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
 
   ws.scene->width = defaults::kSceneWidth;
   ws.scene->height = defaults::kSceneHeight;
@@ -187,11 +187,10 @@ std::unique_ptr<acceleration::Structure> Parser::CreateAccelerationStructure()
   std::unique_ptr<acceleration::Structure> accel;
   switch (options_.acceleration) {
     case AccelerationType::kLinear:
-      accel = absl::make_unique<acceleration::Linear>(stats_);
+      accel = absl::make_unique<acceleration::Linear>();
       break;
     case AccelerationType::kBVH:
-      accel = absl::make_unique<acceleration::BVH>(options_.partition_strategy,
-                                                   stats_);
+      accel = absl::make_unique<acceleration::BVH>(options_.partition_strategy);
       break;
   }
   return accel;
@@ -299,18 +298,17 @@ SceneConfig Parser::Parse() {
           break;
         }
         if (type == "normals") {
-          ws.integrator = absl::make_unique<NormalsTracer>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<NormalsTracer>(*ws.scene);
         } else if (type == "depth") {
-          ws.integrator = absl::make_unique<DepthTracer>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<DepthTracer>(*ws.scene);
         } else if (type == "raytracer") {
-          ws.integrator = absl::make_unique<Raytracer>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
         } else if (type == "analyticdirect") {
-          ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
         } else if (type == "direct") {
-          ws.integrator =
-              absl::make_unique<MonteCarloDirect>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<MonteCarloDirect>(*ws.scene);
         } else if (type == "pathtracer") {
-          ws.integrator = absl::make_unique<PathTracer>(*ws.scene, stats_);
+          ws.integrator = absl::make_unique<PathTracer>(*ws.scene);
         } else {
           logBadLine(line);
           break;
@@ -719,6 +717,7 @@ SceneConfig Parser::Parse() {
 
   ws.accel->Init();
   ws.scene->root = std::move(ws.accel);
+  // TODO: Move this to a per-thread step.
   ws.integrator->Init();
   return {
       .scene = std::move(ws.scene),

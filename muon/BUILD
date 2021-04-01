@@ -54,7 +54,6 @@ cc_library(
         ":materials",
         ":options",
         ":scene",
-        ":stats",
         ":strings",
         "//third_party/glm",
         "@com_github_google_glog//:glog",

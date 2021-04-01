@@ -29,9 +29,9 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
     return glm::vec3(0.0f);
   }
   if (depth == 0) {
-    stats_.IncrementPrimaryRays();
+    workspace_->stats.IncrementPrimaryRays();
   } else {
-    stats_.IncrementSecondaryRays();
+    workspace_->stats.IncrementSecondaryRays();
   }
   absl::optional<Intersection> hit =
       scene_.root->Intersect(workspace_.get(), ray);

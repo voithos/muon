@@ -16,7 +16,7 @@ void Renderer::Render() const {
   Stats stats;
   stats.Start();
 
-  Parser parser(scene_file_, options_, stats);
+  Parser parser(scene_file_, options_);
   SceneConfig sc = parser.Parse();
   stats.BuildComplete();
 
@@ -45,6 +45,7 @@ void Renderer::Render() const {
     film.SetPixel(px_x, px_y, c);
   }
   stats.Stop();
+  stats.AddTraceStats(sc.integrator->trace_stats());
 
   film.WriteOutput();
 

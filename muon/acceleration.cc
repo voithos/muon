@@ -17,12 +17,12 @@ absl::optional<Intersection> Linear::Intersect(Workspace *workspace,
   absl::optional<Intersection> hit;
 
   for (const auto &obj : primitives_) {
-    stats_.IncrementObjectTests();
+    workspace->stats.IncrementObjectTests();
     absl::optional<Intersection> intersection = obj->Intersect(ray);
     if (!intersection) {
       continue;
     }
-    stats_.IncrementObjectHits();
+    workspace->stats.IncrementObjectHits();
 
     // Check that object is in front of the ray's origin, and closer than
     // anything else we've found.
@@ -89,7 +89,7 @@ absl::optional<Intersection> BVH::Intersect(Workspace *workspace,
 
   while (true) {
     // Skip the current node if we don't intersect with its bounds.
-    stats_.IncrementBoundsTests();
+    workspace->stats.IncrementBoundsTests();
     if (!node->bounds.HasIntersection(ray, min_dist)) {
       if (frontier.empty()) {
         break;
@@ -98,20 +98,20 @@ absl::optional<Intersection> BVH::Intersect(Workspace *workspace,
       frontier.pop_back();
       continue;
     }
-    stats_.IncrementBoundsHits();
+    workspace->stats.IncrementBoundsHits();
 
     // If this is a leaf node, intersect with the primitives directly.
     if (node->num_primitives > 0) {
       // TODO: De-duplicate this kind of iteration logic.
       for (size_t i = node->start; i < node->start + node->num_primitives;
            ++i) {
-        stats_.IncrementObjectTests();
+        workspace->stats.IncrementObjectTests();
         absl::optional<Intersection> intersection =
             primitives_[i]->Intersect(ray);
         if (!intersection) {
           continue;
         }
-        stats_.IncrementObjectHits();
+        workspace->stats.IncrementObjectHits();
 
         // Check that the object is in front of the ray's origin, and closer
         // than anything else we've found.
@@ -159,7 +159,7 @@ bool BVH::HasIntersection(Workspace *workspace, const Ray &ray,
 
   while (true) {
     // Skip the current node if we don't intersect with its bounds.
-    stats_.IncrementBoundsTests();
+    workspace->stats.IncrementBoundsTests();
     if (!node->bounds.HasIntersection(ray, max_distance)) {
       if (frontier.empty()) {
         break;
@@ -168,15 +168,15 @@ bool BVH::HasIntersection(Workspace *workspace, const Ray &ray,
       frontier.pop_back();
       continue;
     }
-    stats_.IncrementBoundsHits();
+    workspace->stats.IncrementBoundsHits();
 
     // If this is a leaf node, intersect with the primitives directly.
     if (node->num_primitives > 0) {
       for (size_t i = node->start; i < node->start + node->num_primitives;
            ++i) {
-        stats_.IncrementObjectTests();
+        workspace->stats.IncrementObjectTests();
         if (primitives_[i]->HasIntersection(ray, max_distance)) {
-          stats_.IncrementObjectHits();
+          workspace->stats.IncrementObjectHits();
           // Clear the frontier since we're exiting before searching it
           // completely.
           frontier.clear();

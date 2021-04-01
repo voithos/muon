@@ -16,21 +16,22 @@ namespace muon {
 // Integrates lighting contributions for a ray against a scene.
 class Integrator {
  public:
-  Integrator(Scene &scene, Stats &stats)
+  explicit Integrator(Scene &scene)
       : scene_(scene),
-        stats_(stats),
         // The scene may not be fully formed at the time of construction, so we
         // save any important work to Init().
         workspace_(nullptr) {}
 
   virtual ~Integrator() = default;
 
-  // Initializes the integrator.
+  // Initializes the integrator. Should be called for each unique instance.
   virtual void Init() { workspace_ = scene_.root->CreateWorkspace(); }
 
   // Traces a ray against the scene and returns a traced color.
   glm::vec3 Trace(const Ray &ray);
   glm::vec3 Trace(const Ray &ray, const glm::vec3 &throughput, const int depth);
+
+  TraceStats trace_stats() { return workspace_->stats; }
 
  protected:
   // Shades an intersection based on the current scene lighting, returning the
@@ -39,14 +40,13 @@ class Integrator {
                           const glm::vec3 &throughput, const int depth) = 0;
 
   Scene &scene_;
-  Stats &stats_;
   std::unique_ptr<acceleration::Workspace> workspace_;
 };
 
 // A debug integrator that renders the normals of the scene.
 class NormalsTracer : public Integrator {
  public:
-  NormalsTracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+  explicit NormalsTracer(Scene &scene) : Integrator(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -57,7 +57,7 @@ class NormalsTracer : public Integrator {
 // A debug integrator that renders the depth of the scene.
 class DepthTracer : public Integrator {
  public:
-  DepthTracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+  explicit DepthTracer(Scene &scene) : Integrator(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -70,7 +70,7 @@ class DepthTracer : public Integrator {
 // model.
 class Raytracer : public Integrator {
  public:
-  Raytracer(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+  explicit Raytracer(Scene &scene) : Integrator(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -83,7 +83,7 @@ class Raytracer : public Integrator {
 // visibility into account, and does not do global illumination.
 class AnalyticDirect : public Integrator {
  public:
-  AnalyticDirect(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+  explicit AnalyticDirect(Scene &scene) : Integrator(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -94,7 +94,7 @@ class AnalyticDirect : public Integrator {
 // Base class for Monte Carlo based integrators.
 class MonteCarlo : public Integrator {
  public:
-  MonteCarlo(Scene &scene, Stats &stats) : Integrator(scene, stats) {}
+  explicit MonteCarlo(Scene &scene) : Integrator(scene) {}
 
  protected:
   // RNG for monte carlo.
@@ -104,7 +104,7 @@ class MonteCarlo : public Integrator {
 // A Monte Carlo integrator that calculates direct lighting contributions only.
 class MonteCarloDirect : public MonteCarlo {
  public:
-  MonteCarloDirect(Scene &scene, Stats &stats) : MonteCarlo(scene, stats) {}
+  explicit MonteCarloDirect(Scene &scene) : MonteCarlo(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
@@ -120,7 +120,7 @@ class MonteCarloDirect : public MonteCarlo {
 // A Monte Carlo based path tracer that handles indirect lighting.
 class PathTracer : public MonteCarloDirect {
  public:
-  PathTracer(Scene &scene, Stats &stats) : MonteCarloDirect(scene, stats) {}
+  explicit PathTracer(Scene &scene) : MonteCarloDirect(scene) {}
 
  protected:
   virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,

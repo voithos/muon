@@ -6,13 +6,25 @@
 
 namespace muon {
 
-void Stats::Start() { start_time_ = std::chrono::steady_clock::now(); }
+void Stats::Start() {
+  const std::lock_guard<std::mutex> lock(mutex_);
+  start_time_ = std::chrono::steady_clock::now();
+}
 
 void Stats::BuildComplete() {
+  const std::lock_guard<std::mutex> lock(mutex_);
   build_complete_time_ = std::chrono::steady_clock::now();
 }
 
-void Stats::Stop() { end_time_ = std::chrono::steady_clock::now(); }
+void Stats::Stop() {
+  const std::lock_guard<std::mutex> lock(mutex_);
+  end_time_ = std::chrono::steady_clock::now();
+}
+
+void Stats::AddTraceStats(const TraceStats& ts) {
+  const std::lock_guard<std::mutex> lock(mutex_);
+  trace_ += ts;
+}
 
 constexpr int kLabelWidth = 18;
 constexpr int kFieldWidth = 12;
@@ -27,15 +39,18 @@ std::ostream& Field(std::ostream& os) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Stats& stats) {
+  const std::lock_guard<std::mutex> lock(stats.mutex_);
   std::chrono::duration<float> duration = stats.end_time_ - stats.start_time_;
   std::chrono::duration<float> build_duration =
       stats.build_complete_time_ - stats.start_time_;
   std::chrono::duration<float> render_duration =
       stats.end_time_ - stats.build_complete_time_;
-  double object_hit_rate =
-      (stats.object_hits_ / static_cast<double>(stats.object_tests_)) * 100.0f;
-  double bounds_hit_rate =
-      (stats.bounds_hits_ / static_cast<double>(stats.bounds_tests_)) * 100.0f;
+  double object_hit_rate = (stats.trace_.object_hits() /
+                            static_cast<double>(stats.trace_.object_tests())) *
+                           100.0f;
+  double bounds_hit_rate = (stats.trace_.bounds_hits() /
+                            static_cast<double>(stats.trace_.bounds_tests())) *
+                           100.0f;
   object_hit_rate = std::isnan(object_hit_rate) ? 0 : object_hit_rate;
   bounds_hit_rate = std::isnan(bounds_hit_rate) ? 0 : bounds_hit_rate;
 
@@ -51,20 +66,20 @@ std::ostream& operator<<(std::ostream& os, const Stats& stats) {
      << " : " << Field << std::fixed << std::setprecision(2)
      << render_duration.count() << " (sec)" << std::endl;
   os << Label << "Primary rays"
-     << " : " << Field << stats.primary_rays_ << std::endl;
+     << " : " << Field << stats.trace_.primary_rays() << std::endl;
   os << Label << "Secondary rays"
-     << " : " << Field << stats.secondary_rays_ << std::endl;
+     << " : " << Field << stats.trace_.secondary_rays() << std::endl;
   os << Label << "Ray-object tests"
-     << " : " << Field << stats.object_tests_ << std::endl;
+     << " : " << Field << stats.trace_.object_tests() << std::endl;
   os << Label << "Ray-object hits"
-     << " : " << Field << stats.object_hits_ << std::endl;
+     << " : " << Field << stats.trace_.object_hits() << std::endl;
   os << Label << "Hit rate"
      << " : " << Field << std::fixed << std::setprecision(2) << object_hit_rate
      << " %" << std::endl;
   os << Label << "Bounds tests"
-     << " : " << Field << stats.bounds_tests_ << std::endl;
+     << " : " << Field << stats.trace_.bounds_tests() << std::endl;
   os << Label << "Bounds hits"
-     << " : " << Field << stats.bounds_hits_ << std::endl;
+     << " : " << Field << stats.trace_.bounds_hits() << std::endl;
   os << Label << "Bounds hit rate"
      << " : " << Field << std::fixed << std::setprecision(2) << bounds_hit_rate
      << " %" << std::endl;
