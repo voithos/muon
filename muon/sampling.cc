@@ -1,4 +1,4 @@
-#include "muon/sampler.h"
+#include "muon/sampling.h"
 
 #include <cassert>
 

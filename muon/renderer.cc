@@ -6,7 +6,7 @@
 #include "muon/film.h"
 #include "muon/integration.h"
 #include "muon/parser.h"
-#include "muon/sampler.h"
+#include "muon/sampling.h"
 #include "muon/scene.h"
 #include "muon/stats.h"
 

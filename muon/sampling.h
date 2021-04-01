@@ -1,5 +1,5 @@
-#ifndef MUON_SAMPLER_H_
-#define MUON_SAMPLER_H_
+#ifndef MUON_SAMPLING_H_
+#define MUON_SAMPLING_H_
 
 #include <mutex>
 #include <vector>

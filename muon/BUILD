@@ -21,7 +21,7 @@ cc_library(
         ":integration",
         ":options",
         ":parser",
-        ":sampler",
+        ":sampling",
         ":scene",
         ":stats",
         "//third_party/cimg",
@@ -97,9 +97,9 @@ cc_library(
 )
 
 cc_library(
-    name = "sampler",
-    srcs = ["sampler.cc"],
-    hdrs = ["sampler.h"],
+    name = "sampling",
+    srcs = ["sampling.cc"],
+    hdrs = ["sampling.h"],
     deps = [
         ":random",
         "@com_github_google_glog//:glog",
