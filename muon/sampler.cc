@@ -36,8 +36,18 @@ std::vector<Tile> TileImage(int width, int height, int num_tiles) {
   return tiles;
 }
 
+absl::optional<Tile> TileQueue::TryDequeue() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (tiles_.empty()) {
+    return absl::nullopt;
+  }
+  Tile t = tiles_.back();
+  tiles_.pop_back();
+  return t;
+}
+
 bool Sampler::NextSample(float &x, float &y) {
-  if (cur_y_ == height_) {
+  if (cur_tile_y_ == tile_.height) {
     // If our y index is out of bounds, then we're done.
     return false;
   }
@@ -46,34 +56,34 @@ bool Sampler::NextSample(float &x, float &y) {
   // compatibility.
   // TODO: Change this to sampling at the center IFF samples_per_pixel_ == 1.
   if (cur_pixel_sample_ == 0) {
-    x = cur_x_ + 0.5f;
-    y = cur_y_ + 0.5f;
+    x = tile_.x + cur_tile_x_ + 0.5f;
+    y = tile_.y + cur_tile_y_ + 0.5f;
   } else {
     // TODO: This currently samples randomly, but ideally we'd also support
     // stratified sampling.
     float u = rand_.Next();
     float v = rand_.Next();
-    x = cur_x_ + u;
-    y = cur_y_ + v;
+    x = tile_.x + cur_tile_x_ + u;
+    y = tile_.y + cur_tile_y_ + v;
 
     // At times, we'll overshoot onto the next pixel due to rounding error, so
     // we try to detect this and round to negative infinity if it has occurred.
-    if (x == (cur_x_ + 1.0f)) {
+    if (x == (tile_.x + cur_tile_x_ + 1.0f)) {
       x = std::nextafter(x, -std::numeric_limits<float>::infinity());
     }
-    if (y == (cur_y_ + 1.0f)) {
+    if (y == (tile_.y + cur_tile_y_ + 1.0f)) {
       y = std::nextafter(y, -std::numeric_limits<float>::infinity());
     }
   }
 
   ++cur_pixel_sample_;
   if (cur_pixel_sample_ == samples_per_pixel_) {
-    ++cur_x_;
+    ++cur_tile_x_;
     cur_pixel_sample_ = 0;
   }
-  if (cur_x_ == width_) {
-    ++cur_y_;
-    cur_x_ = 0;
+  if (cur_tile_x_ == tile_.width) {
+    ++cur_tile_y_;
+    cur_tile_x_ = 0;
   }
   ++samples_;
   return true;

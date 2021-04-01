@@ -103,6 +103,7 @@ cc_library(
     deps = [
         ":random",
         "@com_github_google_glog//:glog",
+        "@com_google_absl//absl/types:optional",
     ],
 )
 

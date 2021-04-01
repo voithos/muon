@@ -1,8 +1,10 @@
 #ifndef MUON_SAMPLER_H_
 #define MUON_SAMPLER_H_
 
+#include <mutex>
 #include <vector>
 
+#include "absl/types/optional.h"
 #include "muon/random.h"
 
 namespace muon {
@@ -21,13 +23,25 @@ struct Tile {
 // Generates sub-tiles of an image based on a number of desired tiles.
 std::vector<Tile> TileImage(int width, int height, int num_tiles);
 
+// A thread-safe queue of tiles.
+class TileQueue {
+ public:
+  explicit TileQueue(std::vector<Tile> tiles) : tiles_(tiles) {}
+
+  absl::optional<Tile> TryDequeue();
+
+ private:
+  std::vector<Tile> tiles_;
+  std::mutex mutex_;
+};
+
+// A sub-pixel coordinate sampler for sampling the camera plane.
 class Sampler {
  public:
-  Sampler(int width, int height, int samples_per_pixel)
-      : width_(width),
-        height_(height),
+  Sampler(Tile tile, int samples_per_pixel)
+      : tile_(tile),
         samples_per_pixel_(samples_per_pixel),
-        total_samples_(width * height *
+        total_samples_(tile.width * tile.height *
                        static_cast<long int>(samples_per_pixel)) {}
 
   // Generates the next sample location, in terms of x and y coordinates in
@@ -44,13 +58,13 @@ class Sampler {
   float Progress() const;
 
  private:
-  int width_;
-  int height_;
+  Tile tile_;
   int samples_per_pixel_;
   long int total_samples_;
 
-  int cur_x_ = 0;
-  int cur_y_ = 0;
+  // Current relative x and y positions in the tile.
+  int cur_tile_x_ = 0;
+  int cur_tile_y_ = 0;
   int cur_pixel_sample_ = 0;
   // The number of samples generated so far.
   long int samples_ = 0;

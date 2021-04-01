@@ -24,8 +24,10 @@ void Renderer::Render() const {
       options_.output != "" ? options_.output : sc.scene->output;
   Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
             sc.scene->gamma, output);
-  Sampler sampler(sc.scene->width, sc.scene->height,
-                  sc.scene->samples_per_pixel);
+
+  TileQueue tiles(
+      TileImage(sc.scene->width, sc.scene->height, /*num_tiles=*/1));
+  Sampler sampler(tiles.TryDequeue().value(), sc.scene->samples_per_pixel);
 
   // TODO: Refactor progress into separate class.
   int last_percent = 0;
