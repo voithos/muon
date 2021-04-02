@@ -16,6 +16,8 @@ struct Options {
   AccelerationType acceleration;
   // The strategy to use when partitioning primitives in a BVH.
   PartitionStrategy partition_strategy;
+  // The number of parallel threads to use when rendering.
+  uint32_t parallelism;
   // Whether or not to show stats.
   bool show_stats;
 };

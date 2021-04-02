@@ -1,6 +1,9 @@
 #include "muon/renderer.h"
 
 #include <iostream>
+#include <memory>
+#include <thread>
+#include <vector>
 
 #include "glog/logging.h"
 #include "muon/film.h"
@@ -25,29 +28,51 @@ void Renderer::Render() const {
   Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
             sc.scene->gamma, output);
 
-  TileQueue tiles(
-      TileImage(sc.scene->width, sc.scene->height, /*num_tiles=*/1));
-  Sampler sampler(tiles.TryDequeue().value(), sc.scene->samples_per_pixel);
+  TileQueue tiles(TileImage(sc.scene->width, sc.scene->height,
+                            /*num_tiles=*/options_.parallelism));
 
-  // TODO: Refactor progress into separate class.
-  int last_percent = 0;
+  // Launch render threads.
+  std::vector<std::thread> threads;
+  for (int thread_i = 0; thread_i < options_.parallelism; ++thread_i) {
+    std::thread t([&sc, &tiles, &film, &stats] {
+      // Clone the uninitialized integrator for this thread, and initialize it.
+      std::unique_ptr<Integrator> integrator = sc.integrator_prototype->Clone();
+      integrator->Init();
 
-  float x, y;
-  while (sampler.NextSample(x, y)) {
-    float progress = sampler.Progress();
-    int percent = int(progress * 100);
-    LOG_IF(INFO, percent > last_percent) << "Completion: " << percent << " %";
-    last_percent = percent;
+      absl::optional<Tile> tile;
+      while ((tile = tiles.TryDequeue())) {
+        Sampler sampler(tile.value(), sc.scene->samples_per_pixel);
 
-    Ray r = sc.scene->camera->CastRay(x, y);
-    glm::vec3 c = sc.integrator->Trace(r);
+        // TODO: Refactor progress into separate class.
+        int last_percent = 0;
 
-    int px_x = x;
-    int px_y = y;
-    film.SetPixel(px_x, px_y, c);
+        float x, y;
+        while (sampler.NextSample(x, y)) {
+          float progress = sampler.Progress();
+          int percent = int(progress * 100);
+          LOG_IF(INFO, percent > last_percent)
+              << "Tile #" << tile->idx << " completion: " << percent << " %";
+          last_percent = percent;
+
+          Ray r = sc.scene->camera->CastRay(x, y);
+          glm::vec3 c = integrator->Trace(r);
+
+          int px_x = x;
+          int px_y = y;
+          film.SetPixel(px_x, px_y, c);
+        }
+      }
+
+      stats.AddTraceStats(integrator->trace_stats());
+    });
+    threads.push_back(std::move(t));
+  }
+
+  // Rejoin render threads.
+  for (std::thread& t : threads) {
+    t.join();
   }
   stats.Stop();
-  stats.AddTraceStats(sc.integrator->trace_stats());
 
   film.WriteOutput();
 

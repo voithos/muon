@@ -20,6 +20,11 @@ namespace muon {
 // A representation of the scene and its constituents.
 class Scene {
  public:
+  Scene(const Scene &) = delete;
+  Scene &operator=(const Scene &) = delete;
+
+  Scene() = default;
+
   // General properties.
   int width;
   int height;

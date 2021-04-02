@@ -16,6 +16,8 @@ ABSL_FLAG(muon::AccelerationType, acceleration, muon::AccelerationType::kBVH,
 ABSL_FLAG(muon::PartitionStrategy, partition_strategy,
           muon::PartitionStrategy::kSAH,
           "The strategy when partitioning primitives in a BVH");
+ABSL_FLAG(uint32_t, parallelism, 1,
+          "The number of parallel threads to use when rendering");
 ABSL_FLAG(bool, stats, true, "Whether to show stats after rendering");
 
 int main(int argc, char **argv) {
@@ -39,6 +41,7 @@ int main(int argc, char **argv) {
       .output = absl::GetFlag(FLAGS_output),
       .acceleration = absl::GetFlag(FLAGS_acceleration),
       .partition_strategy = absl::GetFlag(FLAGS_partition_strategy),
+      .parallelism = absl::GetFlag(FLAGS_parallelism),
       .show_stats = absl::GetFlag(FLAGS_stats),
   };
 

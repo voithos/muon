@@ -23,7 +23,6 @@
 - [ ] pbrt scenes? https://benedikt-bitterli.me/resources/
 
 ## Performance improvements
-- [ ] P1: Add multithreading support
 - [ ] SIMD support?
 - [ ] P3: Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
@@ -43,3 +42,4 @@
 - [x] Tone mapping of the output image (gamma correction?)
 - [x] Golden testing framework
 - [x] P0: Allow separate rendering of direct and bounce light
+- [x] P1: Add multithreading support

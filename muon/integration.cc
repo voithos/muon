@@ -47,12 +47,20 @@ glm::vec3 NormalsTracer::Shade(const Intersection &hit, const Ray &ray,
   return hit.normal * 0.5f + 0.5f;
 }
 
+std::unique_ptr<Integrator> NormalsTracer::Clone() const {
+  return absl::make_unique<NormalsTracer>(*this);
+}
+
 glm::vec3 DepthTracer::Shade(const Intersection &hit, const Ray &ray,
                              const glm::vec3 &throughput, const int depth) {
   // Map distance from [0, inf] to [1, 0].
   // TODO: This often leads to dark images; is there a way to normalize?
   // Add a configurable scale factor to hit.distance?
   return glm::vec3(1.0f / (1.0f + hit.distance));
+}
+
+std::unique_ptr<Integrator> DepthTracer::Clone() const {
+  return absl::make_unique<DepthTracer>(*this);
 }
 
 glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
@@ -96,6 +104,10 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
   }
 
   return color;
+}
+
+std::unique_ptr<Integrator> Raytracer::Clone() const {
+  return absl::make_unique<Raytracer>(*this);
 }
 
 glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
@@ -171,6 +183,10 @@ glm::vec3 AnalyticDirect::Shade(const Intersection &hit, const Ray &ray,
   }
 
   return color;
+}
+
+std::unique_ptr<Integrator> AnalyticDirect::Clone() const {
+  return absl::make_unique<AnalyticDirect>(*this);
 }
 
 glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
@@ -327,6 +343,10 @@ glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
   return throughput * color;
 }
 
+std::unique_ptr<Integrator> MonteCarloDirect::Clone() const {
+  return absl::make_unique<MonteCarloDirect>(*this);
+}
+
 glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
                             const glm::vec3 &throughput, const int depth) {
   // For physically based rendering, the rendering equation defines the
@@ -479,6 +499,10 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
   // Trace the sampled ray.
   Ray sampled_ray(shift_pos, sampled_dir);
   return Trace(sampled_ray, next_throughput, depth + 1);
+}
+
+std::unique_ptr<Integrator> PathTracer::Clone() const {
+  return absl::make_unique<PathTracer>(*this);
 }
 
 }  // namespace muon

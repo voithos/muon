@@ -10,6 +10,8 @@
 namespace muon {
 
 struct Tile {
+  // The tile index.
+  int idx;
   // The starting x pixel of the tile.
   int x;
   // The starting y pixel of the tile.

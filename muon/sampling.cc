@@ -17,15 +17,19 @@ std::vector<Tile> TileImage(int width, int height, int num_tiles) {
 
   // Account for leftover due to integer truncation.
   int excess_height = height - tile_height * num_tiles;
-  Tile first_tile = {
-      .x = 0, .y = 0, .width = width, .height = tile_height + excess_height};
+  Tile first_tile = {.idx = 0,
+                     .x = 0,
+                     .y = 0,
+                     .width = width,
+                     .height = tile_height + excess_height};
   assert(first_tile.x + first_tile.width <= width);
   assert(first_tile.y + first_tile.height <= height);
   tiles.push_back(first_tile);
 
   // Generate subsequent tiles.
   for (int i = 1; i < num_tiles; ++i) {
-    Tile tile = {.x = 0,
+    Tile tile = {.idx = i,
+                 .x = 0,
                  .y = i * tile_height + excess_height,
                  .width = width,
                  .height = tile_height};

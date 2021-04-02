@@ -50,9 +50,9 @@ class ParsingWorkspace {
 struct SceneConfig {
   // The scene to render.
   std::unique_ptr<Scene> scene;
-  // The integrator to use. The underlying object should be copied and
-  // initialized per thread.
-  std::unique_ptr<Integrator> integrator;
+  // The integrator to use, uninitialized. The underlying object should be
+  // copied and initialized per thread.
+  std::unique_ptr<Integrator> integrator_prototype;
 };
 
 // Parses a scene file into Scene format.
