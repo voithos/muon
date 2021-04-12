@@ -75,6 +75,7 @@ cc_library(
         ":camera",
         ":importance_sampling",
         ":lighting",
+        ":nee",
         ":objects",
         ":strings",
         ":types",
@@ -129,8 +130,10 @@ cc_library(
     hdrs = ["lighting.h"],
     deps = [
         ":camera",
+        ":ray",
         ":types",
         "//third_party/glm",
+        "@com_google_absl//absl/types:optional",
     ],
 )
 
@@ -146,6 +149,7 @@ cc_library(
     deps = [
         ":bounds",
         ":camera",
+        ":lighting",
         ":materials",
         ":strings",
         ":transform",
@@ -170,6 +174,7 @@ cc_library(
     deps = [
         ":brdf_type",
         ":importance_sampling",
+        ":nee",
         "//third_party/glm",
     ],
 )
@@ -295,5 +300,12 @@ cc_library(
     hdrs = ["debug.h"],
     deps = [
         "@com_google_absl//absl/flags:flag",
+    ],
+)
+
+cc_library(
+    name = "nee",
+    hdrs = ["nee.h"],
+    deps = [
     ],
 )

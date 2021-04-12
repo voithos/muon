@@ -10,6 +10,7 @@
 #include "muon/camera.h"
 #include "muon/importance_sampling.h"
 #include "muon/lighting.h"
+#include "muon/nee.h"
 #include "muon/objects.h"
 #include "muon/types.h"
 #include "muon/vertex.h"
@@ -39,7 +40,7 @@ class Scene {
   int samples_per_pixel;
   int light_samples;
   bool light_stratify;
-  bool next_event_estimation;
+  NEE next_event_estimation;
   bool russian_roulette;
   ImportanceSampling importance_sampling;
 

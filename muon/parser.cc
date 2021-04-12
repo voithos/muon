@@ -359,10 +359,12 @@ SceneConfig Parser::Parse() {
           logBadLine(line);
           break;
         }
-        if (next_event_estimation == "on") {
-          ws.scene->next_event_estimation = true;
-        } else if (next_event_estimation == "off") {
-          ws.scene->next_event_estimation = false;
+        if (next_event_estimation == "off") {
+          ws.scene->next_event_estimation = NEE::kOff;
+        } else if (next_event_estimation == "on") {
+          ws.scene->next_event_estimation = NEE::kOn;
+        } else if (next_event_estimation == "mis") {
+          ws.scene->next_event_estimation = NEE::kMIS;
         } else {
           logBadLine(line);
           break;
@@ -585,7 +587,6 @@ SceneConfig Parser::Parse() {
         auto edge0 = glm::vec3(edge0_x, edge0_y, edge0_z);
         auto edge1 = glm::vec3(edge1_x, edge1_y, edge1_z);
         auto light = absl::make_unique<QuadLight>(color, corner, edge0, edge1);
-        ws.scene->AddLight(std::move(light));
 
         // Also create two tris to represent the area light itself.
         Vertex &va = ws.scene->GenVertex();
@@ -605,15 +606,19 @@ SceneConfig Parser::Parse() {
         material->emission = color;  // Emit based on color.
         glm::mat4 identity(1.0f);
         tri0->material = material;
+        tri0->light = light.get();
         tri0->transform = identity;
         tri0->inv_transform = identity;
         tri0->inv_transpose_transform = identity;
         tri1->material = material;
+        tri1->light = light.get();
         tri1->transform = identity;
         tri1->inv_transform = identity;
         tri1->inv_transpose_transform = identity;
         ws.accel->AddPrimitive(std::move(tri0));
         ws.accel->AddPrimitive(std::move(tri1));
+
+        ws.scene->AddLight(std::move(light));
         break;
       }
         // Material commands.

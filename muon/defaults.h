@@ -3,6 +3,7 @@
 
 #include "muon/brdf_type.h"
 #include "muon/importance_sampling.h"
+#include "muon/nee.h"
 #include "third_party/glm/glm.hpp"
 
 namespace muon {
@@ -41,7 +42,7 @@ constexpr int kLightSamples = 1;
 constexpr bool kLightStratify = false;
 
 // Whether or not to enable next event estimation.
-constexpr bool kNextEventEstimation = false;
+constexpr NEE kNextEventEstimation = NEE::kOff;
 
 // Whether or not to enable Russian Roulette.
 constexpr bool kRussianRoulette = false;

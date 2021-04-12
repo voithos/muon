@@ -7,6 +7,7 @@
 #include "absl/types/optional.h"
 #include "muon/bounds.h"
 #include "muon/camera.h"
+#include "muon/lighting.h"
 #include "muon/materials.h"
 #include "muon/types.h"
 #include "muon/vertex.h"
@@ -54,6 +55,9 @@ class Primitive : public Intersectable {
   glm::mat4 inv_transpose_transform;
 
   std::shared_ptr<Material> material;
+  // TODO: This is a hack to get MIS working; ideally there'd be less
+  // distinction between "lights" and primitives with emission.
+  Light *light = nullptr;
 };
 
 // Represents a triangle.

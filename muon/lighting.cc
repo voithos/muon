@@ -4,6 +4,33 @@
 
 namespace muon {
 
+absl::optional<Intersection> Quad::Intersect(const Ray &ray) {
+  glm::vec3 normal = glm::normalize(glm::cross(edge1, edge0));
+  float t = glm::dot(corner - ray.origin(), normal) /
+            glm::dot(ray.direction(), normal);
+  if (t < 0) {
+    return absl::nullopt;
+  }
+
+  glm::vec3 p = ray.At(t);
+  glm::vec3 point_edge = p - corner;
+
+  float edge0_length = glm::length(edge0);
+  float edge1_length = glm::length(edge1);
+
+  float u = glm::dot(point_edge, edge0) / edge0_length;
+  float v = glm::dot(point_edge, edge1) / edge1_length;
+  if (u > 0 && u < edge0_length && v > 0 && v < edge1_length) {
+    return Intersection{
+        .distance = t,
+        .pos = p,
+        .normal = normal,
+        .obj = nullptr,
+    };
+  }
+  return absl::nullopt;
+}
+
 ShadingInfo DirectionalLight::ShadingInfoAt(const glm::vec3 &pos) {
   // Directional lights don't attenuate, and have infinite distance.
   return ShadingInfo{

@@ -127,10 +127,10 @@ class MonteCarloDirect : public MonteCarlo {
                           const glm::vec3 &throughput,
                           const int depth) override;
 
-  // Shades an intersection with only the direct lighting contribution, without
-  // any indirect recursion.
-  glm::vec3 ShadeDirect(const Intersection &hit, const glm::vec3 &shift_pos,
-                        const Ray &ray, const glm::vec3 &throughput);
+  // Shades an intersection with only the direct lighting contribution via Next
+  // Event Estimation, without any indirect recursion.
+  glm::vec3 ShadeDirectNEE(const Intersection &hit, const glm::vec3 &shift_pos,
+                           const Ray &ray, const glm::vec3 &throughput);
 };
 
 // A Monte Carlo based path tracer that handles indirect lighting.
@@ -150,6 +150,20 @@ class PathTracer : public MonteCarloDirect {
   glm::vec3 ShadeIndirect(const Intersection &hit, const glm::vec3 &shift_pos,
                           const Ray &ray, const glm::vec3 &throughput,
                           const int depth);
+
+  // Shades an intersection with only the direct lighting contribution, modeled
+  // via BRDF multiple importance sampling.
+  glm::vec3 ShadeDirectBRDFMIS(const Intersection &hit,
+                               const glm::vec3 &shift_pos, const Ray &ray,
+                               const glm::vec3 &throughput);
+  // Shades an intersection with only the direct lighting contribution, modeled
+  // via NEE multiple importance sampling.
+  glm::vec3 ShadeDirectNEEMIS(const Intersection &hit,
+                              const glm::vec3 &shift_pos, const Ray &ray,
+                              const glm::vec3 &throughput);
+
+  // TODO: This should be part of the lighting system instead.
+  float PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos);
 };
 
 }  // namespace muon

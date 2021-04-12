@@ -5,6 +5,7 @@
 #include "glog/logging.h"
 #include "muon/hemisphere_sampling.h"
 #include "muon/lighting.h"
+#include "muon/strings.h"
 #include "muon/transform.h"
 #include "third_party/glm/gtc/constants.hpp"
 #include "third_party/glm/gtx/component_wise.hpp"
@@ -24,8 +25,8 @@ glm::vec3 Integrator::Trace(const Ray &ray, const glm::vec3 &throughput,
   // effectively increases path lengths by one since it samples direct
   // lighting.
   if (scene_.max_depth != -1 &&
-      depth > (scene_.next_event_estimation ? scene_.max_depth - 1
-                                            : scene_.max_depth)) {
+      depth > (scene_.next_event_estimation != NEE::kOff ? scene_.max_depth - 1
+                                                         : scene_.max_depth)) {
     return glm::vec3(0.0f);
   }
   if (depth == 0) {
@@ -74,6 +75,7 @@ glm::vec3 Raytracer::Shade(const Intersection &hit, const Ray &ray,
   // Trace the light contributions.
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
+    // TODO: Rename to light_ray.
     Ray shadow_ray(shift_pos, info.direction);
     if (scene_.root->HasIntersection(workspace_.get(), shadow_ray,
                                      info.distance)) {
@@ -223,15 +225,15 @@ glm::vec3 MonteCarloDirect::Shade(const Intersection &hit, const Ray &ray,
   glm::vec3 shift_pos = hit.pos + kEpsilon * hit.normal;
 
   // Trace the direct light contributions.
-  color += ShadeDirect(hit, shift_pos, ray, throughput);
+  color += ShadeDirectNEE(hit, shift_pos, ray, throughput);
 
   return color;
 }
 
-glm::vec3 MonteCarloDirect::ShadeDirect(const Intersection &hit,
-                                        const glm::vec3 &shift_pos,
-                                        const Ray &ray,
-                                        const glm::vec3 &throughput) {
+glm::vec3 MonteCarloDirect::ShadeDirectNEE(const Intersection &hit,
+                                           const glm::vec3 &shift_pos,
+                                           const Ray &ray,
+                                           const glm::vec3 &throughput) {
   glm::vec3 color(0.0f);
 
   // Calculate direct lighting contributions .
@@ -401,16 +403,19 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
   // probably incorrectly. Fix this.
   glm::vec3 color;
   // TODO: Is this "reverse tri" check necessary?
-  if ((scene_.next_event_estimation && depth > 0) ||
+  if ((scene_.next_event_estimation != NEE::kOff && depth > 0) ||
       glm::dot(hit.normal, -ray.direction()) < 0.0f) {
     color = glm::vec3(0.0f);
   } else {
     color = throughput * hit.obj->material->emission;
   }
 
-  if (scene_.next_event_estimation) {
+  if (scene_.next_event_estimation == NEE::kOn) {
     // Trace the direct light contributions for next event estimation.
-    color += ShadeDirect(hit, shift_pos, ray, throughput);
+    color += ShadeDirectNEE(hit, shift_pos, ray, throughput);
+  } else if (scene_.next_event_estimation == NEE::kMIS) {
+    color += ShadeDirectNEEMIS(hit, shift_pos, ray, throughput);
+    color += ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
   }
 
   color += ShadeIndirect(hit, shift_pos, ray, throughput, depth);
@@ -499,6 +504,245 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
   // Trace the sampled ray.
   Ray sampled_ray(shift_pos, sampled_dir);
   return Trace(sampled_ray, next_throughput, depth + 1);
+}
+
+float PowerHeuristic(float pdf0, float pdf1) {
+  if (pdf0 == 0.0f && pdf1 == 0.0f) {
+    return 0.0f;
+  }
+  return (pdf0 * pdf0) / (pdf0 * pdf0 + pdf1 * pdf1);
+}
+
+glm::vec3 PathTracer::ShadeDirectBRDFMIS(const Intersection &hit,
+                                         const glm::vec3 &shift_pos,
+                                         const Ray &ray,
+                                         const glm::vec3 &throughput) {
+  auto &brdf = hit.obj->material->BRDF();
+
+  // First we sample the hemisphere around the surface normal for an outgoing
+  // direction.
+  glm::vec3 sampled_dir;
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      sampled_dir = SampleHemisphere(hit.normal, rand_);
+      break;
+    case ImportanceSampling::kCosine:
+      sampled_dir = SampleCosine(hit.normal, rand_);
+      break;
+    case ImportanceSampling::kBRDF:
+      sampled_dir = brdf.Sample(ray.direction(), hit.normal, rand_);
+      break;
+  }
+
+  // Early return in case the sample is below the visible hemisphere.
+  if (glm::dot(sampled_dir, hit.normal) <= 0.0f) {
+    return glm::vec3(0.0f);
+  }
+
+  // Compute the BRDF term.
+  glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
+
+  // For the final value of the sample, we divide by the sample's probability
+  // density function, which in this case equates to a multiply by 2*pi (since
+  // there are 2*pi steradians in a hemisphere). The BRDF, cosine term, and
+  // sampling PDF together make up the throughput at the current vertex, and we
+  // keep track of the current ray's throughput as a recursive product of this,
+  // which we pass along to the next indirect ray (note that we don't multiply
+  // the result of Trace() with the new throughput, as that would apply it
+  // twice).
+  // Note that the BRDF and cosine terms suffice to model all
+  // physically based attenuation, since radiance does not attenuate with
+  // distance.
+  float brdf_pdf = 0.0f;
+  glm::vec3 next_throughput;
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      // The PDF of hemisphere sampling is just the number of steradians per
+      // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
+      // thus the multiplication by 2pi.
+      brdf_pdf = 1.0f / (2.0f * glm::pi<float>());
+      next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+      break;
+    case ImportanceSampling::kCosine:
+      // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
+      // canceled out and we're left with a multiply by pi.
+      brdf_pdf =
+          glm::max(glm::dot(hit.normal, sampled_dir), 0.0f) / glm::pi<float>();
+      next_throughput = throughput * glm::pi<float>() * brdf_term;
+      break;
+    case ImportanceSampling::kBRDF:
+      // Estimate the throughput based on the PDF of the current BRDF.
+      brdf_pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
+      next_throughput = throughput * brdf_term / brdf_pdf *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+      break;
+  }
+
+  // Trace the sampled ray, but only once, without recursion.
+  Ray sampled_ray(shift_pos, sampled_dir);
+
+  workspace_->stats.IncrementSecondaryRays();
+  absl::optional<Intersection> next_hit =
+      scene_.root->Intersect(workspace_.get(), sampled_ray);
+  if (next_hit && next_hit->obj->light != nullptr) {
+    // TODO: Clean up this duplication.
+    ShadingInfo info = next_hit->obj->light->ShadingInfoAt(next_hit->pos);
+    if (info.area == nullptr) {
+      return glm::vec3(0.0f);
+    }
+
+    float light_pdf = PDFNEE(sampled_ray, hit.pos);
+    float weight = PowerHeuristic(brdf_pdf, light_pdf);
+
+    return next_throughput * info.color * weight;
+  }
+  return glm::vec3(0.0f);
+}
+
+glm::vec3 PathTracer::ShadeDirectNEEMIS(const Intersection &hit,
+                                        const glm::vec3 &shift_pos,
+                                        const Ray &ray,
+                                        const glm::vec3 &throughput) {
+  glm::vec3 color(0.0f);
+
+  // Calculate direct lighting contributions.
+  for (const auto &light : scene_.lights()) {
+    ShadingInfo info = light->ShadingInfoAt(hit.pos);
+    // TODO: Handle non-area lights?
+    if (info.area == nullptr) {
+      continue;
+    }
+
+    // Calculate the light's area and reverse normal, which are used in the
+    // following calculations. Note, the reverse normal is the direction _away_
+    // from which the light is emitting. We do this so that we normalize our
+    // sampling method: instead of sampling over the solid angle subtended by
+    // the light, we want to sample of the area of the light, and thus need to
+    // normalize by:
+    //   (n_l • w_i) / R^2
+    // where R is the distance between the point being shaded and the
+    // corresponding point on the light, w_i is the direction _to_ the point on
+    // the light, and thus n_l has to be the reverse normal of the light so
+    // that the result of the dot product is positive (alternatively, we could
+    // use the reverse of w_i with the normal).
+    float light_area =
+        glm::length(glm::cross(info.area->edge0, info.area->edge1));
+    glm::vec3 light_reverse_normal =
+        glm::normalize(glm::cross(info.area->edge0, info.area->edge1));
+
+    glm::vec3 sample_contributions(0.0f);
+
+    // Generate a random sample on the surface of the light. When
+    // stratified sampling is enabled, this scales the u, v random values
+    // by the size of each strata and offsets into the current section
+    // that we're sampling from.
+    float u = rand_.Next();
+    float v = rand_.Next();
+    assert(u >= 0 && u < 1 && v >= 0 && v < 1);
+    glm::vec3 light_pos =
+        info.area->corner + (u)*info.area->edge0 + (v)*info.area->edge1;
+    // Shift the light point by an epsilon to avoid being shadowed by any
+    // light-related geometry. Since we have the reverse normal, we simply
+    // subtract by it.
+    light_pos -= kEpsilon * light_reverse_normal;
+
+    glm::vec3 point_to_light = light_pos - shift_pos;
+    glm::vec3 light_dir = glm::normalize(point_to_light);
+    float light_distance = glm::length(point_to_light);
+
+    // First check to see if light is occluded.
+    Ray shadow_ray(shift_pos, light_dir);
+    if (scene_.root->HasIntersection(workspace_.get(), shadow_ray,
+                                     light_distance)) {
+      // Light is occluded; discard the sample.
+      continue;
+    }
+
+    // Calculate the geometry term, which normalizes for the incident
+    // angle on the surface being shaded and for the emission angle from
+    // the light source.
+    float light_distance_squared = light_distance * light_distance;
+    // TODO: Should these be glm::abs?
+    float cos_incident_angle = glm::max(glm::dot(hit.normal, light_dir), 0.0f);
+    float cos_light_emission_angle =
+        glm::max(glm::dot(light_reverse_normal, light_dir), 0.0f);
+    float geometry_term =
+        cos_incident_angle * cos_light_emission_angle / light_distance_squared;
+
+    glm::vec3 brdf_term =
+        hit.obj->material->BRDF().Eval(light_dir, ray.direction(), hit.normal);
+
+    sample_contributions += geometry_term * brdf_term;
+
+    // Now we must normalize by the light's area and then we can finally
+    // compute the final color contribution.
+    sample_contributions *= light_area / scene_.light_samples;
+
+    float light_pdf = PDFNEE(shadow_ray, hit.pos);
+
+    float brdf_pdf = 0.0f;
+    switch (scene_.importance_sampling) {
+      case ImportanceSampling::kHemisphere:
+        brdf_pdf = 1.0f / (2.0f * glm::pi<float>());
+        break;
+      case ImportanceSampling::kCosine:
+        brdf_pdf =
+            glm::max(glm::dot(hit.normal, light_dir), 0.0f) / glm::pi<float>();
+        break;
+      case ImportanceSampling::kBRDF:
+        brdf_pdf = hit.obj->material->BRDF().PDF(light_dir, ray.direction(),
+                                                 hit.normal);
+        break;
+    }
+
+    float weight = PowerHeuristic(light_pdf, brdf_pdf);
+
+    color += info.color * sample_contributions * weight;
+  }
+
+  return throughput * color;
+}
+
+float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
+  // Compute the combined NEE pdf of all lights for a given sample direction.
+  float light_pdf = 0.0f;
+  int affecting_lights = 0;
+  for (const auto &light : scene_.lights()) {
+    ShadingInfo info = light->ShadingInfoAt(hit_pos);
+    if (info.area == nullptr) {
+      continue;
+    }
+    ++affecting_lights;
+    // The light is an area light, so we consider it as part of the PDF, even
+    // if it isn't intersected by the sample.
+    absl::optional<Intersection> light_hit = info.area->Intersect(sampled_ray);
+    if (!light_hit) {
+      continue;
+    }
+
+    float light_area =
+        glm::length(glm::cross(info.area->edge0, info.area->edge1));
+    glm::vec3 light_reverse_normal =
+        glm::normalize(glm::cross(info.area->edge0, info.area->edge1));
+
+    glm::vec3 point_to_light = light_hit->pos - sampled_ray.origin();
+    float light_distance = glm::length(point_to_light);
+    float light_distance_squared = light_distance * light_distance;
+
+    float cos_light_emission_angle =
+        glm::abs(glm::dot(light_reverse_normal, sampled_ray.direction()));
+
+    light_pdf +=
+        cos_light_emission_angle == 0.0f
+            ? 0.0f
+            : light_distance_squared / (light_area * cos_light_emission_angle);
+  }
+  if (affecting_lights == 0) {
+    return 0.0f;
+  }
+  light_pdf /= affecting_lights;
+  return light_pdf;
 }
 
 std::unique_ptr<Integrator> PathTracer::Clone() const {

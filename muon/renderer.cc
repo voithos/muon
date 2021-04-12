@@ -28,6 +28,9 @@ void Renderer::Render() const {
   Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
             sc.scene->gamma, output);
 
+  // TODO: Create more tiles than threads, so that the threads can better share
+  // the workload in case certain parts of the image are more computationally
+  // intense.
   TileQueue tiles(TileImage(sc.scene->width, sc.scene->height,
                             /*num_tiles=*/options_.parallelism));
 

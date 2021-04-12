@@ -1,7 +1,9 @@
 #ifndef MUON_LIGHTING_H_
 #define MUON_LIGHTING_H_
 
+#include "absl/types/optional.h"
 #include "muon/camera.h"
+#include "muon/ray.h"
 #include "muon/types.h"
 #include "third_party/glm/glm.hpp"
 
@@ -11,10 +13,13 @@ namespace muon {
 // think of a better way to expose this data besides ShadingInfo.
 struct Quad {
   // TODO: Corner represents the bottom-left corner of the quad, edge0 is the
-  // left edge, edge1 is the top edge, light comes out the front.
+  // left edge, edge1 is the bottom edge, light comes out the front (i.e. in
+  // the direction edge1 x edge0).
   glm::vec3 corner;
   glm::vec3 edge0;
   glm::vec3 edge1;
+
+  absl::optional<Intersection> Intersect(const Ray &ray);
 };
 
 struct ShadingInfo {
