@@ -256,8 +256,10 @@ glm::vec3 GGX::Eval(const glm::vec3& in_dir, const glm::vec3& ray_dir,
 
   // The ray_dir is facing towards the surface, so we flip it when computing the
   // dot product with the normal.
+  // TODO: Avoid all this flipping by just requiring BRDF.Eval to accept
+  // already-flipped directions.
   glm::vec3 specular =
-      fresnel * shadowing_masking * microfacet_distribution /
+      (fresnel * shadowing_masking * microfacet_distribution) /
       (4.0f * glm::dot(in_dir, normal) * glm::dot(-ray_dir, normal));
 
   return diffuse + specular;
@@ -306,6 +308,7 @@ void Material::Copy(const Material& m) {
   emission = m.emission;
 
   shininess = m.shininess;
+  roughness = m.roughness;
 
   SetBRDF(m.brdf_->Clone());
 }
