@@ -29,6 +29,10 @@
 - [ ] P3: Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
 
+## Bugs
+- [ ] P1: Some parts of the lighting calculations don't take orientation into
+      account (so lights illuminate things behind them)
+
 ## DONE
 - [x] Add surface area heuristic to BVH
 - [x] Acceleration structure (BVH)
