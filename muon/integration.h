@@ -104,40 +104,11 @@ class AnalyticDirect : public Integrator {
                           const int depth) override;
 };
 
-// Base class for Monte Carlo based integrators.
-class MonteCarlo : public Integrator {
+// A Monte Carlo based path tracer that handles global illumination.
+class PathTracer : public Integrator {
  public:
-  MonteCarlo(const MonteCarlo &other) : Integrator(other) {}
-  explicit MonteCarlo(Scene &scene) : Integrator(scene) {}
-
- protected:
-  // RNG for monte carlo.
-  UniformRandom rand_;
-};
-
-// A Monte Carlo integrator that calculates direct lighting contributions only.
-class MonteCarloDirect : public MonteCarlo {
- public:
-  MonteCarloDirect(const MonteCarloDirect &other) : MonteCarlo(other) {}
-  explicit MonteCarloDirect(Scene &scene) : MonteCarlo(scene) {}
-  virtual std::unique_ptr<Integrator> Clone() const override;
-
- protected:
-  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
-                          const glm::vec3 &throughput,
-                          const int depth) override;
-
-  // Shades an intersection with only the direct lighting contribution via Next
-  // Event Estimation, without any indirect recursion.
-  glm::vec3 ShadeDirectNEE(const Intersection &hit, const glm::vec3 &shift_pos,
-                           const Ray &ray, const glm::vec3 &throughput);
-};
-
-// A Monte Carlo based path tracer that handles indirect lighting.
-class PathTracer : public MonteCarloDirect {
- public:
-  PathTracer(const PathTracer &other) : MonteCarloDirect(other) {}
-  explicit PathTracer(Scene &scene) : MonteCarloDirect(scene) {}
+  PathTracer(const PathTracer &other) : Integrator(other) {}
+  explicit PathTracer(Scene &scene) : Integrator(scene) {}
   virtual std::unique_ptr<Integrator> Clone() const override;
 
  protected:
@@ -150,6 +121,11 @@ class PathTracer : public MonteCarloDirect {
   glm::vec3 ShadeIndirect(const Intersection &hit, const glm::vec3 &shift_pos,
                           const Ray &ray, const glm::vec3 &throughput,
                           const int depth);
+
+  // Shades an intersection with only the direct lighting contribution via Next
+  // Event Estimation, without any indirect recursion.
+  glm::vec3 ShadeDirectNEE(const Intersection &hit, const glm::vec3 &shift_pos,
+                           const Ray &ray, const glm::vec3 &throughput);
 
   // Shades an intersection with only the direct lighting contribution, modeled
   // via BRDF multiple importance sampling.
@@ -164,6 +140,9 @@ class PathTracer : public MonteCarloDirect {
 
   // TODO: This should be part of the lighting system instead.
   float PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos);
+
+  // RNG for monte carlo.
+  UniformRandom rand_;
 };
 
 }  // namespace muon

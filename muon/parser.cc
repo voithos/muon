@@ -305,8 +305,6 @@ SceneConfig Parser::Parse() {
           ws.integrator = absl::make_unique<Raytracer>(*ws.scene);
         } else if (type == "analyticdirect") {
           ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
-        } else if (type == "direct") {
-          ws.integrator = absl::make_unique<MonteCarloDirect>(*ws.scene);
         } else if (type == "pathtracer") {
           ws.integrator = absl::make_unique<PathTracer>(*ws.scene);
         } else {
