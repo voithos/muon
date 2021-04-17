@@ -23,6 +23,9 @@
 
 ## Performance improvements
 - [ ] SIMD support?
+- [ ] P3: Adaptive sampling
+- [ ] P3: Bidirectional path tracing
+- [ ] P4: Metropolis light transport
 - [ ] P3: Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
 
