@@ -75,6 +75,14 @@ scene_diff_test(
 )
 
 scene_diff_test(
+    name = "mis_test",
+    golden = "testdata/mis_golden.png",
+    scene = "mis.test",
+    tolerance = "0.002",
+    truth = "testdata/mis_truth.png",
+)
+
+scene_diff_test(
     name = "partial_emission_test",
     golden = "testdata/partial_emission.png",
     scene = "partial_emission.test",
