@@ -1,7 +1,6 @@
 # TODO
 
 ## Features
-- [ ] P0: MIS
 - [ ] P0: Recursive refraction
 - [ ] P0: Depth of field
 - [ ] P0: Volumetrics
@@ -43,3 +42,4 @@
 - [x] Golden testing framework
 - [x] P0: Allow separate rendering of direct and bounce light
 - [x] P1: Add multithreading support
+- [x] P0: MIS
