@@ -254,17 +254,24 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
     color = throughput * hit.obj->material->emission;
   }
 
-  if (scene_.next_event_estimation == NEE::kOn) {
-    // Trace the direct light contributions for next event estimation.
-    color += ShadeDirectNEE(hit, shift_pos, ray, throughput);
-  } else if (scene_.next_event_estimation == NEE::kMIS) {
-    color += ShadeDirectNEEMIS(hit, shift_pos, ray, throughput);
-    color += ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
-  }
+  color += ShadeDirect(hit, shift_pos, ray, throughput);
 
   color += ShadeIndirect(hit, shift_pos, ray, throughput, depth);
 
   return color;
+}
+
+glm::vec3 PathTracer::ShadeDirect(const Intersection &hit,
+                                  const glm::vec3 &shift_pos, const Ray &ray,
+                                  const glm::vec3 &throughput) {
+  if (scene_.next_event_estimation == NEE::kOn) {
+    // Trace the direct light contributions for next event estimation.
+    return ShadeDirectNEE(hit, shift_pos, ray, throughput);
+  } else if (scene_.next_event_estimation == NEE::kMIS) {
+    return ShadeDirectNEEMIS(hit, shift_pos, ray, throughput) +
+           ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
+  }
+  return glm::vec3(0.0f);
 }
 
 glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
@@ -351,10 +358,11 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
 }
 
 float PowerHeuristic(float pdf0, float pdf1) {
-  if (pdf0 == 0.0f && pdf1 == 0.0f) {
+  float denom = pdf0 * pdf0 + pdf1 * pdf1;
+  if (denom == 0.0f) {
     return 0.0f;
   }
-  return (pdf0 * pdf0) / (pdf0 * pdf0 + pdf1 * pdf1);
+  return (pdf0 * pdf0) / denom;
 }
 
 glm::vec3 PathTracer::ShadeDirectNEE(const Intersection &hit,

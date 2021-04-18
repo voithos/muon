@@ -122,6 +122,10 @@ class PathTracer : public Integrator {
                           const Ray &ray, const glm::vec3 &throughput,
                           const int depth);
 
+  // Shades an intersection with only direct light contribution.
+  glm::vec3 ShadeDirect(const Intersection &hit, const glm::vec3 &shift_pos,
+                        const Ray &ray, const glm::vec3 &throughput);
+
   // Shades an intersection with only the direct lighting contribution via Next
   // Event Estimation, without any indirect recursion.
   glm::vec3 ShadeDirectNEE(const Intersection &hit, const glm::vec3 &shift_pos,

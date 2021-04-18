@@ -6,8 +6,12 @@ namespace muon {
 
 absl::optional<Intersection> Quad::Intersect(const Ray &ray) {
   glm::vec3 normal = glm::normalize(glm::cross(edge1, edge0));
-  float t = glm::dot(corner - ray.origin(), normal) /
-            glm::dot(ray.direction(), normal);
+  float ray_dot_normal = glm::dot(ray.direction(), normal);
+  if (ray_dot_normal == 0.0f) {
+    // Ray is parallel to the quad; no intersection.
+    return absl::nullopt;
+  }
+  float t = glm::dot(corner - ray.origin(), normal) / ray_dot_normal;
   if (t < 0) {
     return absl::nullopt;
   }

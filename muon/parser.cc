@@ -14,6 +14,7 @@
 #include "muon/objects.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
+#include "third_party/glm/gtx/norm.hpp"
 #include "third_party/glm/gtx/transform.hpp"
 
 namespace muon {
@@ -714,7 +715,9 @@ SceneConfig Parser::Parse() {
   if (ws.scene->compute_vertex_normals) {
     // Normalize vertex normals.
     for (auto &vertex : ws.scene->vertices()) {
-      vertex.normal = glm::normalize(vertex.normal);
+      if (glm::length2(vertex.normal) > 0.0f) {
+        vertex.normal = glm::normalize(vertex.normal);
+      }
     }
   }
 
