@@ -142,6 +142,14 @@ class PathTracer : public Integrator {
                               const glm::vec3 &shift_pos, const Ray &ray,
                               const glm::vec3 &throughput);
 
+  // Samples a reflected ray, outputting its direction, pdf, and computed BRDF
+  // throughput (taking into account current throughput). Returns a boolean
+  // indicating if the sample is valid (e.g. above the horizon).
+  bool SampleReflection(const Intersection &hit, const Ray &ray,
+                        const glm::vec3 &throughput, glm::vec3 &sampled_dir,
+                        float &pdf, glm::vec3 &next_throughput);
+
+  // Computes the combined PDF of all lights for a given sample direction.
   // TODO: This should be part of the lighting system instead.
   float PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos);
 

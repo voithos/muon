@@ -264,76 +264,34 @@ glm::vec3 PathTracer::Shade(const Intersection &hit, const Ray &ray,
 glm::vec3 PathTracer::ShadeDirect(const Intersection &hit,
                                   const glm::vec3 &shift_pos, const Ray &ray,
                                   const glm::vec3 &throughput) {
-  if (scene_.next_event_estimation == NEE::kOn) {
-    // Trace the direct light contributions for next event estimation.
-    return ShadeDirectNEE(hit, shift_pos, ray, throughput);
-  } else if (scene_.next_event_estimation == NEE::kMIS) {
-    return ShadeDirectNEEMIS(hit, shift_pos, ray, throughput) +
-           ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
+  switch (scene_.next_event_estimation) {
+    case NEE::kOff:
+      return glm::vec3(0.0f);
+      break;
+    case NEE::kOn:
+      return ShadeDirectNEE(hit, shift_pos, ray, throughput);
+      break;
+    case NEE::kMIS:
+      // Sample both NEE and BRDF direct light sampling, instead of doing it
+      // probabilistically.
+      return ShadeDirectNEEMIS(hit, shift_pos, ray, throughput) +
+             ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
+      break;
   }
-  return glm::vec3(0.0f);
 }
 
 glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
                                     const glm::vec3 &shift_pos, const Ray &ray,
                                     const glm::vec3 &throughput,
                                     const int depth) {
-  auto &brdf = hit.obj->material->BRDF();
-
-  // First we sample the hemisphere around the surface normal for an outgoing
-  // direction.
+  // Sample a reflection direction and compute its throughput.
   glm::vec3 sampled_dir;
-  switch (scene_.importance_sampling) {
-    case ImportanceSampling::kHemisphere:
-      sampled_dir = SampleHemisphere(hit.normal, rand_);
-      break;
-    case ImportanceSampling::kCosine:
-      sampled_dir = SampleCosine(hit.normal, rand_);
-      break;
-    case ImportanceSampling::kBRDF:
-      sampled_dir = brdf.Sample(ray.direction(), hit.normal, rand_);
-      break;
-  }
-
-  // Early return in case the sample is below the visible hemisphere.
-  if (glm::dot(sampled_dir, hit.normal) <= 0.0f) {
-    return glm::vec3(0.0f);
-  }
-
-  // Compute the BRDF term.
-  glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
-
-  // For the final value of the sample, we divide by the sample's probability
-  // density function, which in this case equates to a multiply by 2*pi (since
-  // there are 2*pi steradians in a hemisphere). The BRDF, cosine term, and
-  // sampling PDF together make up the throughput at the current vertex, and we
-  // keep track of the current ray's throughput as a recursive product of this,
-  // which we pass along to the next indirect ray (note that we don't multiply
-  // the result of Trace() with the new throughput, as that would apply it
-  // twice).
-  // Note that the BRDF and cosine terms suffice to model all
-  // physically based attenuation, since radiance does not attenuate with
-  // distance.
+  float unused_pdf;
   glm::vec3 next_throughput;
-  switch (scene_.importance_sampling) {
-    case ImportanceSampling::kHemisphere:
-      // The PDF of hemisphere sampling is just the number of steradians per
-      // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
-      // thus the multiplication by 2pi.
-      next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
-                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
-      break;
-    case ImportanceSampling::kCosine:
-      // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
-      // canceled out and we're left with a multiply by pi.
-      next_throughput = throughput * glm::pi<float>() * brdf_term;
-      break;
-    case ImportanceSampling::kBRDF:
-      // Estimate the throughput based on the PDF of the current BRDF.
-      float pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
-      next_throughput = throughput * brdf_term / pdf *
-                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
-      break;
+  if (!SampleReflection(hit, ray, throughput, sampled_dir, unused_pdf,
+                        next_throughput)) {
+    // Early return in case the sample is below the visible hemisphere.
+    return glm::vec3(0.0f);
   }
 
   // Handle Russian Roulette.
@@ -352,11 +310,14 @@ glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
     next_throughput /= continuation_probability;
   }
 
-  // Trace the sampled ray.
+  // Trace the sampled ray. Note that we don't multiply the result of Trace()
+  // with the new throughput, as that would apply it twice.
   Ray sampled_ray(shift_pos, sampled_dir);
   return Trace(sampled_ray, next_throughput, depth + 1);
 }
 
+// Returns the power heuristic of a PDF in comparison to another PDF.
+// Based on Veach's empirical determination with beta=2.
 float PowerHeuristic(float pdf0, float pdf1) {
   float denom = pdf0 * pdf0 + pdf1 * pdf1;
   if (denom == 0.0f) {
@@ -483,81 +444,30 @@ glm::vec3 PathTracer::ShadeDirectBRDFMIS(const Intersection &hit,
                                          const glm::vec3 &shift_pos,
                                          const Ray &ray,
                                          const glm::vec3 &throughput) {
-  auto &brdf = hit.obj->material->BRDF();
-
-  // First we sample the hemisphere around the surface normal for an outgoing
-  // direction.
+  // Sample a reflection direction and compute its throughput.
   glm::vec3 sampled_dir;
-  switch (scene_.importance_sampling) {
-    case ImportanceSampling::kHemisphere:
-      sampled_dir = SampleHemisphere(hit.normal, rand_);
-      break;
-    case ImportanceSampling::kCosine:
-      sampled_dir = SampleCosine(hit.normal, rand_);
-      break;
-    case ImportanceSampling::kBRDF:
-      sampled_dir = brdf.Sample(ray.direction(), hit.normal, rand_);
-      break;
-  }
-
-  // Early return in case the sample is below the visible hemisphere.
-  if (glm::dot(sampled_dir, hit.normal) <= 0.0f) {
-    return glm::vec3(0.0f);
-  }
-
-  // Compute the BRDF term.
-  glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
-
-  // For the final value of the sample, we divide by the sample's probability
-  // density function, which in this case equates to a multiply by 2*pi (since
-  // there are 2*pi steradians in a hemisphere). The BRDF, cosine term, and
-  // sampling PDF together make up the throughput at the current vertex, and we
-  // keep track of the current ray's throughput as a recursive product of this,
-  // which we pass along to the next indirect ray (note that we don't multiply
-  // the result of Trace() with the new throughput, as that would apply it
-  // twice).
-  // Note that the BRDF and cosine terms suffice to model all
-  // physically based attenuation, since radiance does not attenuate with
-  // distance.
-  float brdf_pdf = 0.0f;
+  float brdf_pdf;
   glm::vec3 next_throughput;
-  switch (scene_.importance_sampling) {
-    case ImportanceSampling::kHemisphere:
-      // The PDF of hemisphere sampling is just the number of steradians per
-      // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
-      // thus the multiplication by 2pi.
-      brdf_pdf = 1.0f / (2.0f * glm::pi<float>());
-      next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
-                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
-      break;
-    case ImportanceSampling::kCosine:
-      // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
-      // canceled out and we're left with a multiply by pi.
-      brdf_pdf =
-          glm::max(glm::dot(hit.normal, sampled_dir), 0.0f) / glm::pi<float>();
-      next_throughput = throughput * glm::pi<float>() * brdf_term;
-      break;
-    case ImportanceSampling::kBRDF:
-      // Estimate the throughput based on the PDF of the current BRDF.
-      brdf_pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
-      next_throughput = throughput * brdf_term / brdf_pdf *
-                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
-      break;
+  if (!SampleReflection(hit, ray, throughput, sampled_dir, brdf_pdf,
+                        next_throughput)) {
+    // Early return in case the sample is below the visible hemisphere.
+    return glm::vec3(0.0f);
   }
 
   // Trace the sampled ray, but only once, without recursion.
   Ray sampled_ray(shift_pos, sampled_dir);
-
   workspace_->stats.IncrementSecondaryRays();
   absl::optional<Intersection> next_hit =
       scene_.root->Intersect(workspace_.get(), sampled_ray);
+
   if (next_hit && next_hit->obj->light != nullptr) {
-    // TODO: Clean up this duplication.
     ShadingInfo info = next_hit->obj->light->ShadingInfoAt(next_hit->pos);
     if (info.area == nullptr) {
       return glm::vec3(0.0f);
     }
 
+    // We have a hit; weigh the BRDF sample in comparison to the PDF of NEE for
+    // the same sample.
     float light_pdf = PDFNEE(sampled_ray, hit.pos);
     float weight = PowerHeuristic(brdf_pdf, light_pdf);
 
@@ -670,6 +580,70 @@ glm::vec3 PathTracer::ShadeDirectNEEMIS(const Intersection &hit,
   return throughput * color;
 }
 
+bool PathTracer::SampleReflection(const Intersection &hit, const Ray &ray,
+                                  const glm::vec3 &throughput,
+                                  glm::vec3 &sampled_dir, float &pdf,
+                                  glm::vec3 &next_throughput) {
+  auto &brdf = hit.obj->material->BRDF();
+
+  // First we sample the hemisphere around the surface normal for an outgoing
+  // direction.
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      sampled_dir = SampleHemisphere(hit.normal, rand_);
+      break;
+    case ImportanceSampling::kCosine:
+      sampled_dir = SampleCosine(hit.normal, rand_);
+      break;
+    case ImportanceSampling::kBRDF:
+      sampled_dir = brdf.Sample(ray.direction(), hit.normal, rand_);
+      break;
+  }
+
+  // Early return in case the sample is below the visible hemisphere.
+  // TODO: Can we make the sampling methods just always ensure above-horizon
+  // sampling?
+  if (glm::dot(sampled_dir, hit.normal) <= 0.0f) {
+    return false;
+  }
+
+  // Compute the BRDF term.
+  glm::vec3 brdf_term = brdf.Eval(sampled_dir, ray.direction(), hit.normal);
+
+  // For the final value of the sample (i.e. the next throughput), we divide by
+  // the sample's probability density function, based on our sampling method.
+  // The BRDF, cosine term, and sampling PDF together make up the throughput at
+  // the current vertex, and we keep track of the current ray's throughput as a
+  // product of this with our throughput so far. This will eventually get passed
+  // along to the next indirect ray. Note that the BRDF and cosine terms suffice
+  // to model all physically based attenuation, since radiance does not
+  // attenuate with distance.
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      // The PDF of hemisphere sampling is just the number of steradians per
+      // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
+      // thus the multiplication by 2pi in the throughput.
+      pdf = 1.0f / (2.0f * glm::pi<float>());
+      next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+      break;
+    case ImportanceSampling::kCosine:
+      // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
+      // canceled out and we're left with a multiply by pi for the throughput.
+      pdf =
+          glm::max(glm::dot(hit.normal, sampled_dir), 0.0f) / glm::pi<float>();
+      next_throughput = throughput * glm::pi<float>() * brdf_term;
+      break;
+    case ImportanceSampling::kBRDF:
+      // Estimate the throughput based on the PDF of the current BRDF.
+      pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
+      next_throughput = throughput * brdf_term / pdf *
+                        glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
+      break;
+  }
+  return true;
+}
+
 float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
   // Compute the combined NEE pdf of all lights for a given sample direction.
   float light_pdf = 0.0f;
@@ -679,14 +653,15 @@ float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
     if (info.area == nullptr) {
       continue;
     }
-    ++affecting_lights;
     // The light is an area light, so we consider it as part of the PDF, even
     // if it isn't intersected by the sample.
+    ++affecting_lights;
     absl::optional<Intersection> light_hit = info.area->Intersect(sampled_ray);
     if (!light_hit) {
       continue;
     }
 
+    // Compute the PDF for this specific light.
     float light_area =
         glm::length(glm::cross(info.area->edge0, info.area->edge1));
     glm::vec3 light_reverse_normal =
@@ -699,11 +674,15 @@ float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
     float cos_light_emission_angle =
         glm::abs(glm::dot(light_reverse_normal, sampled_ray.direction()));
 
-    light_pdf +=
-        cos_light_emission_angle == 0.0f
-            ? 0.0f
-            : light_distance_squared / (light_area * cos_light_emission_angle);
+    float denom = light_area * cos_light_emission_angle;
+    if (denom == 0.0f) {
+      continue;
+    }
+
+    light_pdf += light_distance_squared / denom;
   }
+  // The final PDF for NEE is equivalent to the average PDF over all affecting
+  // lights.
   if (affecting_lights == 0) {
     return 0.0f;
   }
