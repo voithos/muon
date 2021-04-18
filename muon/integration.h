@@ -127,21 +127,18 @@ class PathTracer : public Integrator {
                         const Ray &ray, const glm::vec3 &throughput);
 
   // Shades an intersection with only the direct lighting contribution via Next
-  // Event Estimation, without any indirect recursion.
+  // Event Estimation, without any indirect recursion. Optionally weighs each
+  // light sample's contribution via multiple importance sampling.
   glm::vec3 ShadeDirectNEE(const Intersection &hit, const glm::vec3 &shift_pos,
-                           const Ray &ray, const glm::vec3 &throughput);
+                           const Ray &ray, const glm::vec3 &throughput,
+                           bool mis);
 
-  // Shades an intersection with only the direct lighting contribution, modeled
-  // via BRDF multiple importance sampling.
-  glm::vec3 ShadeDirectBRDFMIS(const Intersection &hit,
-                               const glm::vec3 &shift_pos, const Ray &ray,
-                               const glm::vec3 &throughput);
-
-  // Shades an intersection with only the direct lighting contribution, modeled
-  // via NEE multiple importance sampling.
-  glm::vec3 ShadeDirectNEEMIS(const Intersection &hit,
-                              const glm::vec3 &shift_pos, const Ray &ray,
-                              const glm::vec3 &throughput);
+  // Shades an intersection with only the direct lighting contribution via
+  // importance sampling.
+  glm::vec3 ShadeDirectImportanceSampling(const Intersection &hit,
+                                          const glm::vec3 &shift_pos,
+                                          const Ray &ray,
+                                          const glm::vec3 &throughput);
 
   // Samples a reflected ray, outputting its direction, pdf, and computed BRDF
   // throughput (taking into account current throughput). Returns a boolean
