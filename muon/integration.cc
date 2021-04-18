@@ -278,6 +278,8 @@ glm::vec3 PathTracer::ShadeDirect(const Intersection &hit,
              ShadeDirectBRDFMIS(hit, shift_pos, ray, throughput);
       break;
   }
+  LOG(FATAL) << "Unknown next event estimation enum: "
+             << static_cast<int>(scene_.next_event_estimation);
 }
 
 glm::vec3 PathTracer::ShadeIndirect(const Intersection &hit,
@@ -331,7 +333,7 @@ glm::vec3 PathTracer::ShadeDirectNEE(const Intersection &hit,
                                      const glm::vec3 &throughput) {
   glm::vec3 color(0.0f);
 
-  // Calculate direct lighting contributions .
+  // Calculate direct lighting contributions.
   for (const auto &light : scene_.lights()) {
     ShadingInfo info = light->ShadingInfoAt(hit.pos);
     // Special case for non-area lights.
@@ -468,7 +470,7 @@ glm::vec3 PathTracer::ShadeDirectBRDFMIS(const Intersection &hit,
 
     // We have a hit; weigh the BRDF sample in comparison to the PDF of NEE for
     // the same sample.
-    float light_pdf = PDFNEE(sampled_ray, hit.pos);
+    float light_pdf = NEEPDF(sampled_ray, hit.pos);
     float weight = PowerHeuristic(brdf_pdf, light_pdf);
 
     return next_throughput * info.color * weight;
@@ -538,11 +540,11 @@ glm::vec3 PathTracer::ShadeDirectNEEMIS(const Intersection &hit,
     // Calculate the geometry term, which normalizes for the incident
     // angle on the surface being shaded and for the emission angle from
     // the light source.
-    float light_distance_squared = light_distance * light_distance;
     // TODO: Should these be glm::abs?
     float cos_incident_angle = glm::max(glm::dot(hit.normal, light_dir), 0.0f);
     float cos_light_emission_angle =
         glm::max(glm::dot(light_reverse_normal, light_dir), 0.0f);
+    float light_distance_squared = light_distance * light_distance;
     float geometry_term =
         cos_incident_angle * cos_light_emission_angle / light_distance_squared;
 
@@ -555,23 +557,11 @@ glm::vec3 PathTracer::ShadeDirectNEEMIS(const Intersection &hit,
     // compute the final color contribution.
     sample_contributions *= light_area / scene_.light_samples;
 
-    float light_pdf = PDFNEE(shadow_ray, hit.pos);
-
-    float brdf_pdf = 0.0f;
-    switch (scene_.importance_sampling) {
-      case ImportanceSampling::kHemisphere:
-        brdf_pdf = 1.0f / (2.0f * glm::pi<float>());
-        break;
-      case ImportanceSampling::kCosine:
-        brdf_pdf =
-            glm::max(glm::dot(hit.normal, light_dir), 0.0f) / glm::pi<float>();
-        break;
-      case ImportanceSampling::kBRDF:
-        brdf_pdf = hit.obj->material->BRDF().PDF(light_dir, ray.direction(),
-                                                 hit.normal);
-        break;
-    }
-
+    // Weigh the light sample in comparison to the PDF of BRDF for the same
+    // sample.
+    float light_pdf = NEEPDF(shadow_ray, hit.pos);
+    float brdf_pdf =
+        ImportanceSamplingPDF(light_dir, hit, ray, hit.obj->material->BRDF());
     float weight = PowerHeuristic(light_pdf, brdf_pdf);
 
     color += info.color * sample_contributions * weight;
@@ -618,25 +608,22 @@ bool PathTracer::SampleReflection(const Intersection &hit, const Ray &ray,
   // along to the next indirect ray. Note that the BRDF and cosine terms suffice
   // to model all physically based attenuation, since radiance does not
   // attenuate with distance.
+  pdf = ImportanceSamplingPDF(sampled_dir, hit, ray, brdf);
   switch (scene_.importance_sampling) {
     case ImportanceSampling::kHemisphere:
       // The PDF of hemisphere sampling is just the number of steradians per
       // hemisphere, which is 2pi, so the probability of each sample is 1/2pi,
       // thus the multiplication by 2pi in the throughput.
-      pdf = 1.0f / (2.0f * glm::pi<float>());
       next_throughput = throughput * 2.0f * glm::pi<float>() * brdf_term *
                         glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
       break;
     case ImportanceSampling::kCosine:
       // The PDF of cosine sampling is (n • w_i) / pi, so the cosine term gets
       // canceled out and we're left with a multiply by pi for the throughput.
-      pdf =
-          glm::max(glm::dot(hit.normal, sampled_dir), 0.0f) / glm::pi<float>();
       next_throughput = throughput * glm::pi<float>() * brdf_term;
       break;
     case ImportanceSampling::kBRDF:
       // Estimate the throughput based on the PDF of the current BRDF.
-      pdf = brdf.PDF(sampled_dir, ray.direction(), hit.normal);
       next_throughput = throughput * brdf_term / pdf *
                         glm::max(glm::dot(hit.normal, sampled_dir), 0.0f);
       break;
@@ -644,7 +631,7 @@ bool PathTracer::SampleReflection(const Intersection &hit, const Ray &ray,
   return true;
 }
 
-float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
+float PathTracer::NEEPDF(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
   // Compute the combined NEE pdf of all lights for a given sample direction.
   float light_pdf = 0.0f;
   int affecting_lights = 0;
@@ -667,10 +654,6 @@ float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
     glm::vec3 light_reverse_normal =
         glm::normalize(glm::cross(info.area->edge0, info.area->edge1));
 
-    glm::vec3 point_to_light = light_hit->pos - sampled_ray.origin();
-    float light_distance = glm::length(point_to_light);
-    float light_distance_squared = light_distance * light_distance;
-
     float cos_light_emission_angle =
         glm::abs(glm::dot(light_reverse_normal, sampled_ray.direction()));
 
@@ -678,6 +661,10 @@ float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
     if (denom == 0.0f) {
       continue;
     }
+
+    glm::vec3 point_to_light = light_hit->pos - sampled_ray.origin();
+    float light_distance = glm::length(point_to_light);
+    float light_distance_squared = light_distance * light_distance;
 
     light_pdf += light_distance_squared / denom;
   }
@@ -688,6 +675,28 @@ float PathTracer::PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos) {
   }
   light_pdf /= affecting_lights;
   return light_pdf;
+}
+
+float PathTracer::ImportanceSamplingPDF(const glm::vec3 &sampled_dir,
+                                        const Intersection &hit, const Ray &ray,
+                                        brdf::BRDF &brdf) {
+  switch (scene_.importance_sampling) {
+    case ImportanceSampling::kHemisphere:
+      // The PDF of hemisphere sampling is just the number of steradians per
+      // hemisphere, which is 2pi.
+      return 1.0f / (2.0f * glm::pi<float>());
+      break;
+    case ImportanceSampling::kCosine:
+      // The PDF of cosine sampling is (n • w_i) / pi.
+      return glm::max(glm::dot(hit.normal, sampled_dir), 0.0f) /
+             glm::pi<float>();
+      break;
+    case ImportanceSampling::kBRDF:
+      return brdf.PDF(sampled_dir, ray.direction(), hit.normal);
+      break;
+  }
+  LOG(FATAL) << "Unknown importance sampling enum: "
+             << static_cast<int>(scene_.importance_sampling);
 }
 
 std::unique_ptr<Integrator> PathTracer::Clone() const {

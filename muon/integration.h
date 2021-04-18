@@ -136,6 +136,7 @@ class PathTracer : public Integrator {
   glm::vec3 ShadeDirectBRDFMIS(const Intersection &hit,
                                const glm::vec3 &shift_pos, const Ray &ray,
                                const glm::vec3 &throughput);
+
   // Shades an intersection with only the direct lighting contribution, modeled
   // via NEE multiple importance sampling.
   glm::vec3 ShadeDirectNEEMIS(const Intersection &hit,
@@ -151,7 +152,13 @@ class PathTracer : public Integrator {
 
   // Computes the combined PDF of all lights for a given sample direction.
   // TODO: This should be part of the lighting system instead.
-  float PDFNEE(const Ray &sampled_ray, const glm::vec3 &hit_pos);
+  float NEEPDF(const Ray &sampled_ray, const glm::vec3 &hit_pos);
+
+  // Computes the importance sampling PDF of a sample based on scene config.
+  // TODO: Make BRDFs const.
+  float ImportanceSamplingPDF(const glm::vec3 &sampled_dir,
+                              const Intersection &hit, const Ray &ray,
+                              brdf::BRDF &brdf);
 
   // RNG for monte carlo.
   UniformRandom rand_;
