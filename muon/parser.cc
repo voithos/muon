@@ -22,7 +22,7 @@ namespace muon {
 enum class ParseCmd {
   kIgnored = 0,  // Ignored.
   // General commands.
-  kSize,
+  kFilmSize,
   kMinDepth,
   kMaxDepth,
   kOutput,
@@ -51,8 +51,8 @@ enum class ParseCmd {
   kPushTransform,
   kPopTransform,
   // Light commands.
-  kDirectional,
-  kPoint,
+  kDirectionalLight,
+  kPointLight,
   kAttenuation,
   kQuadLight,
   // Material commands.
@@ -66,7 +66,7 @@ enum class ParseCmd {
 };
 
 std::map<std::string, ParseCmd> command_map = {
-    {"size", ParseCmd::kSize},
+    {"film_size", ParseCmd::kFilmSize},
     {"min_depth", ParseCmd::kMinDepth},
     {"max_depth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
@@ -82,18 +82,18 @@ std::map<std::string, ParseCmd> command_map = {
     {"compute_vertex_normals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
     {"vertex", ParseCmd::kVertex},
-    {"vertexnormal", ParseCmd::kVertexNormal},
+    {"vertex_normal", ParseCmd::kVertexNormal},
     {"tri", ParseCmd::kTri},
-    {"trinormal", ParseCmd::kTriNormal},
+    {"tri_normal", ParseCmd::kTriNormal},
     {"translate", ParseCmd::kTranslate},
     {"rotate", ParseCmd::kRotate},
     {"scale", ParseCmd::kScale},
     {"push_transform", ParseCmd::kPushTransform},
     {"pop_transform", ParseCmd::kPopTransform},
-    {"directional", ParseCmd::kDirectional},
-    {"point", ParseCmd::kPoint},
+    {"directional_light", ParseCmd::kDirectionalLight},
+    {"point_light", ParseCmd::kPointLight},
     {"attenuation", ParseCmd::kAttenuation},
-    {"quadLight", ParseCmd::kQuadLight},
+    {"quad_light", ParseCmd::kQuadLight},
     {"brdf", ParseCmd::kBRDF},
     {"ambient", ParseCmd::kAmbient},
     {"diffuse", ParseCmd::kDiffuse},
@@ -235,7 +235,7 @@ SceneConfig Parser::Parse() {
         break;
       }
         // General commands.
-      case ParseCmd::kSize: {
+      case ParseCmd::kFilmSize: {
         int width, height;
         iss >> width >> height;
         if (iss.fail()) {
@@ -536,7 +536,7 @@ SceneConfig Parser::Parse() {
         break;
       }
         // Light commands.
-      case ParseCmd::kDirectional: {
+      case ParseCmd::kDirectionalLight: {
         float x, y, z, r, g, b;
         iss >> x >> y >> z >> r >> g >> b;
         if (iss.fail()) {
@@ -548,7 +548,7 @@ SceneConfig Parser::Parse() {
         ws.scene->AddLight(std::move(light));
         break;
       }
-      case ParseCmd::kPoint: {
+      case ParseCmd::kPointLight: {
         float x, y, z, r, g, b;
         iss >> x >> y >> z >> r >> g >> b;
         if (iss.fail()) {

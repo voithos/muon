@@ -1,5 +1,5 @@
 # Raytraced cornell box scene.
-size 640 480
+film_size 640 480
 camera 0 1 1 0 0 -1 0 1 0 45
 
 max_depth 5
@@ -32,8 +32,8 @@ diffuse 0 0 0
 
 attenuation 1 0.1 0.05
 
-point 0 0.44 -1.5 0.8 0.8 0.8
-directional 0 1 -1 0.2 0.2 0.2
+point_light 0 0.44 -1.5 0.8 0.8 0.8
+directional_light 0 1 -1 0.2 0.2 0.2
 
 diffuse 0 0 1
 

@@ -1,5 +1,5 @@
 # Stanford Dragon
-size 640 480
+film_size 640 480
 gamma 2.2
 integrator pathtracer
 importance_sampling brdf
@@ -10,8 +10,8 @@ pixel_samples 64
 camera  -8 6 14  -1 -1 0  0 1 0  45
 output dragon.png
 
-quadLight  -5 10 -25  0 5 5  10 0 0  10 10 12
-quadLight  -5 20 15  0 -5 5  10 0 0  18 18 16
+quad_light  -5 10 -25  0 5 5  10 0 0  10 10 12
+quad_light  -5 20 15  0 -5 5  10 0 0  18 18 16
 
 max_depth -1
 

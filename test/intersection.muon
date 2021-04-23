@@ -1,6 +1,6 @@
 # A simple quad viewed from the side.
 
-size 640 480 
+film_size 640 480 
 
 camera -4 -4 4 1 0 0 0 1 0 30
 

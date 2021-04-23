@@ -1,5 +1,5 @@
 #Cornell Box
-size 480 480
+film_size 480 480
 integrator pathtracer
 gamma 2.2
 importance_sampling brdf
@@ -38,7 +38,7 @@ shininess 30
 emission 0 0 0
 diffuse 0 0 0
 
-quadLight -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  15 12.5 8
+quad_light -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  15 12.5 8
 
 push_transform
 

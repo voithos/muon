@@ -1,5 +1,5 @@
 # Path traced scene testing emission only via min_depth and max_depth.
-size 256 256
+film_size 256 256
 integrator pathtracer
 camera 0.0001 1.7 3 0 1 0 0 1 0 45
 next_event_estimation off
@@ -37,7 +37,7 @@ shininess 30
 emission 0 0 0
 diffuse 0 0 0
 
-quadLight -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  30 26 21
+quad_light -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  30 26 21
 
 # Point 0 0.44 2 0.8 0.8 0.8
 

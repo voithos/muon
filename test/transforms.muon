@@ -1,6 +1,6 @@
 # A simple test showcasing transforms.
 
-size 640 480 
+film_size 640 480 
 
 camera 0 -4 3 0 -1 0 0 0 1 45
 

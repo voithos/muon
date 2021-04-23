@@ -1,5 +1,5 @@
 # Sample scene showcasing a ggx material.
-size 640 140
+film_size 640 140
 integrator pathtracer
 gamma 2.2
 importance_sampling brdf
@@ -77,5 +77,5 @@ roughness 0.7
 sphere 5.27 -3 2.5  1
 
 # Overhead light
-quadLight  10 50 25  0 -6 6  10 0 0  110 105 95
-quadLight  -20 50 25  0 -6 6  10 0 0  10 15 25
+quad_light  10 50 25  0 -6 6  10 0 0  110 105 95
+quad_light  -20 50 25  0 -6 6  10 0 0  10 15 25
