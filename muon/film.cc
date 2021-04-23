@@ -24,7 +24,7 @@ void Film::WriteOutput() {
   for (size_t x = 0; x < width_; ++x) {
     for (size_t y = 0; y < height_; ++y) {
       glm::vec3 value =
-          accumulator_[x][y] / static_cast<float>(samples_per_pixel_);
+          accumulator_[x][y] / static_cast<float>(pixel_samples_);
 
       // Gamma correction.
       // TODO: Pull this out into a post-process system.

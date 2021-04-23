@@ -2,13 +2,13 @@
 size 640 140
 integrator pathtracer
 gamma 2.2
-importancesampling brdf
-nexteventestimation on
-russianroulette on
+importance_sampling brdf
+next_event_estimation on
+russian_roulette on
 camera  0 1 8  0 -3 2.5  0 1 0  30
-spp 64
+pixel_samples 64
 
-maxdepth -1
+max_depth -1
 
 maxverts 8
 

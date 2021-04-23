@@ -40,11 +40,11 @@ class TileQueue {
 // A sub-pixel coordinate sampler for sampling the camera plane.
 class Sampler {
  public:
-  Sampler(Tile tile, int samples_per_pixel)
+  Sampler(Tile tile, int pixel_samples)
       : tile_(tile),
-        samples_per_pixel_(samples_per_pixel),
+        pixel_samples_(pixel_samples),
         total_samples_(tile.width * tile.height *
-                       static_cast<long int>(samples_per_pixel)) {}
+                       static_cast<long int>(pixel_samples)) {}
 
   // Generates the next sample location, in terms of x and y coordinates in
   // screen space. If there are no more samples to generate, returns false.
@@ -61,7 +61,7 @@ class Sampler {
 
  private:
   Tile tile_;
-  int samples_per_pixel_;
+  int pixel_samples_;
   long int total_samples_;
 
   // Current relative x and y positions in the tile.

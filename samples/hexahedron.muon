@@ -1,14 +1,14 @@
 size 640 360
 integrator pathtracer
 gamma 2.2
-spp 64
-importancesampling brdf
-nexteventestimation mis
-russianroulette on
+pixel_samples 64
+importance_sampling brdf
+next_event_estimation mis
+russian_roulette on
 camera 7.3 4.2 3.9 0 1.1 0 0 1 0 21
 output hexahedron.png
 
-maxdepth -1
+max_depth -1
 
 brdf ggx
 

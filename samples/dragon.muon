@@ -2,18 +2,18 @@
 size 640 480
 gamma 2.2
 integrator pathtracer
-importancesampling brdf
-computeVertexNormals on
-russianroulette on
-nexteventestimation mis
-spp 64
+importance_sampling brdf
+compute_vertex_normals on
+russian_roulette on
+next_event_estimation mis
+pixel_samples 64
 camera  -8 6 14  -1 -1 0  0 1 0  45
 output dragon.png
 
 quadLight  -5 10 -25  0 5 5  10 0 0  10 10 12
 quadLight  -5 20 15  0 -5 5  10 0 0  18 18 16
 
-maxdepth -1
+max_depth -1
 
 maxverts 50005
 
@@ -50040,7 +50040,7 @@ vertex  5.0126 3.9222 0.2961
 vertex  -4.0968 7.6150 1.1201
 # 50000 vertexertices
 
-pushTransform
+push_transform
 translate 0 -5 0
 tri 1 2 3 
 tri 4 5 6 
@@ -150043,7 +150043,7 @@ tri 41343 32922 32924
 tri 29825 47438 29824 
 tri 29825 42257 47438 
 
-popTransform
+pop_transform
 
 brdf phong
 
@@ -150056,11 +150056,11 @@ vertex -1 -1 0
 vertex +1 -1 0
 vertex +1 +1 0
 
-pushTransform
+push_transform
 translate 0 -5 0
 rotate 1 0 0 -90
 scale 1000 1000 1000
 tri 50001 50002 50003
 tri 50001 50003 50004
-popTransform
+pop_transform
 

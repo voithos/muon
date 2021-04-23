@@ -37,7 +37,7 @@ class Scene {
 
   // Integrator properties.
   // TODO: Move these into a separate struct.
-  int samples_per_pixel;
+  int pixel_samples;
   int light_samples;
   bool light_stratify;
   NEE next_event_estimation;

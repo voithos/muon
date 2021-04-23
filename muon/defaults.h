@@ -33,7 +33,7 @@ constexpr float kGamma = 1.0f;
 constexpr bool kComputeVertexNormals = false;
 
 // The number of samples per pixel.
-constexpr int kSamplesPerPixel = 1;
+constexpr int kPixelSamples = 1;
 
 // The number of samples per light.
 constexpr int kLightSamples = 1;

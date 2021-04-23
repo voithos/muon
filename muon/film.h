@@ -17,11 +17,11 @@ class Film {
  public:
   // Initializes a new Film with a given width and height and a path to an
   // output file, which should be a png.
-  Film(size_t width, size_t height, size_t samples_per_pixel, float gamma,
+  Film(size_t width, size_t height, size_t pixel_samples, float gamma,
        std::string output_file)
       : width_(width),
         height_(height),
-        samples_per_pixel_(samples_per_pixel),
+        pixel_samples_(pixel_samples),
         gamma_(gamma),
         output_file_(output_file),
         accumulator_(width, std::vector<glm::vec3>(height, glm::vec3(0.0f))),
@@ -38,7 +38,7 @@ class Film {
  private:
   size_t width_;
   size_t height_;
-  size_t samples_per_pixel_;
+  size_t pixel_samples_;
   float gamma_;
   std::string output_file_;
   std::vector<std::vector<glm::vec3>> accumulator_;

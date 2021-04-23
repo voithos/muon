@@ -15,7 +15,7 @@ vertex +1 -1 +1
 vertex +1 +1 +1
 vertex -1 +1 +1
 
-pushTransform
+push_transform
 
 ambient .2 .2 .5
 
@@ -33,8 +33,8 @@ tri 0 2 1
 tri 4 5 6 
 tri 4 6 7 
 
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 
 ambient .2 .2 0
 
@@ -54,8 +54,8 @@ tri 0 2 1
 tri 4 5 6 
 tri 4 6 7 
 
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 translate +1.75 -.8 -.25
 translate 0 0 -2.0 
 scale 0.15 0.15 2.0 
@@ -72,8 +72,8 @@ tri 0 2 1
 tri 4 5 6 
 tri 4 6 7 
 
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 translate +1.75 +.8 -.25
 translate 0 0 -2.0 
 scale 0.15 0.15 2.0 
@@ -90,8 +90,8 @@ tri 0 2 1
 tri 4 5 6 
 tri 4 6 7 
 
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 translate -1.75 +.8 -.25
 translate 0 0 -2.0 
 scale 0.15 0.15 2.0 
@@ -110,45 +110,45 @@ tri 4 6 7
 
 
 ambient 0 .5 0 
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 translate  0 0 0.5
 rotate 0 0 1 45
 scale 1.0 0.25 0.25 
 sphere 0 0 0 1
 
 ambient .5 0 0
-popTransform
-pushTransform 
+pop_transform
+push_transform 
 translate  0 0 0.5
 rotate 0 0 1 -45
 scale 1.0 0.25 0.25 
 sphere 0 0 0 1
 
 ambient 0 .5 .5 
-popTransform
-pushTransform
+pop_transform
+push_transform
 translate -1.5 -.8 0.65
 scale 0.4 0.4 0.4
 sphere 0 0 0 1
 
 ambient 0 .5 .5 
-popTransform
-pushTransform
+pop_transform
+push_transform
 translate 1.5 -.8 0.65
 scale 0.4 0.4 0.4
 sphere 0 0 0 1
 
 ambient 0 .5 .5 
-popTransform
-pushTransform
+pop_transform
+push_transform
 translate 1.5 .8 0.65
 scale 0.4 0.4 0.4
 sphere 0 0 0 1
 
 ambient 0 .5 .5 
-popTransform
-pushTransform
+pop_transform
+push_transform
 translate -1.5 .8 0.65
 scale 0.4 0.4 0.4
 sphere 0 0 0 1

@@ -29,7 +29,7 @@ enum class ParseCmd {
   kGamma,
   // Integrator commands.
   kIntegrator,
-  kSamplesPerPixel,
+  kPixelSamples,
   kLightSamples,
   kLightStratify,
   kNextEventEstimation,
@@ -67,22 +67,20 @@ enum class ParseCmd {
 
 std::map<std::string, ParseCmd> command_map = {
     {"size", ParseCmd::kSize},
-    {"mindepth", ParseCmd::kMinDepth},
-    {"maxdepth", ParseCmd::kMaxDepth},
+    {"min_depth", ParseCmd::kMinDepth},
+    {"max_depth", ParseCmd::kMaxDepth},
     {"output", ParseCmd::kOutput},
     {"gamma", ParseCmd::kGamma},
     {"integrator", ParseCmd::kIntegrator},
-    {"spp", ParseCmd::kSamplesPerPixel},
-    {"lightsamples", ParseCmd::kLightSamples},
-    {"lightstratify", ParseCmd::kLightStratify},
-    {"nexteventestimation", ParseCmd::kNextEventEstimation},
-    {"russianroulette", ParseCmd::kRussianRoulette},
-    {"importancesampling", ParseCmd::kImportanceSampling},
+    {"pixel_samples", ParseCmd::kPixelSamples},
+    {"light_samples", ParseCmd::kLightSamples},
+    {"light_stratify", ParseCmd::kLightStratify},
+    {"next_event_estimation", ParseCmd::kNextEventEstimation},
+    {"russian_roulette", ParseCmd::kRussianRoulette},
+    {"importance_sampling", ParseCmd::kImportanceSampling},
     {"camera", ParseCmd::kCamera},
-    {"computeVertexNormals", ParseCmd::kComputeVertexNormals},
+    {"compute_vertex_normals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
-    {"maxverts", ParseCmd::kIgnored},
-    {"maxvertnorms", ParseCmd::kIgnored},
     {"vertex", ParseCmd::kVertex},
     {"vertexnormal", ParseCmd::kVertexNormal},
     {"tri", ParseCmd::kTri},
@@ -90,8 +88,8 @@ std::map<std::string, ParseCmd> command_map = {
     {"translate", ParseCmd::kTranslate},
     {"rotate", ParseCmd::kRotate},
     {"scale", ParseCmd::kScale},
-    {"pushTransform", ParseCmd::kPushTransform},
-    {"popTransform", ParseCmd::kPopTransform},
+    {"push_transform", ParseCmd::kPushTransform},
+    {"pop_transform", ParseCmd::kPopTransform},
     {"directional", ParseCmd::kDirectional},
     {"point", ParseCmd::kPoint},
     {"attenuation", ParseCmd::kAttenuation},
@@ -174,7 +172,7 @@ void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
   ws.scene->output = defaults::kOutput;
   ws.scene->gamma = defaults::kGamma;
   ws.scene->compute_vertex_normals = defaults::kComputeVertexNormals;
-  ws.scene->samples_per_pixel = defaults::kSamplesPerPixel;
+  ws.scene->pixel_samples = defaults::kPixelSamples;
   ws.scene->light_samples = defaults::kLightSamples;
   ws.scene->light_stratify = defaults::kLightStratify;
   ws.scene->next_event_estimation = defaults::kNextEventEstimation;
@@ -314,14 +312,14 @@ SceneConfig Parser::Parse() {
         }
         break;
       }
-      case ParseCmd::kSamplesPerPixel: {
-        int samples_per_pixel;
-        iss >> samples_per_pixel;
+      case ParseCmd::kPixelSamples: {
+        int pixel_samples;
+        iss >> pixel_samples;
         if (iss.fail()) {
           logBadLine(line);
           break;
         }
-        ws.scene->samples_per_pixel = samples_per_pixel;
+        ws.scene->pixel_samples = pixel_samples;
         break;
       }
       case ParseCmd::kLightSamples: {

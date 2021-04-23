@@ -58,7 +58,7 @@ bool Sampler::NextSample(float &x, float &y) {
 
   // Always sample at the center of the pixel for the first sample for backwards
   // compatibility.
-  // TODO: Change this to sampling at the center IFF samples_per_pixel_ == 1.
+  // TODO: Change this to sampling at the center IFF pixel_samples_ == 1.
   if (cur_pixel_sample_ == 0) {
     x = tile_.x + cur_tile_x_ + 0.5f;
     y = tile_.y + cur_tile_y_ + 0.5f;
@@ -81,7 +81,7 @@ bool Sampler::NextSample(float &x, float &y) {
   }
 
   ++cur_pixel_sample_;
-  if (cur_pixel_sample_ == samples_per_pixel_) {
+  if (cur_pixel_sample_ == pixel_samples_) {
     ++cur_tile_x_;
     cur_pixel_sample_ = 0;
   }

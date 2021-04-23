@@ -25,7 +25,7 @@ void Renderer::Render() const {
 
   const std::string& output =
       options_.output != "" ? options_.output : sc.scene->output;
-  Film film(sc.scene->width, sc.scene->height, sc.scene->samples_per_pixel,
+  Film film(sc.scene->width, sc.scene->height, sc.scene->pixel_samples,
             sc.scene->gamma, output);
 
   // TODO: Create more tiles than threads, so that the threads can better share
@@ -44,7 +44,7 @@ void Renderer::Render() const {
 
       absl::optional<Tile> tile;
       while ((tile = tiles.TryDequeue())) {
-        Sampler sampler(tile.value(), sc.scene->samples_per_pixel);
+        Sampler sampler(tile.value(), sc.scene->pixel_samples);
 
         // TODO: Refactor progress into separate class.
         int last_percent = 0;

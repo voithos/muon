@@ -2,12 +2,12 @@
 size 256 256
 integrator pathtracer
 camera 0 1.7 3 0 1 0 0 1 0 45
-importancesampling brdf
-nexteventestimation on
-russianroulette on
-spp 64
+importance_sampling brdf
+next_event_estimation on
+russian_roulette on
+pixel_samples 64
 
-maxdepth -1
+max_depth -1
 
 brdf phong
 
@@ -32,66 +32,66 @@ quadLight -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  30 26 21
 diffuse 0 0 0.8
 
 
-pushTransform
+push_transform
 
 # Red
-pushTransform
+push_transform
 translate -1 1 0
 rotate 0 1 0 90
 scale 1 1 1
 diffuse 0.8 0 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Green
-pushTransform
+push_transform
 translate 1 1 0
 rotate 0 1 0 -90
 scale 1 1 1
 diffuse 0 0.8 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Back
-pushTransform
+push_transform
 scale 1 1 1
 translate 0 1 -1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Top
-pushTransform
+push_transform
 translate 0 2 0
 rotate 1 0 0 90
 scale 1 1 1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Bottom
-pushTransform
+push_transform
 translate 0 0 0
 rotate 1 0 0 -90
 scale 1 1 1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Sphere
 diffuse 0.2 0.2 0.2
 specular 0.8 0.8 0.8
-pushTransform
+push_transform
 translate 0 0.5 0
 scale 0.5 0.5 0.5
 
 sphere 0 0 0 1
 
-popTransform
+pop_transform
 
-popTransform
+pop_transform

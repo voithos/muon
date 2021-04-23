@@ -2,7 +2,7 @@
 size 640 480
 camera 0 1 1 0 0 -1 0 1 0 45
 
-maxdepth 5
+max_depth 5
 
 
 maxverts 12
@@ -37,10 +37,10 @@ directional 0 1 -1 0.2 0.2 0.2
 
 diffuse 0 0 1
 
-pushTransform
+push_transform
 
 # Red
-pushTransform
+push_transform
 translate 0 0 -3
 rotate 0 1 0 60
 scale 10 10 1
@@ -48,10 +48,10 @@ diffuse 1 0 0
 specular .08 0 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Green
-pushTransform
+push_transform
 translate 0 0 -3
 rotate 0 1 0 -60
 scale 10 10 1
@@ -59,20 +59,20 @@ diffuse 0 1 0
 specular 0 .08 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 specular 0 0 0
 # Back
-pushTransform
+push_transform
 scale 10 10 1
 translate 0 0 -2
 diffuse 1 1 1
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Top
-pushTransform
+push_transform
 translate 0 0.5 0
 rotate 1 0 0 60
 translate 0 0 -1
@@ -80,10 +80,10 @@ scale 10 10 1
 diffuse 1 1 1
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Bottom
-pushTransform
+push_transform
 translate 0 -0.5 0
 rotate 1 0 0 -60
 translate 0 0 -1
@@ -91,48 +91,48 @@ scale 10 10 1
 diffuse 1 1 1
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Sphere
 diffuse 0.7 0.5 0.2
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate 0 -0.7 -1.5
 scale 0.1 0.1 0.1
 sphere 0 0 0 1
-popTransform
+pop_transform
 
 # Sphere2
 diffuse 0.7 0.5 0.2
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate 0.4 -0.9 -1
 scale 0.1 0.1 0.1
 sphere 0 0 0 1
-popTransform
+pop_transform
 
 # Sphere3
 diffuse 0.7 0.5 0.2
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate -0.5 -0.7 -1.5
 scale 0.1 0.1 0.1
 sphere 0 0 0 1
-popTransform
+pop_transform
 
 # Sphere4
 diffuse 0.7 0.5 0.2
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate 0.5 -0.5 -2
 scale 0.3 0.6 0.3
 sphere 0 0 0 1
-popTransform
+pop_transform
 
 # Cube
 diffuse 0.5 0.7 0.2
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate -0.25 -0.4 -1.8
 rotate 0 1 0 15
 scale 0.25 0.4 0.2
@@ -150,12 +150,12 @@ tri 6 10 11
 tri 6 11 7
 tri 10 8 9
 tri 10 9 11
-popTransform
+pop_transform
 
 # Cube2
 diffuse 0.2 0.5 0.7
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate 0.4 -0.7 -1.5
 rotate 0 1 0 -15
 scale 0.2 0.2 0.2
@@ -174,6 +174,6 @@ tri 6 11 7
 tri 10 8 9
 tri 10 9 11
 
-popTransform
+pop_transform
 
-popTransform
+pop_transform

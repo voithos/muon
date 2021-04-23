@@ -1,14 +1,14 @@
-# Path traced scene testing direct lighting only via mindepth and maxdepth.
+# Path traced scene testing direct lighting only via min_depth and max_depth.
 size 256 256
 integrator pathtracer
 camera 0.0001 1.7 3 0 1 0 0 1 0 45
-nexteventestimation on
-russianroulette on
-spp 64
+next_event_estimation on
+russian_roulette on
+pixel_samples 64
 
 # Min/max depth differ by 1 due to next event estimation.
-mindepth 0
-maxdepth 1
+min_depth 0
+max_depth 1
 
 brdf phong
 
@@ -44,61 +44,61 @@ quadLight -0.25 1.999 -0.25 0 0 0.5  0.5 0 0  30 26 21
 diffuse 0 0 0.8
 
 
-pushTransform
+push_transform
 
 # Red
-pushTransform
+push_transform
 translate -1 1 0
 rotate 0 1 0 90
 scale 1 1 1
 diffuse 0.8 0 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Green
-pushTransform
+push_transform
 translate 1 1 0
 rotate 0 1 0 -90
 scale 1 1 1
 diffuse 0 0.8 0
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Back
-pushTransform
+push_transform
 scale 1 1 1
 translate 0 1 -1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Top
-pushTransform
+push_transform
 translate 0 2 0
 rotate 1 0 0 90
 scale 1 1 1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Bottom
-pushTransform
+push_transform
 translate 0 0 0
 rotate 1 0 0 -90
 scale 1 1 1
 diffuse 0.8 0.8 0.8
 tri 0 1 2
 tri 0 2 3
-popTransform
+pop_transform
 
 # Cube
 diffuse 0.8 0.8 0.8
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate -0.3 0.6 -0.2
 rotate 0 1 0 23
 scale 0.3 0.6 0.2
@@ -115,18 +115,18 @@ tri 6 10 11
 tri 6 11 7
 tri 10 8 9
 tri 10 9 11
-popTransform
+pop_transform
 
 # Sphere
 diffuse 0.8 0.8 0.8
 specular 0.2 0.2 0.2
-pushTransform
+push_transform
 translate 0.3 0.3 0.2
 rotate 0 1 0 -20
 scale 0.3 0.3 0.3
 
 sphere 0 0 0 1
 
-popTransform
+pop_transform
 
-popTransform
+pop_transform

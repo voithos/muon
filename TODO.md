@@ -3,16 +3,15 @@
 ## Features
 - [ ] P0: Recursive refraction
 - [ ] P0: Depth of field
-- [ ] P0: Volumetrics
 - [ ] P0: Features from "Ray tracing in a weekend" series
   - [ ] Ray tracing in a weekend
   - [ ] Ray tracing: the next week
   - [ ] Ray tracing: the rest of your life
-- [ ] P1: Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
-- [ ] P1: GUI scene viewer (imgui?)
+- [ ] P1: Volumetrics
 - [ ] P1: Support for a common file format (obj, glTF, USD?)
+- [ ] P2: Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
+- [ ] P2: GUI scene viewer (imgui?)
 - [ ] P3: Other camera types, like orthographic
-- [ ] P3: More complex reflectance models, Torrance-Sparrow?
 - [ ] P3: Disney BRDF
 - [ ] P3: Measured BRDF support
 
