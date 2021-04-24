@@ -1,11 +1,42 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
+# Foreign rules tool.
+http_archive(
+    name = "rules_foreign_cc",
+    sha256 = "d54742ffbdc6924f222d2179f0e10e911c5c659c4ae74158e9fe827aad862ac6",
+    strip_prefix = "rules_foreign_cc-0.2.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.tar.gz",
+)
+
+load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
+
+# This sets up some common toolchains for building targets. For more details, please see
+# https://github.com/bazelbuild/rules_foreign_cc/tree/main/docs#rules_foreign_cc_dependencies
+rules_foreign_cc_dependencies()
+
+_ASSIMP_BUILD = """\
+load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
+
+package(default_visibility = ["//visibility:public"])
+
+filegroup(
+    name = "all_srcs",
+    srcs = glob(["**"]),
+)
+
+cmake(
+    name = "assimp",
+    lib_source = ":all_srcs",
+    out_shared_libs = ["libassimp.so.5"],
+)
+"""
+
 http_archive(
     name = "assimp",
-    build_file = "@//:BUILD.assimp",
-    sha256 = "60080d8ab4daaab309f65b3cffd99f19eb1af8d05623fff469b9b652818e286e",
-    strip_prefix = "assimp-4.0.1",
-    urls = ["https://github.com/assimp/assimp/archive/v4.0.1.tar.gz"],
+    build_file_content = _ASSIMP_BUILD,
+    sha256 = "11310ec1f2ad2cd46b95ba88faca8f7aaa1efe9aa12605c55e3de2b977b3dbfc",
+    strip_prefix = "assimp-5.0.1",
+    urls = ["https://github.com/assimp/assimp/archive/refs/tags/v5.0.1.tar.gz"],
 )
 
 http_archive(

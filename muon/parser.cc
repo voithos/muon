@@ -6,6 +6,8 @@
 #include <string>
 
 #include "absl/memory/memory.h"
+#include "assimp/Importer.hpp"
+#include "assimp/postprocess.h"
 #include "glog/logging.h"
 #include "muon/acceleration.h"
 #include "muon/brdf_type.h"
@@ -37,6 +39,8 @@ enum class ParseCmd {
   kImportanceSampling,
   // Camera commands.
   kCamera,
+  // External commands.
+  kLoad,
   // Geometry commands.
   kComputeVertexNormals,
   kSphere,
@@ -79,6 +83,7 @@ std::map<std::string, ParseCmd> command_map = {
     {"russian_roulette", ParseCmd::kRussianRoulette},
     {"importance_sampling", ParseCmd::kImportanceSampling},
     {"camera", ParseCmd::kCamera},
+    {"load", ParseCmd::kLoad},
     {"compute_vertex_normals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
     {"vertex", ParseCmd::kVertex},
@@ -418,6 +423,23 @@ SceneConfig Parser::Parse() {
             glm::vec3(upx, upy, upz), fov, ws.scene->width, ws.scene->height);
         // Preserve the identity matrix.
         ws.PushTransform();
+        break;
+      }
+        // External commands.
+      case ParseCmd::kLoad: {
+        std::string filename;
+        iss >> filename;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        // Attempt to load file.
+        Assimp::Importer importer;
+        const aiScene *scene = importer.ReadFile(
+            filename, aiProcessPreset_TargetRealtime_MaxQuality);
+        if (!scene) {
+          LOG(WARNING) << "Error during load: " << importer.GetErrorString();
+        }
         break;
       }
         // Geometry commands.

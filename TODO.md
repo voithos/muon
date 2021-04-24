@@ -9,7 +9,7 @@
   - [ ] Ray tracing: the rest of your life
 - [ ] P1: Volumetrics
 - [ ] P1: Support for a common file format (obj, glTF, USD?)
-- [ ] P2: Add denoiser (http://theinstructionlimit.com/unity-toy-path-tracer)
+- [ ] P2: Add denoiser (https://github.com/OpenImageDenoise/oidn)
 - [ ] P2: GUI scene viewer (imgui?)
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: Disney BRDF

@@ -56,6 +56,7 @@ cc_library(
         ":scene",
         ":strings",
         "//third_party/glm",
+        "@assimp//:assimp",
         "@com_github_google_glog//:glog",
         "@com_google_absl//absl/memory:memory",
     ],
