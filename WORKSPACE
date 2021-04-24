@@ -1,6 +1,14 @@
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 http_archive(
+    name = "assimp",
+    build_file = "@//:BUILD.assimp",
+    sha256 = "60080d8ab4daaab309f65b3cffd99f19eb1af8d05623fff469b9b652818e286e",
+    strip_prefix = "assimp-4.0.1",
+    urls = ["https://github.com/assimp/assimp/archive/v4.0.1.tar.gz"],
+)
+
+http_archive(
     name = "com_google_absl",
     sha256 = "aabf6c57e3834f8dc3873a927f37eaf69975d4b28117fc7427dfb1c661542a87",
     strip_prefix = "abseil-cpp-98eb410c93ad059f9bba1bf43f5bb916fc92a5ea",
