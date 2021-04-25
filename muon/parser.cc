@@ -1,13 +1,16 @@
 #include "muon/parser.h"
 
+#include <filesystem>
 #include <fstream>
 #include <map>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "absl/memory/memory.h"
 #include "assimp/Importer.hpp"
 #include "assimp/postprocess.h"
+#include "assimp/scene.h"
 #include "glog/logging.h"
 #include "muon/acceleration.h"
 #include "muon/brdf_type.h"
@@ -434,25 +437,90 @@ SceneConfig Parser::Parse() {
           break;
         }
         // Attempt to load file.
+        // TODO: Move this to a separate importer library.
+        VLOG(3) << "Loading external file: " << filename;
+        std::filesystem::path p = scene_file_;
         Assimp::Importer importer;
-        const aiScene *scene = importer.ReadFile(
-            filename, aiProcessPreset_TargetRealtime_MaxQuality);
+        const aiScene *scene =
+            importer.ReadFile(p.parent_path() / filename,
+                              aiProcessPreset_TargetRealtime_MaxQuality);
         if (!scene) {
           LOG(WARNING) << "Error during load: " << importer.GetErrorString();
+          break;
+        }
+        // TODO: Instead of just loading meshes without a transform, load the
+        // assimp scene's hierarchical nodes.
+        if (scene->HasMeshes()) {
+          VLOG(3) << "  Contains " << scene->mNumMeshes << " meshes";
+          for (int mesh_idx = 0; mesh_idx < scene->mNumMeshes; ++mesh_idx) {
+            const aiMesh *mesh = scene->mMeshes[mesh_idx];
+            if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
+              LOG(WARNING) << " Skipping mesh #" << mesh_idx << " ("
+                           << mesh->mName.C_Str()
+                           << "), which contains non-triangular primitives";
+              continue;
+            }
+            if (!mesh->HasFaces()) {
+              VLOG(3) << " Skipping mesh #" << mesh_idx << " ("
+                      << mesh->mName.C_Str() << "), which contains no faces";
+              continue;
+            }
+            VLOG(3) << "  Mesh #" << mesh_idx << " with " << mesh->mNumVertices
+                    << " vertices and " << mesh->mNumFaces << " faces";
+
+            // Create the vertices.
+            std::vector<std::reference_wrapper<Vertex>> vertex_refs;
+            const aiVector3D *vertices = mesh->mVertices;
+            for (int vertex_idx = 0; vertex_idx < mesh->mNumVertices;
+                 ++vertex_idx) {
+              Vertex &v = ws.scene->GenVertex();
+              v.pos.x = vertices[vertex_idx].x;
+              v.pos.y = vertices[vertex_idx].y;
+              v.pos.z = vertices[vertex_idx].z;
+              vertex_refs.push_back(v);
+            }
+
+            // Create the tris.
+            for (int tri_idx = 0; tri_idx < mesh->mNumFaces; ++tri_idx) {
+              const aiFace &face = mesh->mFaces[tri_idx];
+              if (face.mNumIndices != 3) {
+                LOG(WARNING) << "  Encountered a non-triangle face!";
+                break;
+              }
+              const unsigned int v0 = face.mIndices[0];
+              const unsigned int v1 = face.mIndices[1];
+              const unsigned int v2 = face.mIndices[2];
+
+              auto tri = absl::make_unique<Tri>(
+                  vertex_refs[v0].get(), vertex_refs[v1].get(),
+                  vertex_refs[v2].get(), ws.scene->compute_vertex_normals);
+              ws.UpdatePrimitive(*tri);
+              if (ws.scene->compute_vertex_normals) {
+                // Compute vertex normals additively. We will later need to
+                // normalize these.
+                auto normal = tri->Normal();
+                vertex_refs[v0].get().normal += normal;
+                vertex_refs[v1].get().normal += normal;
+                vertex_refs[v2].get().normal += normal;
+              }
+              ws.accel->AddPrimitive(std::move(tri));
+            }
+            VLOG(3) << "  Done with mesh";
+          }
         }
         break;
       }
         // Geometry commands.
       case ParseCmd::kComputeVertexNormals: {
-        std::string vertex_normals;
-        iss >> vertex_normals;
+        std::string compute_vertex_normals;
+        iss >> compute_vertex_normals;
         if (iss.fail()) {
           logBadLine(line);
           break;
         }
-        if (vertex_normals == "on") {
+        if (compute_vertex_normals == "on") {
           ws.scene->compute_vertex_normals = true;
-        } else if (vertex_normals == "off") {
+        } else if (compute_vertex_normals == "off") {
           ws.scene->compute_vertex_normals = false;
         } else {
           logBadLine(line);

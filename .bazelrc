@@ -1,2 +1,4 @@
 # Optimized mode is useful for quick renders.
 build --compilation_mode=opt
+# muon uses some c++17 features.
+build --cxxopt='-std=c++17'
