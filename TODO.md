@@ -8,7 +8,7 @@
   - [ ] Ray tracing: the next week
   - [ ] Ray tracing: the rest of your life
 - [ ] P1: Volumetrics
-- [ ] P1: Support for a common file format (obj, glTF, USD?)
+- [ ] P1: Textures
 - [ ] P2: Add denoiser (https://github.com/OpenImageDenoise/oidn)
 - [ ] P2: GUI scene viewer (imgui?)
 - [ ] P3: Other camera types, like orthographic
@@ -49,3 +49,4 @@
 - [x] P0: Allow separate rendering of direct and bounce light
 - [x] P1: Add multithreading support
 - [x] P0: MIS
+- [x] P1: Support for a common file format (obj, glTF, USD?)

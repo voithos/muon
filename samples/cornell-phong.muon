@@ -7,7 +7,7 @@ next_event_estimation mis
 russian_roulette on
 camera 0.0001 1 3 0 1 0 0 1 0 45
 pixel_samples 64
-output cornell.png
+output cornell-phong.png
 
 
 brdf phong

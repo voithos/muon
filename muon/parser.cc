@@ -47,6 +47,8 @@ enum class ParseCmd {
   // Geometry commands.
   kComputeVertexNormals,
   kSphere,
+  kStartMesh,
+  kEndMesh,
   kVertex,
   kVertexNormal,
   kTri,
@@ -89,6 +91,8 @@ std::map<std::string, ParseCmd> command_map = {
     {"load", ParseCmd::kLoad},
     {"compute_vertex_normals", ParseCmd::kComputeVertexNormals},
     {"sphere", ParseCmd::kSphere},
+    {"start_mesh", ParseCmd::kStartMesh},
+    {"end_mesh", ParseCmd::kEndMesh},
     {"vertex", ParseCmd::kVertex},
     {"vertex_normal", ParseCmd::kVertexNormal},
     {"tri", ParseCmd::kTri},
@@ -117,6 +121,7 @@ void ParsingWorkspace::MultiplyTransform(const glm::mat4 &m) {
 }
 
 void ParsingWorkspace::PushTransform() {
+  // TODO: Add checks for these transform methods.
   transforms_.push_back(transforms_.back());
   VLOG(3) << "  Transform stack size: " << transforms_.size();
   VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
@@ -481,6 +486,7 @@ SceneConfig Parser::Parse() {
                     << " vertices and " << mesh->mNumFaces << " faces";
 
             // Create the vertices.
+            // TODO: Switch this to use the actual mesh logic.
             std::vector<std::reference_wrapper<Vertex>> vertex_refs;
             const aiVector3D *vertices = mesh->mVertices;
             for (int vertex_idx = 0; vertex_idx < mesh->mNumVertices;
@@ -549,6 +555,14 @@ SceneConfig Parser::Parse() {
         auto sphere = absl::make_unique<Sphere>(glm::vec3(x, y, z), radius);
         ws.UpdatePrimitive(*sphere);
         ws.accel->AddPrimitive(std::move(sphere));
+        break;
+      }
+      case ParseCmd::kStartMesh: {
+        ws.scene->StartMesh();
+        break;
+      }
+      case ParseCmd::kEndMesh: {
+        ws.scene->EndMesh();
         break;
       }
       case ParseCmd::kVertex: {
@@ -811,11 +825,15 @@ SceneConfig Parser::Parse() {
     }
   }
 
+  // TODO: Maybe we should do this unconditionally, since we need normals to be
+  // unit length anyway?
   if (ws.scene->compute_vertex_normals) {
-    // Normalize vertex normals.
-    for (auto &vertex : ws.scene->vertices()) {
-      if (glm::length2(vertex.normal) > 0.0f) {
-        vertex.normal = glm::normalize(vertex.normal);
+    // Normalize vertex normals for all meshes.
+    for (auto &mesh : ws.scene->meshes()) {
+      for (auto &vertex : mesh) {
+        if (glm::length2(vertex.normal) > 0.0f) {
+          vertex.normal = glm::normalize(vertex.normal);
+        }
       }
     }
   }

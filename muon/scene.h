@@ -53,7 +53,10 @@ class Scene {
   // All tracing starts at this object.
   std::unique_ptr<acceleration::Structure> root;
 
+  // Adds a vertex to the current mesh.
   void AddVertex(Vertex vert);
+
+  // Adds a vertex to the set of "internal", generated vertices.
   Vertex &GenVertex();
 
   using Lights = std::vector<std::unique_ptr<Light>>;
@@ -61,12 +64,27 @@ class Scene {
   // Adds a Light to the scene.
   void AddLight(std::unique_ptr<Light> light);
 
-  inline std::vector<Vertex> &vertices() { return vertices_; }
+  // Starts a new mesh and switches context to it.
+  void StartMesh();
 
+  // Ends the current mesh and defaults back to the global one.
+  void EndMesh();
+
+  // Returns the set of all meshes.
+  inline std::vector<std::vector<Vertex>> &meshes() { return meshes_; }
+
+  // Returns the vertices for the current mesh.
+  inline std::vector<Vertex> &vertices() { return meshes_[cur_mesh_idx_]; }
+
+  // Returns the set of all lights.
   inline Lights &lights() { return lights_; }
 
  private:
-  std::vector<Vertex> vertices_;
+  // The set of meshes comprising the current scene. Initially just a single
+  // global mesh.
+  std::vector<std::vector<Vertex>> meshes_ = {{}};
+  int cur_mesh_idx_ = 0;
+
   // Vertices that are generated (for e.g. things like lights), as opposed to
   // specified in the scene file.
   // TODO: Is there a better way to do this?
