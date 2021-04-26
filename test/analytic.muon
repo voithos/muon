@@ -4,7 +4,6 @@ integrator analyticdirect
 
 camera 1 0 -4  0 0 0  0 1 0  45
 
-maxverts 8
 
 # Create a plane.
 vertex -10 -1 -10

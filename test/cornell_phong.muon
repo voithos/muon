@@ -8,7 +8,6 @@ pixel_samples 64
 
 brdf phong
 
-maxverts 12
 # Planar face
 vertex -1 +1 0
 vertex -1 -1 0

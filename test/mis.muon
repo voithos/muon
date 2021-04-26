@@ -10,7 +10,6 @@ pixel_samples 64
 
 max_depth 1
 
-maxverts 28
 
 vertex -10 -4.14615 -10
 vertex -10 -4.14615 10

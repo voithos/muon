@@ -7,7 +7,6 @@ next_event_estimation on
 
 camera 0.0001 0 -4  0 0 0  0 1 0  45
 
-maxverts 8
 
 # Create a plane.
 vertex -10 -1 -10

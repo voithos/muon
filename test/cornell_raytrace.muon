@@ -5,7 +5,6 @@ camera 0 1 1 0 0 -1 0 1 0 45
 max_depth 5
 
 
-maxverts 12
 # Planar face
 vertex -1 +1 0
 vertex -1 -1 0
