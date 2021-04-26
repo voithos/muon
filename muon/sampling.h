@@ -22,6 +22,11 @@ struct Tile {
   int height;
 };
 
+// Returns the recommended number of tiles based on width, height, and the
+// number of pixel samples. Having a larger number of tiles allows better use
+// of parallelism, but at the cost of some overhead.
+int NumTiles(int width, int height, int pixel_samples, int parallelism);
+
 // Generates sub-tiles of an image based on a number of desired tiles.
 std::vector<Tile> TileImage(int width, int height, int num_tiles);
 

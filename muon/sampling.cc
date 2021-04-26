@@ -6,9 +6,29 @@
 
 namespace muon {
 
+int NumTiles(int width, int height, int pixel_samples, int parallelism) {
+  uint64_t total_samples =
+      width * height * static_cast<uint64_t>(pixel_samples);
+  // Use an arbitrary tile heuristic consisting of a small number of samples
+  // over a thin slice of an image. We use this along with the total samples to
+  // determine the number of tiles.
+  constexpr uint64_t canonical_divisor = 500 * 50 * 2;
+  int samples_heuristic = total_samples / canonical_divisor;
+  int parallelism_heuristic = parallelism * 3;
+  // Choose the larger of the two heuristics (the parallelism heuristic becomes
+  // useful for simple or low-sample integrations that we still want to make
+  // use of multiple threads for). Don't return more than `height` tiles, due
+  // to the current tiling strategy, which slices the image by height.
+  int num_tiles =
+      std::min(std::max(samples_heuristic, parallelism_heuristic), height);
+  VLOG(2) << "Using num tiles: " << num_tiles;
+  return num_tiles;
+}
+
 std::vector<Tile> TileImage(int width, int height, int num_tiles) {
   // For now, we just split the image vertically into thin "tiles".
-  // In the future, this could do something more interesting / heuristic.
+  // TODO: Split the image into better tiles, to work better with images with
+  // little height.
   std::vector<Tile> tiles;
   tiles.reserve(num_tiles);
 

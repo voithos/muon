@@ -28,11 +28,12 @@ void Renderer::Render() const {
   Film film(sc.scene->width, sc.scene->height, sc.scene->pixel_samples,
             sc.scene->gamma, output);
 
-  // TODO: Create more tiles than threads, so that the threads can better share
-  // the workload in case certain parts of the image are more computationally
+  // Create more tiles than threads, so that the threads can better share the
+  // workload in case certain parts of the image are more computationally
   // intense.
-  TileQueue tiles(TileImage(sc.scene->width, sc.scene->height,
-                            /*num_tiles=*/options_.parallelism));
+  int num_tiles = NumTiles(sc.scene->width, sc.scene->height,
+                           sc.scene->pixel_samples, options_.parallelism);
+  TileQueue tiles(TileImage(sc.scene->width, sc.scene->height, num_tiles));
 
   // Launch render threads.
   std::vector<std::thread> threads;
@@ -53,8 +54,8 @@ void Renderer::Render() const {
         while (sampler.NextSample(x, y)) {
           float progress = sampler.Progress();
           int percent = int(progress * 100);
-          LOG_IF(INFO, percent > last_percent)
-              << "Tile #" << tile->idx << " completion: " << percent << " %";
+          // LOG_IF(INFO, percent > last_percent)
+          // << "Tile #" << tile->idx << " completion: " << percent << " %";
           last_percent = percent;
 
           Ray r = sc.scene->camera->CastRay(x, y);

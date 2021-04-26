@@ -450,6 +450,18 @@ SceneConfig Parser::Parse() {
         }
         // TODO: Instead of just loading meshes without a transform, load the
         // assimp scene's hierarchical nodes.
+        if (scene->mRootNode != nullptr) {
+          VLOG(3) << "Root node contains " << scene->mRootNode->mNumChildren
+                  << " children";
+          auto &trans = scene->mRootNode->mTransformation;
+          // clang-format off
+          VLOG(3) << "Root node transform: \n"
+            << trans.a1 << " " << trans.a2 << " " << trans.a3 << " " << trans.a4 << "\n"
+            << trans.b1 << " " << trans.b2 << " " << trans.b3 << " " << trans.b4 << "\n"
+            << trans.c1 << " " << trans.c2 << " " << trans.c3 << " " << trans.c4 << "\n"
+            << trans.d1 << " " << trans.d2 << " " << trans.d3 << " " << trans.d4 << "\n";
+          // clang-format on
+        }
         if (scene->HasMeshes()) {
           VLOG(3) << "  Contains " << scene->mNumMeshes << " meshes";
           for (int mesh_idx = 0; mesh_idx < scene->mNumMeshes; ++mesh_idx) {
@@ -505,7 +517,6 @@ SceneConfig Parser::Parse() {
               }
               ws.accel->AddPrimitive(std::move(tri));
             }
-            VLOG(3) << "  Done with mesh";
           }
         }
         break;
