@@ -42,8 +42,15 @@ class ParsingWorkspace {
   void UpdatePrimitive(Primitive &obj);
 
  private:
+  void UpdateCachedTransforms();
+
   // Transform stack.
-  std::vector<glm::mat4> transforms_ = {glm::mat4(1.0f)};
+  std::vector<std::shared_ptr<glm::mat4>> transforms_ = {
+      std::make_shared<glm::mat4>(1.0f)};
+  // Cached transforms.
+  std::shared_ptr<glm::mat4> inv_transform_ = std::make_shared<glm::mat4>(1.0f);
+  std::shared_ptr<glm::mat4> inv_transpose_transform_ =
+      std::make_shared<glm::mat4>(1.0f);
 };
 
 // Represents a configuration of a scene along with its supporting structures.

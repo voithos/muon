@@ -23,12 +23,12 @@ Bounds Primitive::WorldBounds() const {
   // nor does it yield the tightest axis-aligned world bounds (e.g. for things
   // like triangles). Primitive subclasses can override this to compute more
   // efficient bounding boxes.
-  return b.Transform(transform);
+  return b.Transform(*transform);
 }
 
 absl::optional<Intersection> Primitive::Intersect(const Ray &ray) {
   // Inverse transform the ray to make the intersection test simpler.
-  Ray t_ray = ray.Transform(inv_transform);
+  Ray t_ray = ray.Transform(*inv_transform);
 
   absl::optional<Intersection> intersection = IntersectObjectSpace(t_ray);
   if (!intersection) {
@@ -36,9 +36,9 @@ absl::optional<Intersection> Primitive::Intersect(const Ray &ray) {
   }
 
   // Bring the intersection point and normal back to a transformed state.
-  intersection->pos = TransformPosition(transform, intersection->pos);
+  intersection->pos = TransformPosition(*transform, intersection->pos);
   intersection->normal =
-      TransformDirection(inv_transpose_transform, intersection->normal);
+      TransformDirection(*inv_transpose_transform, intersection->normal);
   // Compute the world distance now that we have the world intersection point.
   intersection->distance = glm::length(intersection->pos - ray.origin());
 
@@ -185,9 +185,9 @@ Bounds Tri::ObjectBounds() const {
 Bounds Tri::WorldBounds() const {
   // We explicitly pre-transform the vertices of the triangle in order to
   // obtain a tighter axis-aligned bounding box.
-  const glm::vec3 &a = TransformPosition(transform, v0_.pos);
-  const glm::vec3 &b = TransformPosition(transform, v1_.pos);
-  const glm::vec3 &c = TransformPosition(transform, v2_.pos);
+  const glm::vec3 &a = TransformPosition(*transform, v0_.pos);
+  const glm::vec3 &b = TransformPosition(*transform, v1_.pos);
+  const glm::vec3 &c = TransformPosition(*transform, v2_.pos);
   Bounds bounds(a, b);
   return Bounds::Union(bounds, c);
 }

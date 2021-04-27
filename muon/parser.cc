@@ -116,19 +116,22 @@ std::map<std::string, ParseCmd> command_map = {
 };
 
 void ParsingWorkspace::MultiplyTransform(const glm::mat4 &m) {
-  transforms_.back() = transforms_.back() * m;
-  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+  transforms_.back() = std::make_shared<glm::mat4>(*transforms_.back() * m);
+  UpdateCachedTransforms();
+  VLOG(3) << "  Current transform: \n" << pprint(*transforms_.back());
 }
 
 void ParsingWorkspace::PushTransform() {
   // TODO: Add checks for these transform methods.
   transforms_.push_back(transforms_.back());
+  UpdateCachedTransforms();
   VLOG(3) << "  Transform stack size: " << transforms_.size();
-  VLOG(3) << "  Current transform: \n" << pprint(transforms_.back());
+  VLOG(3) << "  Current transform: \n" << pprint(*transforms_.back());
 }
 
 void ParsingWorkspace::PopTransform() {
   transforms_.pop_back();
+  UpdateCachedTransforms();
   VLOG(3) << "  Transform stack size: " << transforms_.size();
 }
 
@@ -141,8 +144,15 @@ void ParsingWorkspace::UpdatePrimitive(Primitive &obj) {
   obj.material = material;
 
   obj.transform = transforms_.back();
-  obj.inv_transform = glm::inverse(obj.transform);
-  obj.inv_transpose_transform = glm::transpose(obj.inv_transform);
+  obj.inv_transform = inv_transform_;
+  obj.inv_transpose_transform = inv_transpose_transform_;
+}
+
+void ParsingWorkspace::UpdateCachedTransforms() {
+  inv_transform_ =
+      std::make_shared<glm::mat4>(glm::inverse(*transforms_.back()));
+  inv_transpose_transform_ =
+      std::make_shared<glm::mat4>(glm::transpose(*inv_transform_));
 }
 
 void logBadLine(std::string line) {
@@ -716,7 +726,7 @@ SceneConfig Parser::Parse() {
         auto material = std::make_shared<Material>();
         material->SetBRDF(CreateBRDF(defaults::kBRDF));
         material->emission = color;  // Emit based on color.
-        glm::mat4 identity(1.0f);
+        std::shared_ptr<glm::mat4> identity = std::make_shared<glm::mat4>(1.0f);
         tri0->material = material;
         tri0->light = light.get();
         tri0->transform = identity;

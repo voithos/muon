@@ -48,11 +48,9 @@ class Primitive : public Intersectable {
   // point.
   virtual absl::optional<Intersection> IntersectObjectSpace(const Ray &ray) = 0;
 
-  // TODO: Store references to transforms in order to avoid per-primitive
-  // duplication.
-  glm::mat4 transform;
-  glm::mat4 inv_transform;
-  glm::mat4 inv_transpose_transform;
+  std::shared_ptr<glm::mat4> transform;
+  std::shared_ptr<glm::mat4> inv_transform;
+  std::shared_ptr<glm::mat4> inv_transpose_transform;
 
   std::shared_ptr<Material> material;
   // TODO: This is a hack to get MIS working; ideally there'd be less
