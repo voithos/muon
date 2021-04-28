@@ -70,6 +70,11 @@ absl::optional<Tile> TileQueue::TryDequeue() {
   return t;
 }
 
+size_t TileQueue::size() const {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return tiles_.size();
+}
+
 bool Sampler::NextSample(float &x, float &y) {
   if (cur_tile_y_ == tile_.height) {
     // If our y index is out of bounds, then we're done.

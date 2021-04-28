@@ -37,9 +37,11 @@ class TileQueue {
 
   absl::optional<Tile> TryDequeue();
 
+  size_t size() const;
+
  private:
   std::vector<Tile> tiles_;
-  std::mutex mutex_;
+  mutable std::mutex mutex_;
 };
 
 // A sub-pixel coordinate sampler for sampling the camera plane.

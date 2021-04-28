@@ -54,8 +54,6 @@ void Renderer::Render() const {
         while (sampler.NextSample(x, y)) {
           float progress = sampler.Progress();
           int percent = int(progress * 100);
-          // LOG_IF(INFO, percent > last_percent)
-          // << "Tile #" << tile->idx << " completion: " << percent << " %";
           last_percent = percent;
 
           Ray r = sc.scene->camera->CastRay(x, y);
@@ -65,6 +63,9 @@ void Renderer::Render() const {
           int px_y = y;
           film.SetPixel(px_x, px_y, c);
         }
+
+        VLOG(2) << "Tile #" << tile->idx
+                << " complete; remaining tiles: " << tiles.size();
       }
 
       stats.AddTraceStats(integrator->trace_stats());
