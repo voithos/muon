@@ -79,6 +79,7 @@ void Renderer::Render() const {
   }
   stats.Stop();
 
+  VLOG(2) << "Render threads done; writing output";
   film.WriteOutput();
 
   if (options_.show_stats) {

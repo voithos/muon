@@ -61,6 +61,19 @@ class NormalsTracer : public Integrator {
                           const int depth) override;
 };
 
+// A debug integrator that renders the albedo of the scene.
+class AlbedoTracer : public Integrator {
+ public:
+  AlbedoTracer(const AlbedoTracer &other) : Integrator(other) {}
+  explicit AlbedoTracer(Scene &scene) : Integrator(scene) {}
+  virtual std::unique_ptr<Integrator> Clone() const override;
+
+ protected:
+  virtual glm::vec3 Shade(const Intersection &hit, const Ray &ray,
+                          const glm::vec3 &throughput,
+                          const int depth) override;
+};
+
 // A debug integrator that renders the depth of the scene.
 class DepthTracer : public Integrator {
  public:

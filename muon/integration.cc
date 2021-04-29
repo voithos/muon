@@ -54,6 +54,15 @@ std::unique_ptr<Integrator> NormalsTracer::Clone() const {
   return absl::make_unique<NormalsTracer>(*this);
 }
 
+glm::vec3 AlbedoTracer::Shade(const Intersection &hit, const Ray &ray,
+                              const glm::vec3 &throughput, const int depth) {
+  return hit.obj->material->diffuse + hit.obj->material->specular;
+}
+
+std::unique_ptr<Integrator> AlbedoTracer::Clone() const {
+  return absl::make_unique<AlbedoTracer>(*this);
+}
+
 glm::vec3 DepthTracer::Shade(const Intersection &hit, const Ray &ray,
                              const glm::vec3 &throughput, const int depth) {
   // Map distance from [0, inf] to [1, 0].

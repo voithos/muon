@@ -31,6 +31,7 @@
 ## Bugs
 - [ ] P1: Some parts of the lighting calculations don't take orientation into
       account (so lights illuminate things behind them)
+- [ ] P1: Roughness cannot be set to 0 (or 1?) without black results
 
 ## DONE
 - [x] Add surface area heuristic to BVH

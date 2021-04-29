@@ -321,6 +321,8 @@ SceneConfig Parser::Parse() {
         }
         if (type == "normals") {
           ws.integrator = absl::make_unique<NormalsTracer>(*ws.scene);
+        } else if (type == "albedo") {
+          ws.integrator = absl::make_unique<AlbedoTracer>(*ws.scene);
         } else if (type == "depth") {
           ws.integrator = absl::make_unique<DepthTracer>(*ws.scene);
         } else if (type == "raytracer") {
@@ -482,9 +484,11 @@ SceneConfig Parser::Parse() {
           for (int mesh_idx = 0; mesh_idx < scene->mNumMeshes; ++mesh_idx) {
             const aiMesh *mesh = scene->mMeshes[mesh_idx];
             if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
-              LOG(WARNING) << " Skipping mesh #" << mesh_idx << " ("
-                           << mesh->mName.C_Str()
-                           << "), which contains non-triangular primitives";
+              LOG(WARNING)
+                  << " Skipping mesh #" << mesh_idx
+                  << " (name: " << mesh->mName.C_Str()
+                  << "), which contains non-triangular primitive types: "
+                  << mesh->mPrimitiveTypes;
               continue;
             }
             if (!mesh->HasFaces()) {
