@@ -1,0 +1,386 @@
+# "Salle de bain" scene, by nacimus, from https://benedikt-bitterli.me/resources/.
+# Adapted to the muon file format. Note, the scene models must be downloaded
+# separately, as they are not included in this repo due to size.
+
+film_size 640 360
+gamma 2.2
+integrator albedo
+importance_sampling brdf
+next_event_estimation mis
+russian_roulette on
+max_depth -1
+
+pixel_samples 32
+output bathroom2.png
+
+camera    4.443147659301758 16.934431076049805 49.91023254394531       -2.5734899044036865 9.991769790649414 -10.588199615478516    0 1 0  35.983398
+
+quad_light  -6.163 15.8326 -22.7775     0 10.6936 0       9.02503 0 0     75 65 55
+
+# "RoughGlass" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.1
+load models/Mesh029.ply
+
+# "Plastic" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.578596 0.578596 0.578596
+roughness 0.001
+load models/Mesh038.ply
+
+# "Label" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh036.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh028.ply
+load models/Mesh035.ply
+load models/Mesh016.ply
+
+# "Towel" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh026.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh021.ply
+
+# "BlackWoodLacquer" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.050000 0.050000 0.050000
+roughness 0.1
+load models/Mesh023.ply
+load models/Mesh020.ply
+load models/Mesh032.ply
+load models/Mesh019.ply
+load models/Mesh033.ply
+load models/Mesh056.ply
+
+# "Wall" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh018.ply
+load models/Mesh030.ply
+
+# "BlackWoodLacquer" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.050000 0.050000 0.050000
+roughness 0.1
+load models/Mesh051.ply
+
+# "Wall" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh043.ply
+load models/Mesh015.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh059.ply
+load models/Mesh039.ply
+
+# "Wall" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh027.ply
+load models/Mesh055.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh024.ply
+load models/Mesh031.ply
+load models/Mesh022.ply
+load models/Mesh040.ply
+load models/Mesh041.ply
+
+# "Mirror" 
+brdf ggx
+roughness 0.0001
+diffuse 0 0 0
+specular 0.9 0.9 0.9
+load models/Mesh017.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh042.ply
+
+# "Towel" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh044.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh047.ply
+
+# "DarkPlastic" 
+brdf lambertian
+diffuse 0.05 0.05 0.05
+load models/Mesh034.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh049.ply
+load models/Mesh025.ply
+load models/Mesh037.ply
+
+# "Towel" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh050.ply
+load models/Mesh052.ply
+
+# "Bin" 
+brdf ggx
+roughness 0.0001
+diffuse 0 0 0
+specular 0.9 0.9 0.9
+load models/Mesh054.ply
+
+# "DarkPlastic" 
+brdf lambertian
+diffuse 0.05 0.05 0.05
+load models/Mesh053.ply
+
+# "StainlessRough" 
+brdf ggx
+diffuse 0.040000 0.040000 0.040000
+specular 0.88 0.87 0.86
+roughness 0.01
+load models/Mesh057.ply
+load models/Mesh058.ply
+load models/Mesh060.ply
+load models/Mesh014.ply
+load models/Mesh013.ply
+load models/Mesh012.ply
+
+# "Ceramic" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.578596 0.578596 0.578596
+roughness 0.001
+load models/Mesh011.ply
+load models/Mesh010.ply
+
+# "Wall" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh009.ply
+load models/Mesh007.ply
+
+# "Wood" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.65 0.43 0.22
+roughness 0.1
+load models/Mesh006.ply
+load models/Mesh005.ply
+
+# "Ceramic" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.578596 0.578596 0.578596
+roughness 0.001
+load models/Mesh004.ply
+
+# "DarkBorder" 
+brdf lambertian
+diffuse 0.05 0.05 0.05
+load models/Mesh003.ply
+
+# "Wood" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.65 0.43 0.22
+roughness 0.1
+load models/Mesh002.ply
+
+# "WoodFloor" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.57 0.44 0.34
+roughness 0.1
+load models/Mesh001.ply
+
+# "WallRight" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596 ] 
+load models/Mesh008.ply
+
+# "Wall" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh046.ply
+
+# "Mirror" 
+brdf ggx
+roughness 0.0001
+diffuse 0 0 0
+specular 0.9 0.9 0.9
+load models/Mesh045.ply
+
+# "Trims" 
+brdf lambertian
+diffuse 0.578596 0.578596 0.578596
+load models/Mesh000.ply
+
+# "Wood" 
+brdf ggx
+specular 0.040000 0.040000 0.040000
+diffuse 0.65 0.43 0.22
+roughness 0.1
+load models/Mesh048_fixed.ply
+
+
+## Lambertian meshes
+brdf lambertian
+specular 0 0 0
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -18.3652 -0.677349 51.9018
+vertex 17.1895 -0.677349 51.9018
+vertex 17.1895 34.8773 51.9018
+vertex -18.3652 34.8773 51.9018 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.000000 0.000000 0.000000 
+
+start_mesh
+vertex -20.143 -2.4551 52.9
+vertex 18.9672 -2.4551 52.9
+vertex 18.9672 36.6551 52.9
+vertex -20.143 36.6551 52.9 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -20.143 35.9 -22.7325
+vertex 18.9672 35.9 -22.7325
+vertex 18.9672 35.9 53.5325
+vertex -20.143 35.9 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -19.3879 -2.1551 -22.7325
+vertex -19.3879 36.9551 -22.7325
+vertex -19.3879 36.9551 53.5325
+vertex -19.3879 -2.1551 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex 18.138 -2.1551 -22.7326
+vertex 18.138 36.9551 -22.7326
+vertex 18.138 36.9551 53.5324
+vertex 18.138 -2.1551 53.5324 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -20.143 -1.3 -22.7325
+vertex 18.9672 -1.3 -22.7325
+vertex 18.9672 -1.3 53.5325
+vertex -20.143 -1.3 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -20.143 -0.0785079 -22.7325
+vertex 18.9672 -0.0785138 -22.7325
+vertex 18.9672 -0.0785103 53.5325
+vertex -20.143 -0.0785044 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -17.5036 -2.1551 -22.7325
+vertex -17.5036 36.9551 -22.7325
+vertex -17.5036 36.9551 53.5325
+vertex -17.5036 -2.1551 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex 17.1973 -2.1551 -22.7326
+vertex 17.1973 36.9551 -22.7326
+vertex 17.1973 36.9551 53.5324
+vertex 17.1973 -2.1551 53.5324 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
+
+diffuse 0.99 0.99 0.99
+
+start_mesh
+vertex -20.143 34.1541 -22.7325
+vertex 18.9672 34.1541 -22.7325
+vertex 18.9672 34.1541 53.5325
+vertex -20.143 34.1541 53.5325 
+
+tri 0 1 2
+tri 0 2 3 
+end_mesh
