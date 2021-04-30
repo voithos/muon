@@ -67,15 +67,9 @@ $ bazel test //test:all
 
 ![cornell lambertian](samples/cornell-lambertian.png)
 
----
-
 ![hexahedron](samples/hexahedron.png)
 
----
-
 ![cornell david](samples/cornell-david.png)
-
----
 
 ![dragon](samples/dragon.png)
 
