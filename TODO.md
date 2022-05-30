@@ -10,10 +10,10 @@
 - [ ] P1: Volumetrics
 - [ ] P1: Textures
 - [ ] P2: Add denoiser (https://github.com/OpenImageDenoise/oidn)
-- [ ] P2: GUI scene viewer (imgui?)
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: Disney BRDF
-- [ ] P3: Measured BRDF support
+- [ ] P3: GUI scene viewer (imgui?)
+- [ ] P3: Allow configuration of random seed
 
 ## Scenes
 - [ ] Utah teapot
@@ -24,9 +24,9 @@
 - [ ] SIMD support?
 - [ ] P3: Adaptive sampling
 - [ ] P3: Bidirectional path tracing
-- [ ] P4: Metropolis light transport
 - [ ] P3: Include an end bound on ray intersections to avoid costly intersection
       tests that are further away than already-known intersections
+- [ ] P4: Metropolis light transport
 
 ## Bugs
 - [ ] P1: Some parts of the lighting calculations don't take orientation into

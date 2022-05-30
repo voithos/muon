@@ -481,7 +481,8 @@ SceneConfig Parser::Parse() {
         }
         if (scene->HasMeshes()) {
           VLOG(3) << "  Contains " << scene->mNumMeshes << " meshes";
-          for (int mesh_idx = 0; mesh_idx < scene->mNumMeshes; ++mesh_idx) {
+          for (unsigned int mesh_idx = 0; mesh_idx < scene->mNumMeshes;
+               ++mesh_idx) {
             const aiMesh *mesh = scene->mMeshes[mesh_idx];
             if (mesh->mPrimitiveTypes != aiPrimitiveType_TRIANGLE) {
               LOG(WARNING)
@@ -503,7 +504,7 @@ SceneConfig Parser::Parse() {
             // TODO: Switch this to use the actual mesh logic.
             std::vector<std::reference_wrapper<Vertex>> vertex_refs;
             const aiVector3D *vertices = mesh->mVertices;
-            for (int vertex_idx = 0; vertex_idx < mesh->mNumVertices;
+            for (unsigned int vertex_idx = 0; vertex_idx < mesh->mNumVertices;
                  ++vertex_idx) {
               Vertex &v = ws.scene->GenVertex();
               v.pos.x = vertices[vertex_idx].x;
@@ -513,7 +514,8 @@ SceneConfig Parser::Parse() {
             }
 
             // Create the tris.
-            for (int tri_idx = 0; tri_idx < mesh->mNumFaces; ++tri_idx) {
+            for (unsigned int tri_idx = 0; tri_idx < mesh->mNumFaces;
+                 ++tri_idx) {
               const aiFace &face = mesh->mFaces[tri_idx];
               if (face.mNumIndices != 3) {
                 LOG(WARNING) << "  Encountered a non-triangle face!";

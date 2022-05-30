@@ -241,6 +241,7 @@ constexpr size_t kNumSAHBuckets = 12;
 std::unique_ptr<BVHNode> BVH::Build(
     size_t start, size_t end,
     std::vector<PrimitiveInfo> &primitive_info) const {
+  assert(start >= 0 && end >= 0);
   size_t num_primitives = end - start;
   // Check for base case.
   if (num_primitives == 1) {
@@ -266,7 +267,7 @@ std::unique_ptr<BVHNode> BVH::Build(
   int axis = centroid_bounds.MaxAxis();
 
   // Now partition the primitives based on the configured partition strategy.
-  size_t split;
+  size_t split = -1;  // Default to an invalid split point.
   auto start_iter = std::next(primitive_info.begin(), start);
   auto end_iter = std::next(primitive_info.begin(), end);
 

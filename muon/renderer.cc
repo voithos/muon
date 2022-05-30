@@ -37,7 +37,7 @@ void Renderer::Render() const {
 
   // Launch render threads.
   std::vector<std::thread> threads;
-  for (int thread_i = 0; thread_i < options_.parallelism; ++thread_i) {
+  for (uint32_t thread_i = 0; thread_i < options_.parallelism; ++thread_i) {
     std::thread t([&sc, &tiles, &film, &stats] {
       // Clone the uninitialized integrator for this thread, and initialize it.
       std::unique_ptr<Integrator> integrator = sc.integrator_prototype->Clone();
@@ -47,14 +47,10 @@ void Renderer::Render() const {
       while ((tile = tiles.TryDequeue())) {
         Sampler sampler(tile.value(), sc.scene->pixel_samples);
 
-        // TODO: Refactor progress into separate class.
-        int last_percent = 0;
-
         float x, y;
         while (sampler.NextSample(x, y)) {
-          float progress = sampler.Progress();
-          int percent = int(progress * 100);
-          last_percent = percent;
+          // TODO: Feed progress into a progress system.
+          // float progress = sampler.Progress();
 
           Ray r = sc.scene->camera->CastRay(x, y);
           glm::vec3 c = integrator->Trace(r);
