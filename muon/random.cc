@@ -6,6 +6,13 @@
 
 namespace muon {
 
+unsigned int SeedGenerator::Next() { return gen_(); }
+
+unsigned int SeedGenerator::GenerateTrueRandomSeed() {
+  std::random_device rd_;
+  return rd_();
+}
+
 float UniformRandom::Next() {
   float r = rand_(gen_);
   if (r == 1.0f) {

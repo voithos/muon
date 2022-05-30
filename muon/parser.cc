@@ -17,6 +17,7 @@
 #include "muon/defaults.h"
 #include "muon/lighting.h"
 #include "muon/objects.h"
+#include "muon/random.h"
 #include "muon/strings.h"
 #include "third_party/glm/glm.hpp"
 #include "third_party/glm/gtx/norm.hpp"
@@ -27,6 +28,7 @@ namespace muon {
 enum class ParseCmd {
   kIgnored = 0,  // Ignored.
   // General commands.
+  kRandomSeed,
   kFilmSize,
   kMinDepth,
   kMaxDepth,
@@ -75,6 +77,7 @@ enum class ParseCmd {
 };
 
 std::map<std::string, ParseCmd> command_map = {
+    {"random_seed", ParseCmd::kRandomSeed},
     {"film_size", ParseCmd::kFilmSize},
     {"min_depth", ParseCmd::kMinDepth},
     {"max_depth", ParseCmd::kMaxDepth},
@@ -175,6 +178,9 @@ std::unique_ptr<brdf::BRDF> CreateBRDF(BRDFType type) {
 }
 
 void Parser::ApplyDefaults(ParsingWorkspace &ws) const {
+  ws.seedgen =
+      absl::make_unique<SeedGenerator>(SeedGenerator::GenerateTrueRandomSeed());
+
   ws.material = std::make_shared<Material>();
   ws.material->ambient = defaults::kAmbient;
   ws.material->diffuse = defaults::kDiffuse;
@@ -258,6 +264,15 @@ SceneConfig Parser::Parse() {
         break;
       }
         // General commands.
+      case ParseCmd::kRandomSeed: {
+        unsigned int seed;
+        iss >> seed;
+        if (iss.fail()) {
+          logBadLine(line);
+          break;
+        }
+        ws.seedgen = absl::make_unique<SeedGenerator>(seed);
+      }
       case ParseCmd::kFilmSize: {
         int width, height;
         iss >> width >> height;
@@ -330,7 +345,8 @@ SceneConfig Parser::Parse() {
         } else if (type == "analyticdirect") {
           ws.integrator = absl::make_unique<AnalyticDirect>(*ws.scene);
         } else if (type == "pathtracer") {
-          ws.integrator = absl::make_unique<PathTracer>(*ws.scene);
+          ws.integrator =
+              absl::make_unique<PathTracer>(*ws.scene, ws.seedgen->Next());
         } else {
           logBadLine(line);
           break;
@@ -855,6 +871,7 @@ SceneConfig Parser::Parse() {
   }
 
   ws.accel->Init();
+  ws.scene->seedgen = std::move(ws.seedgen);
   ws.scene->root = std::move(ws.accel);
   return {
       .scene = std::move(ws.scene),

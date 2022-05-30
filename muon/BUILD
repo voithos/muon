@@ -53,6 +53,7 @@ cc_library(
         ":lighting",
         ":materials",
         ":options",
+        ":random",
         ":scene",
         ":strings",
         "//third_party/glm",

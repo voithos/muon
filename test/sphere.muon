@@ -1,4 +1,5 @@
 # A test that uses light stratification with next event estimation.
+random_seed 6541876
 film_size 256 256
 integrator pathtracer
 light_samples 25

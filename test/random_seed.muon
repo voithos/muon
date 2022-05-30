@@ -1,0 +1,82 @@
+# GGX scene used to test the random seed behavior.
+random_seed 9135481
+
+film_size 640 140
+integrator pathtracer
+gamma 2.2
+importance_sampling brdf
+next_event_estimation on
+russian_roulette on
+camera  0 1 8  0 -3 2.5  0 1 0  30
+pixel_samples 64
+
+max_depth -1
+
+
+vertex -20 -4 -2
+vertex -20 -4 20
+vertex 20 -4 -2
+vertex 20 -4 20
+
+vertex -20 -4 -2
+vertex -20 20 -2
+vertex 20 -4 -2
+vertex 20 20 -2
+
+
+# Default material settings
+brdf phong
+ambient 0 0 0
+specular 0 0 0
+shininess 30
+emission 0 0 0
+diffuse 1 1 1
+roughness 1
+
+# Floor
+tri 0 1 2
+tri 3 2 1
+
+# Back wall
+tri 6 5 4
+tri 5 6 7
+
+# Sphere default material settings
+brdf ggx
+diffuse 0.5 0.5 0.5
+specular 0.5 0.5 0.5
+roughness 0.5
+
+diffuse 0 0 0
+specular 0.9 0.2 0.07
+roughness 0.25
+sphere -5.27 -3 2.5  1
+
+diffuse 0 0 0
+specular 0.9 0.2 0.07
+roughness 0.05
+sphere -3.14 -3 2.5  1
+
+diffuse 0 0.55 0.1
+specular 0.1 0.1 0.1
+roughness 0.12
+sphere -1.04 -3 2.5  1
+
+diffuse 0.01 0.01 0.4
+specular 0.02 0.02 0.02
+roughness 0.01
+sphere 1.04 -3 2.5  1
+
+diffuse 0 0 0
+specular 0 0 0
+roughness 0.01
+sphere 3.14 -3 2.5  1
+
+diffuse 0 0 0
+specular 1 0.17 0.1
+roughness 0.7
+sphere 5.27 -3 2.5  1
+
+# Overhead light
+quad_light  10 50 25  0 -6 6  10 0 0  110 105 95
+quad_light  -20 50 25  0 -6 6  10 0 0  10 15 25

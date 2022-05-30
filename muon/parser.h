@@ -9,6 +9,7 @@
 #include "muon/integration.h"
 #include "muon/materials.h"
 #include "muon/options.h"
+#include "muon/random.h"
 #include "muon/scene.h"
 
 namespace muon {
@@ -16,6 +17,9 @@ namespace muon {
 // Represents a working area used while parsing.
 class ParsingWorkspace {
  public:
+  // Random seed generation.
+  std::unique_ptr<SeedGenerator> seedgen;
+
   // Material properties.
   std::shared_ptr<Material> material;
 

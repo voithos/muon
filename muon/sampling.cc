@@ -25,7 +25,8 @@ int NumTiles(int width, int height, int pixel_samples, int parallelism) {
   return num_tiles;
 }
 
-std::vector<Tile> TileImage(int width, int height, int num_tiles) {
+std::vector<Tile> TileImage(int width, int height, int num_tiles,
+                            SeedGenerator &seedgen) {
   // For now, we just split the image vertically into thin "tiles".
   // TODO: Split the image into better tiles, to work better with images with
   // little height.
@@ -52,7 +53,8 @@ std::vector<Tile> TileImage(int width, int height, int num_tiles) {
                  .x = 0,
                  .y = i * tile_height + excess_height,
                  .width = width,
-                 .height = tile_height};
+                 .height = tile_height,
+                 .random_seed = seedgen.Next()};
     assert(tile.x + tile.width <= width);
     assert(tile.y + tile.height <= height);
     tiles.push_back(tile);

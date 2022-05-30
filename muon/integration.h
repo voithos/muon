@@ -120,8 +120,9 @@ class AnalyticDirect : public Integrator {
 // A Monte Carlo based path tracer that handles global illumination.
 class PathTracer : public Integrator {
  public:
-  PathTracer(const PathTracer &other) : Integrator(other) {}
-  explicit PathTracer(Scene &scene) : Integrator(scene) {}
+  PathTracer(const PathTracer &other) : Integrator(other), rand_(other.rand_) {}
+  explicit PathTracer(Scene &scene, unsigned int random_seed)
+      : Integrator(scene), rand_(random_seed) {}
   virtual std::unique_ptr<Integrator> Clone() const override;
 
  protected:

@@ -20,6 +20,8 @@ struct Tile {
   int width;
   // The height of the tile.
   int height;
+  // The random seed to use for the tile.
+  unsigned int random_seed;
 };
 
 // Returns the recommended number of tiles based on width, height, and the
@@ -28,7 +30,8 @@ struct Tile {
 int NumTiles(int width, int height, int pixel_samples, int parallelism);
 
 // Generates sub-tiles of an image based on a number of desired tiles.
-std::vector<Tile> TileImage(int width, int height, int num_tiles);
+std::vector<Tile> TileImage(int width, int height, int num_tiles,
+                            SeedGenerator &seedgen);
 
 // A thread-safe queue of tiles.
 class TileQueue {
@@ -51,7 +54,8 @@ class Sampler {
       : tile_(tile),
         pixel_samples_(pixel_samples),
         total_samples_(tile.width * tile.height *
-                       static_cast<long int>(pixel_samples)) {}
+                       static_cast<long int>(pixel_samples)),
+        rand_(tile_.random_seed) {}
 
   // Generates the next sample location, in terms of x and y coordinates in
   // screen space. If there are no more samples to generate, returns false.

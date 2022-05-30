@@ -33,7 +33,8 @@ void Renderer::Render() const {
   // intense.
   int num_tiles = NumTiles(sc.scene->width, sc.scene->height,
                            sc.scene->pixel_samples, options_.parallelism);
-  TileQueue tiles(TileImage(sc.scene->width, sc.scene->height, num_tiles));
+  TileQueue tiles(TileImage(sc.scene->width, sc.scene->height, num_tiles,
+                            *sc.scene->seedgen));
 
   // Launch render threads.
   std::vector<std::thread> threads;

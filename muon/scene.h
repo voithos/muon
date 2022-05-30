@@ -27,6 +27,8 @@ class Scene {
   Scene() = default;
 
   // General properties.
+  std::unique_ptr<SeedGenerator> seedgen;  // Random seed generation.
+
   int width;
   int height;
   int min_depth;

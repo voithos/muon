@@ -117,3 +117,9 @@ scene_diff_test(
     tolerance = "0.001",
     truth = "testdata/partial_indirect_truth.png",
 )
+
+scene_diff_test(
+    name = "random_seed_test",
+    golden = "testdata/random_seed.png",
+    scene = "random_seed.muon",
+)
