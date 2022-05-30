@@ -1,3 +1,6 @@
 bazel-*
 external
 compile_commands.json
+
+# Used to house temporary scenes and output.
+gallery/

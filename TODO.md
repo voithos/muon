@@ -14,6 +14,7 @@
 - [ ] P3: Disney BRDF
 - [ ] P3: GUI scene viewer (imgui?)
 - [ ] P3: Allow configuration of random seed
+- [ ] P1: Double precision support
 
 ## Scenes
 - [ ] Utah teapot
