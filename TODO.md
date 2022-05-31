@@ -13,7 +13,8 @@
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: Disney BRDF
 - [ ] P3: GUI scene viewer (imgui?)
-- [ ] P1: Double precision support
+- [ ] P2: Double precision support
+- [ ] P3: Add model loading test
 
 ## Scenes
 - [ ] Utah teapot

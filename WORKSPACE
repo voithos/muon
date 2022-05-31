@@ -17,9 +17,9 @@ versions.check(minimum_bazel_version = "5.0.0")
 # Foreign rules tool.
 http_archive(
     name = "rules_foreign_cc",
-    sha256 = "d54742ffbdc6924f222d2179f0e10e911c5c659c4ae74158e9fe827aad862ac6",
-    strip_prefix = "rules_foreign_cc-0.2.0",
-    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.2.0.tar.gz",
+    sha256 = "6041f1374ff32ba711564374ad8e007aef77f71561a7ce784123b9b4b88614fc",
+    strip_prefix = "rules_foreign_cc-0.8.0",
+    url = "https://github.com/bazelbuild/rules_foreign_cc/archive/0.8.0.tar.gz",
 )
 
 load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_dependencies")
@@ -28,29 +28,12 @@ load("@rules_foreign_cc//foreign_cc:repositories.bzl", "rules_foreign_cc_depende
 # https://github.com/bazelbuild/rules_foreign_cc/tree/main/docs#rules_foreign_cc_dependencies
 rules_foreign_cc_dependencies()
 
-_ASSIMP_BUILD = """\
-load("@rules_foreign_cc//foreign_cc:defs.bzl", "cmake")
-
-package(default_visibility = ["//visibility:public"])
-
-filegroup(
-    name = "all_srcs",
-    srcs = glob(["**"]),
-)
-
-cmake(
-    name = "assimp",
-    lib_source = ":all_srcs",
-    out_shared_libs = ["libassimp.so.5"],
-)
-"""
-
 http_archive(
     name = "assimp",
-    build_file_content = _ASSIMP_BUILD,
-    sha256 = "11310ec1f2ad2cd46b95ba88faca8f7aaa1efe9aa12605c55e3de2b977b3dbfc",
-    strip_prefix = "assimp-5.0.1",
-    urls = ["https://github.com/assimp/assimp/archive/refs/tags/v5.0.1.tar.gz"],
+    build_file = "@//:BUILD.assimp",
+    sha256 = "6a4ff75dc727821f75ef529cea1c4fc0a7b5fc2e0a0b2ff2f6b7993fe6cb54ba",
+    strip_prefix = "assimp-5.2.4",
+    urls = ["https://github.com/assimp/assimp/archive/refs/tags/v5.2.4.tar.gz"],
 )
 
 http_archive(
