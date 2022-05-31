@@ -13,7 +13,6 @@
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: Disney BRDF
 - [ ] P3: GUI scene viewer (imgui?)
-- [ ] P3: Allow configuration of random seed
 - [ ] P1: Double precision support
 
 ## Scenes
@@ -52,3 +51,4 @@
 - [x] P1: Add multithreading support
 - [x] P0: MIS
 - [x] P1: Support for a common file format (obj, glTF, USD?)
+- [x] P3: Allow configuration of random seed
