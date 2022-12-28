@@ -1,9 +1,9 @@
 # TODO
 
 ## Features
-- [ ] P0: Recursive refraction
-- [ ] P0: Depth of field
-- [ ] P0: Features from "Ray tracing in a weekend" series
+- [ ] P1: Recursive refraction
+- [ ] P1: Depth of field
+- [ ] P1: Features from "Ray tracing in a weekend" series
   - [ ] Ray tracing in a weekend
   - [ ] Ray tracing: the next week
   - [ ] Ray tracing: the rest of your life
@@ -13,7 +13,7 @@
 - [ ] P3: Other camera types, like orthographic
 - [ ] P3: Disney BRDF
 - [ ] P3: GUI scene viewer (imgui?)
-- [ ] P2: Double precision support
+- [ ] P2: Double precision support?
 - [ ] P3: Add model loading test
 
 ## Scenes
@@ -22,7 +22,7 @@
 - [ ] pbrt scenes? https://benedikt-bitterli.me/resources/
 
 ## Performance improvements
-- [ ] SIMD support?
+- [ ] P0: GPU support?
 - [ ] P3: Adaptive sampling
 - [ ] P3: Bidirectional path tracing
 - [ ] P3: Include an end bound on ray intersections to avoid costly intersection
